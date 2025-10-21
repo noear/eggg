@@ -27,8 +27,8 @@ import java.util.Objects;
  * @since 1.0
  */
 public class PropertyMethodWrap implements Property {
-    private final Method property;
-    private final TypeWrap propertyTypeWrap;
+    private final Method method;
+    private final TypeWrap methodTypeWrap;
 
     private final FieldWrap fieldWrap;
 
@@ -41,33 +41,33 @@ public class PropertyMethodWrap implements Property {
 
     private final Eggg eggg;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap owner, Method property) {
+    public PropertyMethodWrap(Eggg eggg, ClassWrap owner, Method method) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(owner, "owner");
-        Objects.requireNonNull(property, "property");
+        Objects.requireNonNull(method, "property");
 
         this.eggg = eggg;
-        this.property = property;
+        this.method = method;
 
-        if (property.getReturnType() != void.class) {
+        if (method.getReturnType() != void.class) {
             //getter
             this.isReadMode = true;
-            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(property.getGenericReturnType(), getGenericInfo(owner.getTypeWrap(), property)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), getGenericInfo(owner.getTypeWrap(), method)));
         } else {
             //setter
             this.isReadMode = false;
-            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(property.getGenericParameterTypes()[0], getGenericInfo(owner.getTypeWrap(), property)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], getGenericInfo(owner.getTypeWrap(), method)));
         }
 
-        this.name = Property.resolvePropertyName(property.getName());
+        this.name = Property.resolvePropertyName(method.getName());
         this.fieldWrap = owner.getFieldWrapByName(this.name);
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attachment = eggg.findAttachment(owner, property, null);
+            this.attachment = eggg.findAttachment(owner, method, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attachment = eggg.findAttachment(owner, property, fieldWrap.getAttachment());
+            this.attachment = eggg.findAttachment(owner, method, fieldWrap.getAttachment());
         }
 
         this.alias = eggg.findAlias(attachment);
@@ -75,17 +75,17 @@ public class PropertyMethodWrap implements Property {
 
     @Override
     public boolean isTransient() {
-        return false;
+        return isTransient;
     }
 
     @Override
     public Object getValue(Object target) throws Exception {
         if (isReadMode) {
-            if (property.isAccessible() == false) {
-                property.setAccessible(true);
+            if (method.isAccessible() == false) {
+                method.setAccessible(true);
             }
 
-            return property.invoke(target);
+            return method.invoke(target);
         } else {
             return null;
         }
@@ -94,21 +94,25 @@ public class PropertyMethodWrap implements Property {
     @Override
     public void setValue(Object target, Object value) throws Exception {
         if (isReadMode == false) {
-            if (property.isAccessible() == false) {
-                property.setAccessible(true);
+            if (method.isAccessible() == false) {
+                method.setAccessible(true);
             }
 
-            property.invoke(target, value);
+            method.invoke(target, value);
         }
     }
 
     @Override
     public TypeWrap getTypeWrap() {
-        return propertyTypeWrap;
+        return methodTypeWrap;
     }
 
     public FieldWrap getFieldWrap() {
         return fieldWrap;
+    }
+
+    public Method getMethod() {
+        return method;
     }
 
     @Override
@@ -128,7 +132,7 @@ public class PropertyMethodWrap implements Property {
 
     @Override
     public String toString() {
-        return property.toString();
+        return method.toString();
     }
 
     private Map<String, Type> getGenericInfo(TypeWrap owner, Method method) {

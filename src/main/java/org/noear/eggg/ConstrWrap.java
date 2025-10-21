@@ -63,15 +63,15 @@ public class ConstrWrap {
         return paramAry.size();
     }
 
-    public List<ParamWrap> getParamAry() {
+    public List<ParamWrap> getParamWrapAry() {
         return paramAry;
     }
 
-    public ParamWrap getParamByAlias(String alias) {
+    public ParamWrap getParamWrapByAlias(String alias) {
         return paramAliasMap.get(alias);
     }
 
-    public boolean hasParamByAlias(String alias) {
+    public boolean hasParamWrapByAlias(String alias) {
         return paramAliasMap.containsKey(alias);
     }
 
