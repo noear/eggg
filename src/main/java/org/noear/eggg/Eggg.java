@@ -15,11 +15,6 @@
  */
 package org.noear.eggg;
 
-import org.noear.eggg.extend.AliasHandler;
-import org.noear.eggg.extend.DigestHandler;
-import org.noear.eggg.extend.ReflectHandler;
-import org.noear.eggg.extend.ReflectHandlerDefault;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Map;

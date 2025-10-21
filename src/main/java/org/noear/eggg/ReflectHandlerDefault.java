@@ -1,7 +1,8 @@
-package org.noear.eggg.extend;
+package org.noear.eggg;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  *
@@ -9,10 +10,16 @@ import java.lang.reflect.Method;
  * @since 1.0
  */
 public class ReflectHandlerDefault implements ReflectHandler {
-    private static ReflectHandler instance = new  ReflectHandlerDefault();
+    private static ReflectHandler instance = new ReflectHandlerDefault();
 
     public static ReflectHandler getInstance() {
         return instance;
+    }
+
+    public static void setInstance(ReflectHandler instance) {
+        Objects.requireNonNull(instance, "instance");
+
+        ReflectHandlerDefault.instance = instance;
     }
 
     @Override
