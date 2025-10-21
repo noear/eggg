@@ -50,7 +50,7 @@ public interface Property {
     /**
      * 附件
      */
-    <Att extends Object> Att getAttachment();
+    <Att extends Object> Att getAttach();
 
     /**
      * 名字

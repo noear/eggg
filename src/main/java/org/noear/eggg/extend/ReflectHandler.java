@@ -13,14 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.eggg;
+package org.noear.eggg.extend;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
- * 别名处理器
+ * 反射处理器（预留原生编译扩展）
  *
  * @author noear
  * @since 1.0
  */
-public interface AliasHandler<Att> {
-    String apply(Att ref);
+public interface ReflectHandler {
+    /**
+     * 获取声明的字段
+     */
+    Field[] getDeclaredFields(Class<?> clazz);
+
+    /**
+     * 获取声明的方法
+     */
+    Method[] getDeclaredMethods(Class<?> clazz);
+
+    /**
+     * 获取公有的方法
+     */
+    Method[] getMethods(Class<?> clazz);
 }

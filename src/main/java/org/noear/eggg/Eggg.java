@@ -15,6 +15,11 @@
  */
 package org.noear.eggg;
 
+import org.noear.eggg.extend.AliasHandler;
+import org.noear.eggg.extend.AttachHandler;
+import org.noear.eggg.extend.ReflectHandler;
+import org.noear.eggg.extend.ReflectHandlerDefault;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Map;
@@ -31,22 +36,22 @@ public class Eggg implements ReflectHandler {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
-    private Class<? extends Annotation> creatorAnnotationClass = null;
-    private AttachmentHandler attachmentHandler;
+    private Class<? extends Annotation> creatorClass = null;
+    private AttachHandler attachHandler;
     private AliasHandler aliasHandler;
     private ReflectHandler reflectHandler = ReflectHandlerDefault.getInstance();
 
-    public Eggg withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
-        Objects.requireNonNull(creatorAnnotationClass, "creatorAnnotationClass");
+    public Eggg withCreatorClass(Class<? extends Annotation> creatorClass) {
+        Objects.requireNonNull(creatorClass, "creatorClass");
 
-        this.creatorAnnotationClass = creatorAnnotationClass;
+        this.creatorClass = creatorClass;
         return this;
     }
 
-    public <Att extends Object> Eggg withAttachmentHandler(AttachmentHandler<Att> attachmentHandler) {
-        Objects.requireNonNull(attachmentHandler, "attachmentHandler");
+    public <Att extends Object> Eggg withAttachHandler(AttachHandler<Att> attachHandler) {
+        Objects.requireNonNull(attachHandler, "attachHandler");
 
-        this.attachmentHandler = attachmentHandler;
+        this.attachHandler = attachHandler;
         return this;
     }
 
@@ -93,18 +98,18 @@ public class Eggg implements ReflectHandler {
     ///
 
     public Annotation findCreator(Executable executable) {
-        if (creatorAnnotationClass == null) {
+        if (creatorClass == null) {
             return null;
         } else {
-            return executable.getAnnotation(creatorAnnotationClass);
+            return executable.getAnnotation(creatorClass);
         }
     }
 
-    public Object findAttachment(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
-        if (attachmentHandler == null) {
+    public Object findAttach(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
+        if (attachHandler == null) {
             return null;
         } else {
-            return attachmentHandler.apply(classWrap, holder, source, ref);
+            return attachHandler.apply(classWrap, holder, source, ref);
         }
     }
 

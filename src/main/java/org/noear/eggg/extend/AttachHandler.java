@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.noear.eggg;
+package org.noear.eggg.extend;
+
+import org.noear.eggg.ClassWrap;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -23,6 +25,6 @@ import java.lang.reflect.AnnotatedElement;
  * @author noear
  * @since 1.0
  */
-public interface AttachmentHandler<Att> {
+public interface AttachHandler<Att> {
     Att apply(ClassWrap classWrap, Object holder, AnnotatedElement source, Att ref);
 }

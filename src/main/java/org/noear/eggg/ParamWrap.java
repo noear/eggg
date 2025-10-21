@@ -29,15 +29,15 @@ public class ParamWrap {
 
     private final String name;
     private final String alias;
-    private final Object attachment;
+    private final Object attach;
 
     public ParamWrap(Eggg eggg, ClassWrap classWrap, Parameter param) {
         this.param = param;
         this.paramTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
 
         this.name = param.getName();
-        this.attachment = eggg.findAttachment(classWrap, this, param, null);
-        this.alias = eggg.findAlias(attachment);
+        this.attach = eggg.findAttach(classWrap, this, param, null);
+        this.alias = eggg.findAlias(attach);
     }
 
     public Parameter getParam() {
@@ -57,6 +57,6 @@ public class ParamWrap {
     }
 
     public <Att extends Object> Att getAttachment() {
-        return (Att) attachment;
+        return (Att) attach;
     }
 }
