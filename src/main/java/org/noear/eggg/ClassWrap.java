@@ -35,7 +35,6 @@ public class ClassWrap {
     private ConstrWrap constrWrap;
 
     private final Map<String, FieldWrap> fieldWrapsForName = new LinkedHashMap<>();
-    private final Map<String, FieldWrap> staticFieldWrapsForName = new LinkedHashMap<>();
 
     private final Map<String, MethodWrap> methodWrapsForName = new LinkedHashMap<>();
 
@@ -54,9 +53,9 @@ public class ClassWrap {
         this.eggg = eggg;
         this.typeWrap = typeWrap;
 
-        loadConstr();
         loadDeclaredFields();
-        loadDeclaredPropertys();
+        loadDeclaredMethods();
+        loadConstr();
 
         this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
         this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
@@ -100,14 +99,6 @@ public class ClassWrap {
         return fieldWrapsForName.get(name);
     }
 
-    public Map<String, FieldWrap> getStaticFieldWrapsForName() {
-        return staticFieldWrapsForName;
-    }
-
-    public FieldWrap getStaticFieldWrapByName(String name) {
-        return staticFieldWrapsForName.get(name);
-    }
-
     public Map<String, MethodWrap> getMethodWrapsForName() {
         return methodWrapsForName;
     }
@@ -138,7 +129,7 @@ public class ClassWrap {
         if (typeWrap.getType() != Object.class) {
             //先从静态方法找
             for (Method m1 : eggg.getDeclaredMethods(typeWrap.getType())) {
-                if (Modifier.isStatic(m1.getModifiers())) {
+                if (Modifier.isStatic(m1.getModifiers()) && m1.isBridge() == false) {
                     constrAnno = eggg.findCreator(m1);
                     if (constrAnno != null) {
                         constr = m1;
@@ -180,46 +171,52 @@ public class ClassWrap {
 
                 FieldWrap fieldWrap = eggg.newFieldWrap(this, f);
 
-                if (Modifier.isStatic(f.getModifiers())) {
-                    //静态的
-                    staticFieldWrapsForName.put(f.getName(), fieldWrap);
-                } else {
+                fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
+
+                if (fieldWrap.isStatic() == false) {
                     //如果全是只读，则
                     likeRecordClass = likeRecordClass && fieldWrap.isFinal();
-
-                    fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
                     propertyWrapsForName.computeIfAbsent(fieldWrap.getName(), k -> new PropertyWrap(k))
                             .setFieldWrap(fieldWrap);
                 }
+
             }
             c = c.getSuperclass();
         }
     }
 
-    protected void loadDeclaredPropertys() {
+    protected void loadDeclaredMethods() {
+        for (Method m : eggg.getDeclaredMethods(typeWrap.getType())) {
+            MethodWrap methodWrap = eggg.newMethodWrap(this, m);
+            methodWrapsForName.put(m.getName(), methodWrap);
+        }
+
         for (Method m : eggg.getMethods(typeWrap.getType())) {
-            if (m.getDeclaringClass() == Object.class) {
+            if (m.getDeclaringClass() == Object.class || m.isBridge()) {
                 continue;
             }
 
-            methodWrapsForName.put(m.getName(), eggg.newMethodWrap(this, m));
+            MethodWrap methodWrap = eggg.newMethodWrap(this, m);
+            methodWrapsForName.put(m.getName(), methodWrap);
 
-            if (m.getName().length() > 3) {
-                if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
-                    //setter
-                    if (m.getName().startsWith("set")) {
-                        PropertyMethodWrap sw = eggg.newPropertyMethodWrap(this, m);
+            if (methodWrap.isStatic() == false) {
+                if (m.getName().length() > 3) {
+                    if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
+                        //setter
+                        if (m.getName().startsWith("set")) {
+                            PropertyMethodWrap sw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyWrapsForName.computeIfAbsent(sw.getName(), k -> new PropertyWrap(k))
-                                .setSetterWrap(sw);
-                    }
-                } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
-                    //getter
-                    if (m.getName().startsWith("get")) {
-                        PropertyMethodWrap gw = eggg.newPropertyMethodWrap(this, m);
+                            propertyWrapsForName.computeIfAbsent(sw.getName(), k -> new PropertyWrap(k))
+                                    .setSetterWrap(sw);
+                        }
+                    } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
+                        //getter
+                        if (m.getName().startsWith("get")) {
+                            PropertyMethodWrap gw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyWrapsForName.computeIfAbsent(gw.getName(), k -> new PropertyWrap(k))
-                                .setGetterWrap(gw);
+                            propertyWrapsForName.computeIfAbsent(gw.getName(), k -> new PropertyWrap(k))
+                                    .setGetterWrap(gw);
+                        }
                     }
                 }
             }

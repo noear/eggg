@@ -30,6 +30,11 @@ public class MethodWrap {
 
     private final Object digest;
 
+    private boolean isFinal;
+    private boolean isStatic;
+    private boolean isPrivate;
+    private boolean isDeclared;
+
     private final Map<String, ParamWrap> paramAliasMap;
     private final List<ParamWrap> paramAry;
 
@@ -51,6 +56,11 @@ public class MethodWrap {
 
         this.digest = eggg.findDigest(classWrap, this, method, null);
 
+        this.isFinal = Modifier.isFinal(method.getModifiers());
+        this.isStatic = Modifier.isStatic(method.getModifiers());
+        this.isPrivate = Modifier.isPrivate(method.getModifiers());
+        this.isDeclared = method.getDeclaringClass() == classWrap.getTypeWrap().getType();
+
         paramAliasMap = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
@@ -68,6 +78,35 @@ public class MethodWrap {
 
     public Method getMethod() {
         return method;
+    }
+
+    /**
+     * 只读的
+     */
+    public boolean isFinal() {
+        return isFinal;
+    }
+
+    /**
+     * 静态的
+     */
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    /**
+     * 私有的
+     */
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    /**
+     * 声报的
+     *
+     */
+    public boolean isDeclared() {
+        return isDeclared;
     }
 
     public String getName() {

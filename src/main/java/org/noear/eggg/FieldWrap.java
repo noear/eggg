@@ -35,7 +35,10 @@ public class FieldWrap implements Property {
     private final Object digest;
 
     private boolean isFinal;
+    private boolean isStatic;
+    private boolean isPrivate;
     private boolean isTransient;
+    private boolean isDeclared;
 
     private Eggg eggg;
 
@@ -45,7 +48,10 @@ public class FieldWrap implements Property {
         this.fieldTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(field.getGenericType(), getGenericInfo(classWrap.getTypeWrap(), field)));
 
         this.isFinal = Modifier.isFinal(field.getModifiers());
+        this.isStatic = Modifier.isStatic(field.getModifiers());
+        this.isPrivate = Modifier.isPrivate(field.getModifiers());
         this.isTransient = Modifier.isTransient(field.getModifiers());
+        this.isDeclared = field.getDeclaringClass() == classWrap.getTypeWrap().getType();
 
         this.name = field.getName();
         this.digest = eggg.findDigest(classWrap, this, field, null);
@@ -56,10 +62,30 @@ public class FieldWrap implements Property {
         return field;
     }
 
+    /**
+     * 只读的
+     */
     public boolean isFinal() {
         return isFinal;
     }
 
+    /**
+     * 静态的
+     */
+    public boolean isStatic() {
+        return isStatic;
+    }
+
+    /**
+     * 私有的
+     */
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    /**
+     * 临时的（不需要执久化）
+     */
     @Override
     public boolean isTransient() {
         return isTransient;
