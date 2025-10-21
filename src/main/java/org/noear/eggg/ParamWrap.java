@@ -23,20 +23,20 @@ import java.lang.reflect.Parameter;
  * @author noear
  * @since 1.0
  */
-public class ParamWrap<Att> {
+public class ParamWrap {
     private final Parameter param;
     private final TypeWrap paramTypeWrap;
 
     private final String name;
     private final String alias;
-    private final Att attachment;
+    private final Object attachment;
 
     public ParamWrap(Eggg eggg, ClassWrap classWrap, Parameter param) {
         this.param = param;
         this.paramTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
 
         this.name = param.getName();
-        this.attachment = (Att) eggg.findAttachment(classWrap, param, null);
+        this.attachment = eggg.findAttachment(classWrap, param, null);
         this.alias = eggg.findAlias(attachment);
     }
 
@@ -56,7 +56,7 @@ public class ParamWrap<Att> {
         return alias;
     }
 
-    public Att getAttachment() {
-        return attachment;
+    public <Att extends Object> Att getAttachment() {
+        return (Att) attachment;
     }
 }

@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 /**
  * 泛型蛋
@@ -27,50 +26,50 @@ import java.util.function.Function;
  * @author noear
  * @since 1.0
  */
-public class Eggg<EA extends Object> {
-    private final Map<Type, TypeWrap<EA>> typeWrapLib = new ConcurrentHashMap<>();
-    private final Map<TypeWrap<EA>, ClassWrap<EA>> classWrapLib = new ConcurrentHashMap<>();
+public class Eggg {
+    private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
+    private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
-    private AttachmentHandler<EA> attachmentHandler;
-    private Function<EA, String> aliasHandler;
+    private AttachmentHandler attachmentHandler;
+    private AliasHandler aliasHandler;
 
-    public Eggg<EA> withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
+    public Eggg withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
         this.creatorAnnotationClass = creatorAnnotationClass;
         return this;
     }
 
-    public Eggg<EA> withAttachmentHandler(AttachmentHandler<EA> attachmentHandler) {
+    public <Att extends Object> Eggg withAttachmentHandler(AttachmentHandler<Att> attachmentHandler) {
         this.attachmentHandler = attachmentHandler;
         return this;
     }
 
-    public Eggg<EA> withAliasHandler(Function<EA, String> aliasHandler) {
+    public <Att extends Object> Eggg withAliasHandler(AliasHandler<Att> aliasHandler) {
         this.aliasHandler = aliasHandler;
         return this;
     }
 
-    public TypeWrap<EA> newTypeWrap(Type type) {
+    public TypeWrap newTypeWrap(Type type) {
         return new TypeWrap(this, type);
     }
 
-    public ClassWrap<EA> newClassWrap(TypeWrap typeWrap) {
+    public ClassWrap newClassWrap(TypeWrap typeWrap) {
         return new ClassWrap(this, typeWrap);
     }
 
-    public FieldWrap<EA> newFieldWrap(ClassWrap classWrap, Field field) {
+    public FieldWrap newFieldWrap(ClassWrap classWrap, Field field) {
         return new FieldWrap(this, classWrap, field);
     }
 
-    public ConstrWrap<EA> newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
+    public ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
         return new ConstrWrap(this, classWrap, constr, constrAnno);
     }
 
-    public PropertyMethodWrap<EA> newPropertyMethodWrap(ClassWrap classWrap, Method property) {
+    public PropertyMethodWrap newPropertyMethodWrap(ClassWrap classWrap, Method property) {
         return new PropertyMethodWrap(this, classWrap, property);
     }
 
-    public ParamWrap<EA> newParamWrap(ClassWrap classWrap, Parameter param) {
+    public ParamWrap newParamWrap(ClassWrap classWrap, Parameter param) {
         return new ParamWrap(this, classWrap, param);
     }
 
@@ -85,7 +84,7 @@ public class Eggg<EA extends Object> {
         }
     }
 
-    public EA findAttachment(ClassWrap classWrap, AnnotatedElement element, EA ref) {
+    public Object findAttachment(ClassWrap classWrap, AnnotatedElement element, Object ref) {
         if (attachmentHandler == null) {
             return null;
         } else {
@@ -93,7 +92,7 @@ public class Eggg<EA extends Object> {
         }
     }
 
-    public String findAlias(EA attachment) {
+    public String findAlias(Object attachment) {
         if (aliasHandler == null) {
             return null;
         } else {
@@ -103,11 +102,11 @@ public class Eggg<EA extends Object> {
 
     /// //
 
-    public TypeWrap<EA> getTypeWrap(Type type) {
+    public TypeWrap getTypeWrap(Type type) {
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
     }
 
-    public ClassWrap<EA> getClassWrap(TypeWrap<EA> typeWrap) {
+    public ClassWrap getClassWrap(TypeWrap typeWrap) {
         return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
     }
 }

@@ -26,22 +26,22 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class PropertyMethodWrap<Att> implements Property<Att> {
+public class PropertyMethodWrap implements Property {
     private final Method property;
     private final TypeWrap propertyTypeWrap;
 
-    private final FieldWrap<Att> fieldWrap;
+    private final FieldWrap fieldWrap;
 
     private final String name;
     private final String alias;
-    private final Att attachment;
+    private final Object attachment;
 
     private final boolean isTransient;
     private final boolean isReadMode;
 
     private final Eggg eggg;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap<Att> owner, Method property) {
+    public PropertyMethodWrap(Eggg eggg, ClassWrap owner, Method property) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(owner, "owner");
         Objects.requireNonNull(property, "property");
@@ -64,10 +64,10 @@ public class PropertyMethodWrap<Att> implements Property<Att> {
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attachment = (Att) eggg.findAttachment(owner, property, null);
+            this.attachment = eggg.findAttachment(owner, property, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attachment = (Att) eggg.findAttachment(owner, property, fieldWrap.getAttachment());
+            this.attachment = eggg.findAttachment(owner, property, fieldWrap.getAttachment());
         }
 
         this.alias = eggg.findAlias(attachment);
@@ -107,7 +107,7 @@ public class PropertyMethodWrap<Att> implements Property<Att> {
         return propertyTypeWrap;
     }
 
-    public FieldWrap<Att> getFieldWrap() {
+    public FieldWrap getFieldWrap() {
         return fieldWrap;
     }
 
@@ -122,8 +122,8 @@ public class PropertyMethodWrap<Att> implements Property<Att> {
     }
 
     @Override
-    public Att getAttachment() {
-        return attachment;
+    public <Att extends Object> Att getAttachment() {
+        return (Att) attachment;
     }
 
     @Override

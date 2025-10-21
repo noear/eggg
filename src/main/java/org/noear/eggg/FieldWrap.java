@@ -26,14 +26,14 @@ import java.util.Map;
  * @author noear
  * @since 1.0
  */
-public class FieldWrap<Att> implements Property<Att> {
+public class FieldWrap implements Property {
     private final Field field;
     private final TypeWrap fieldTypeWrap;
 
     private final String name;
     private final String alias;
 
-    private final Att attachment;
+    private final Object attachment;
 
     private boolean isFinal;
     private boolean isTransient;
@@ -49,7 +49,7 @@ public class FieldWrap<Att> implements Property<Att> {
         this.isTransient = Modifier.isTransient(field.getModifiers());
 
         this.name = field.getName();
-        this.attachment = (Att) eggg.findAttachment(classWrap, field, null);
+        this.attachment = eggg.findAttachment(classWrap, field, null);
         this.alias = eggg.findAlias(attachment);
     }
 
@@ -92,8 +92,8 @@ public class FieldWrap<Att> implements Property<Att> {
     }
 
     @Override
-    public Att getAttachment() {
-        return attachment;
+    public <Att extends Object> Att getAttachment() {
+        return (Att) attachment;
     }
 
     @Override

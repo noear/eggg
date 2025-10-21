@@ -17,13 +17,13 @@ public class EgggTest {
     public void case1() {
         TypeWrap typeWrap = eggg.getTypeWrap(Object.class);
 
-        ClassWrap<Object> classWrap = typeWrap.getClassWrap();
+        ClassWrap classWrap = typeWrap.getClassWrap();
 
         ConstrWrap constrWrap = classWrap.getConstrWrap();
 
         Assertions.assertNull(constrWrap);
 
-        for (Map.Entry<String, PropertyWrap<Object>> entry : classWrap.getPropertyWrapsForAlias().entrySet()) {
+        for (Map.Entry<String, PropertyWrap> entry : classWrap.getPropertyWrapsForAlias().entrySet()) {
 
         }
     }

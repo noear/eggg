@@ -25,11 +25,11 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ConstrWrap<Att> {
+public class ConstrWrap {
     private final Executable constr;
 
-    private final Map<String, ParamWrap<Att>> paramAliasMap;
-    private final List<ParamWrap<Att>> paramAry;
+    private final Map<String, ParamWrap> paramAliasMap;
+    private final List<ParamWrap> paramAry;
 
     private final boolean security;
 
@@ -43,7 +43,7 @@ public class ConstrWrap<Att> {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamWrap<Att> paramWrap = eggg.newParamWrap(classWrap, p1);
+            ParamWrap paramWrap = eggg.newParamWrap(classWrap, p1);
 
             paramAliasMap.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
@@ -63,11 +63,11 @@ public class ConstrWrap<Att> {
         return paramAry.size();
     }
 
-    public List<ParamWrap<Att>> getParamAry() {
+    public List<ParamWrap> getParamAry() {
         return paramAry;
     }
 
-    public ParamWrap<Att> getParamByAlias(String alias) {
+    public ParamWrap getParamByAlias(String alias) {
         return paramAliasMap.get(alias);
     }
 
