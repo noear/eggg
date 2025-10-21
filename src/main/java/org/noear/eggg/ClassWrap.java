@@ -34,9 +34,9 @@ public class ClassWrap<EA extends Object> {
     private Annotation constrAnno;
     private ConstrWrap constrWrap;
 
-    private final Map<String, FieldWrap<EA>> fieldNameWraps = new LinkedHashMap<>();
-    private final Map<String, PropertyWrap<EA>> propertyNameWraps = new LinkedHashMap<>();
-    private final Map<String, PropertyWrap<EA>> propertyAliasWraps = new LinkedHashMap<>();
+    private final Map<String, FieldWrap<EA>> fieldWrapsForName = new LinkedHashMap<>();
+    private final Map<String, PropertyWrap<EA>> propertyWrapsForName = new LinkedHashMap<>();
+    private final Map<String, PropertyWrap<EA>> propertyWrapsForAlias = new LinkedHashMap<>();
 
     private boolean likeRecordClass = true;
     private boolean realRecordClass;
@@ -55,10 +55,10 @@ public class ClassWrap<EA extends Object> {
         loadDeclaredPropertys();
 
         this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
-        this.likeRecordClass = likeRecordClass && fieldNameWraps.size() > 0;
+        this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
 
-        for (Map.Entry<String, PropertyWrap<EA>> entry : propertyNameWraps.entrySet()) {
-            propertyAliasWraps.put(entry.getValue().getAlias(), entry.getValue());
+        for (Map.Entry<String, PropertyWrap<EA>> entry : propertyWrapsForName.entrySet()) {
+            propertyWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
         if (constr != null) {
@@ -88,28 +88,28 @@ public class ClassWrap<EA extends Object> {
         return constrWrap;
     }
 
-    public Map<String, FieldWrap<EA>> getFieldNameWraps() {
-        return fieldNameWraps;
+    public Map<String, FieldWrap<EA>> getFieldWrapsForName() {
+        return fieldWrapsForName;
     }
 
     public FieldWrap<EA> getFieldWrapByName(String name) {
-        return fieldNameWraps.get(name);
+        return fieldWrapsForName.get(name);
     }
 
-    public Map<String, PropertyWrap<EA>> getPropertyNameWraps() {
-        return propertyNameWraps;
+    public Map<String, PropertyWrap<EA>> getPropertyWrapsForName() {
+        return propertyWrapsForName;
     }
 
-    public Map<String, PropertyWrap<EA>> getPropertyAliasWraps() {
-        return propertyAliasWraps;
+    public Map<String, PropertyWrap<EA>> getPropertyWrapsForAlias() {
+        return propertyWrapsForAlias;
     }
 
     public PropertyWrap<EA> getPropertyWrapByAlias(String alias) {
-        return propertyAliasWraps.get(alias);
+        return propertyWrapsForAlias.get(alias);
     }
 
     public PropertyWrap<EA> getPropertyWrapByName(String name) {
-        return propertyNameWraps.get(name);
+        return propertyWrapsForName.get(name);
     }
 
     /// /////////////////
@@ -163,8 +163,8 @@ public class ClassWrap<EA extends Object> {
                 //如果全是只读，则
                 likeRecordClass = likeRecordClass && fieldWrap.isFinal();
 
-                fieldNameWraps.put(fieldWrap.getName(), fieldWrap);
-                propertyNameWraps.computeIfAbsent(fieldWrap.getName(), k -> new PropertyWrap(k))
+                fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
+                propertyWrapsForName.computeIfAbsent(fieldWrap.getName(), k -> new PropertyWrap(k))
                         .setFieldWrap(fieldWrap);
             }
             c = c.getSuperclass();
@@ -183,7 +183,7 @@ public class ClassWrap<EA extends Object> {
                     if (m.getName().startsWith("set")) {
                         PropertyMethodWrap sw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyNameWraps.computeIfAbsent(sw.getName(), k -> new PropertyWrap(k))
+                        propertyWrapsForName.computeIfAbsent(sw.getName(), k -> new PropertyWrap(k))
                                 .setSetterWrap(sw);
                     }
                 } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
@@ -191,7 +191,7 @@ public class ClassWrap<EA extends Object> {
                     if (m.getName().startsWith("get")) {
                         PropertyMethodWrap gw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyNameWraps.computeIfAbsent(gw.getName(), k -> new PropertyWrap(k))
+                        propertyWrapsForName.computeIfAbsent(gw.getName(), k -> new PropertyWrap(k))
                                 .setGetterWrap(gw);
                     }
                 }

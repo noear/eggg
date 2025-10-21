@@ -23,7 +23,7 @@ public class EgggTest {
 
         Assertions.assertNull(constrWrap);
 
-        for (Map.Entry<String, PropertyWrap<Object>> entry : classWrap.getPropertyAliasWraps().entrySet()) {
+        for (Map.Entry<String, PropertyWrap<Object>> entry : classWrap.getPropertyWrapsForAlias().entrySet()) {
 
         }
     }

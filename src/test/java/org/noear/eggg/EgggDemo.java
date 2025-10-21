@@ -13,6 +13,6 @@ public class EgggDemo {
 
         ClassWrap classWrap = typeWrap.getClassWrap();
 
-        classWrap.getFieldNameWraps();
+        classWrap.getFieldWrapsForName();
     }
 }
