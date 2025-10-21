@@ -100,11 +100,11 @@ public class Eggg implements ReflectHandler {
         }
     }
 
-    public Object findAttachment(ClassWrap classWrap, AnnotatedElement element, Object ref) {
+    public Object findAttachment(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
         if (attachmentHandler == null) {
             return null;
         } else {
-            return attachmentHandler.apply(classWrap, element, ref);
+            return attachmentHandler.apply(classWrap, holder, source, ref);
         }
     }
 

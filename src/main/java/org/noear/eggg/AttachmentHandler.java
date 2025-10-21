@@ -24,5 +24,5 @@ import java.lang.reflect.AnnotatedElement;
  * @since 1.0
  */
 public interface AttachmentHandler<Att> {
-    Att apply(ClassWrap classWrap, AnnotatedElement element, Att ref);
+    Att apply(ClassWrap classWrap, Object holder, AnnotatedElement source, Att ref);
 }

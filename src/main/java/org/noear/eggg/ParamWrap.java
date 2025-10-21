@@ -36,7 +36,7 @@ public class ParamWrap {
         this.paramTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
 
         this.name = param.getName();
-        this.attachment = eggg.findAttachment(classWrap, param, null);
+        this.attachment = eggg.findAttachment(classWrap, this, param, null);
         this.alias = eggg.findAlias(attachment);
     }
 

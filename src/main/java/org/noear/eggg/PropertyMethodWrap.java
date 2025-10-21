@@ -41,9 +41,9 @@ public class PropertyMethodWrap implements Property {
 
     private final Eggg eggg;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap owner, Method method) {
+    public PropertyMethodWrap(Eggg eggg, ClassWrap classWrap, Method method) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(owner, "owner");
+        Objects.requireNonNull(classWrap, "classWrap");
         Objects.requireNonNull(method, "property");
 
         this.eggg = eggg;
@@ -52,22 +52,22 @@ public class PropertyMethodWrap implements Property {
         if (method.getReturnType() != void.class) {
             //getter
             this.isReadMode = true;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), getGenericInfo(owner.getTypeWrap(), method)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), getGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             //setter
             this.isReadMode = false;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], getGenericInfo(owner.getTypeWrap(), method)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], getGenericInfo(classWrap.getTypeWrap(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());
-        this.fieldWrap = owner.getFieldWrapByName(this.name);
+        this.fieldWrap = classWrap.getFieldWrapByName(this.name);
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attachment = eggg.findAttachment(owner, method, null);
+            this.attachment = eggg.findAttachment(classWrap, this, method, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attachment = eggg.findAttachment(owner, method, fieldWrap.getAttachment());
+            this.attachment = eggg.findAttachment(classWrap, this, method, fieldWrap.getAttachment());
         }
 
         this.alias = eggg.findAlias(attachment);
