@@ -22,6 +22,6 @@ package org.noear.eggg.extend;
  * @since 1.0
  */
 @FunctionalInterface
-public interface AliasHandler<Att> {
-    String apply(Att ref);
+public interface AliasHandler<T> {
+    String apply(T ref);
 }

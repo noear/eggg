@@ -64,10 +64,10 @@ public class PropertyMethodWrap implements Property {
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attach = eggg.findAttach(classWrap, this, method, null);
+            this.attach = eggg.findDigest(classWrap, this, method, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attach = eggg.findAttach(classWrap, this, method, fieldWrap.getAttach());
+            this.attach = eggg.findDigest(classWrap, this, method, fieldWrap.getAttach());
         }
 
         this.alias = eggg.findAlias(attach);

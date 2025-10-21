@@ -20,12 +20,12 @@ import org.noear.eggg.ClassWrap;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * 附件处理器
+ * 提炼处理器
  *
  * @author noear
  * @since 1.0
  */
 @FunctionalInterface
-public interface AttachHandler<Att> {
-    Att apply(ClassWrap classWrap, Object holder, AnnotatedElement source, Att ref);
+public interface DigestHandler<T> {
+    T apply(ClassWrap classWrap, Object holder, AnnotatedElement source, T ref);
 }

@@ -49,7 +49,7 @@ public class FieldWrap implements Property {
         this.isTransient = Modifier.isTransient(field.getModifiers());
 
         this.name = field.getName();
-        this.attach = eggg.findAttach(classWrap, this, field, null);
+        this.attach = eggg.findDigest(classWrap, this, field, null);
         this.alias = eggg.findAlias(attach);
     }
 

@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * 反射处理器（预留原生编译扩展）
+ * 反射处理器（预留的原生编译扩展）
  *
  * @author noear
  * @since 1.0

@@ -16,7 +16,7 @@
 package org.noear.eggg;
 
 import org.noear.eggg.extend.AliasHandler;
-import org.noear.eggg.extend.AttachHandler;
+import org.noear.eggg.extend.DigestHandler;
 import org.noear.eggg.extend.ReflectHandler;
 import org.noear.eggg.extend.ReflectHandlerDefault;
 
@@ -36,10 +36,10 @@ public class Eggg implements ReflectHandler {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
-    private Class<? extends Annotation> creatorClass = null;
-    private AttachHandler attachHandler;
     private AliasHandler aliasHandler;
+    private DigestHandler digestHandler;
     private ReflectHandler reflectHandler = ReflectHandlerDefault.getInstance();
+    private Class<? extends Annotation> creatorClass = null;
 
     public Eggg withCreatorClass(Class<? extends Annotation> creatorClass) {
         Objects.requireNonNull(creatorClass, "creatorClass");
@@ -48,17 +48,17 @@ public class Eggg implements ReflectHandler {
         return this;
     }
 
-    public <Att extends Object> Eggg withAttachHandler(AttachHandler<Att> attachHandler) {
-        Objects.requireNonNull(attachHandler, "attachHandler");
-
-        this.attachHandler = attachHandler;
-        return this;
-    }
-
-    public <Att extends Object> Eggg withAliasHandler(AliasHandler<Att> aliasHandler) {
+    public <T extends Object> Eggg withAliasHandler(AliasHandler<T> aliasHandler) {
         Objects.requireNonNull(aliasHandler, "aliasHandler");
 
         this.aliasHandler = aliasHandler;
+        return this;
+    }
+
+    public <T extends Object> Eggg withDigestHandler(DigestHandler<T> digestHandler) {
+        Objects.requireNonNull(digestHandler, "digestHandler");
+
+        this.digestHandler = digestHandler;
         return this;
     }
 
@@ -97,19 +97,11 @@ public class Eggg implements ReflectHandler {
 
     ///
 
-    public Annotation findCreator(Executable executable) {
-        if (creatorClass == null) {
+    public Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
+        if (digestHandler == null) {
             return null;
         } else {
-            return executable.getAnnotation(creatorClass);
-        }
-    }
-
-    public Object findAttach(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
-        if (attachHandler == null) {
-            return null;
-        } else {
-            return attachHandler.apply(classWrap, holder, source, ref);
+            return digestHandler.apply(classWrap, holder, source, ref);
         }
     }
 
@@ -118,6 +110,14 @@ public class Eggg implements ReflectHandler {
             return null;
         } else {
             return aliasHandler.apply(attachment);
+        }
+    }
+
+    public Annotation findCreator(Executable executable) {
+        if (creatorClass == null) {
+            return null;
+        } else {
+            return executable.getAnnotation(creatorClass);
         }
     }
 
