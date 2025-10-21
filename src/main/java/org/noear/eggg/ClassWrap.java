@@ -204,16 +204,22 @@ public class ClassWrap {
 
     protected void loadDeclaredMethods() {
         for (Method m : eggg.getDeclaredMethods(typeWrap.getType())) {
-            if (m.isBridge()) {
-                continue;
+            if (m.isBridge() == false) {
+                MethodWrap methodWrap = eggg.newMethodWrap(this, m);
+                declaredMethodWraps.add(methodWrap);
             }
-
-            MethodWrap methodWrap = eggg.newMethodWrap(this, m);
-            declaredMethodWraps.add(methodWrap);
         }
 
         for (Method m : eggg.getMethods(typeWrap.getType())) {
-            if (m.getDeclaringClass() == Object.class || m.isBridge()) {
+            if (m.getDeclaringClass() == Object.class) {
+                continue;
+            }
+
+            if(m.isBridge()){
+                m = findActualMethod(typeWrap.getType().getSuperclass(), m);
+            }
+
+            if(m == null){
                 continue;
             }
 
@@ -242,5 +248,25 @@ public class ClassWrap {
                 }
             }
         }
+    }
+
+    private Method findActualMethod(Class<?> clz, Method m1) {
+        try {
+            m1 = clz.getMethod(m1.getName(), m1.getParameterTypes());
+
+            if (m1 != null) {
+                //如果有找到
+                if (m1.isBridge()) {
+                    //如果还是桥接方法
+                    return findActualMethod(clz.getSuperclass(), m1);
+                } else {
+                    //如果不是桥接方法
+                    return m1;
+                }
+            }
+        } catch (NoSuchMethodException ignore) {
+        }
+
+        return null;
     }
 }
