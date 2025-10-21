@@ -17,6 +17,8 @@ package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -37,7 +39,8 @@ public class ClassWrap {
     private final Map<String, FieldWrap> fieldWrapsForName = new LinkedHashMap<>();
     private final Map<String, FieldWrap> fieldWrapsForAlias = new LinkedHashMap<>();
 
-    private final Map<String, MethodWrap> methodWrapsForName = new LinkedHashMap<>();
+    private final List<MethodWrap> publicMethodWraps = new ArrayList<>();
+    private final List<MethodWrap> declaredMethodWraps = new ArrayList<>();
 
     private final Map<String, PropertyWrap> propertyWrapsForName = new LinkedHashMap<>();
     private final Map<String, PropertyWrap> propertyWrapsForAlias = new LinkedHashMap<>();
@@ -54,6 +57,7 @@ public class ClassWrap {
         this.eggg = eggg;
         this.typeWrap = typeWrap;
 
+        //顺序不要变
         loadDeclaredFields();
         loadDeclaredMethods();
         loadConstr();
@@ -96,6 +100,14 @@ public class ClassWrap {
         return constrWrap;
     }
 
+    public List<MethodWrap> getPublicMethodWraps() {
+        return publicMethodWraps;
+    }
+
+    public List<MethodWrap> getDeclaredMethodWraps() {
+        return declaredMethodWraps;
+    }
+
     public Map<String, FieldWrap> getFieldWrapsForName() {
         return fieldWrapsForName;
     }
@@ -110,14 +122,6 @@ public class ClassWrap {
 
     public FieldWrap getFieldWrapByAlias(String alias) {
         return fieldWrapsForAlias.get(alias);
-    }
-
-    public Map<String, MethodWrap> getMethodWrapsForName() {
-        return methodWrapsForName;
-    }
-
-    public MethodWrap getMethodWrapByName(String name) {
-        return methodWrapsForName.get(name);
     }
 
     public Map<String, PropertyWrap> getPropertyWrapsForName() {
@@ -141,11 +145,11 @@ public class ClassWrap {
     protected void loadConstr() {
         if (typeWrap.getType() != Object.class) {
             //先从静态方法找
-            for (Map.Entry<String, MethodWrap> m1 : methodWrapsForName.entrySet()) {
-                if (m1.getValue().isStatic() && m1.getValue().getMethod().isBridge() == false) {
-                    constrAnno = eggg.findCreator(m1.getValue().getMethod());
+            for (MethodWrap mw : declaredMethodWraps) {
+                if (mw.isStatic()) {
+                    constrAnno = eggg.findCreator(mw.getMethod());
                     if (constrAnno != null) {
-                        constr = m1.getValue().getMethod();
+                        constr = mw.getMethod();
                         break;
                     }
                 }
@@ -200,8 +204,12 @@ public class ClassWrap {
 
     protected void loadDeclaredMethods() {
         for (Method m : eggg.getDeclaredMethods(typeWrap.getType())) {
+            if (m.isBridge()) {
+                continue;
+            }
+
             MethodWrap methodWrap = eggg.newMethodWrap(this, m);
-            methodWrapsForName.put(m.getName(), methodWrap);
+            declaredMethodWraps.add(methodWrap);
         }
 
         for (Method m : eggg.getMethods(typeWrap.getType())) {
@@ -210,7 +218,7 @@ public class ClassWrap {
             }
 
             MethodWrap methodWrap = eggg.newMethodWrap(this, m);
-            methodWrapsForName.put(m.getName(), methodWrap);
+            publicMethodWraps.add(methodWrap);
 
             if (methodWrap.isStatic() == false) {
                 if (m.getName().length() > 3) {
