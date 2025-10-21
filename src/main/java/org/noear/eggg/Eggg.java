@@ -105,11 +105,15 @@ public class Eggg implements ReflectHandler {
         }
     }
 
-    public String findAlias(Object attachment) {
+    public String findAlias(Object digest) {
+        if (digest == null) {
+            return null;
+        }
+
         if (aliasHandler == null) {
             return null;
         } else {
-            return aliasHandler.apply(attachment);
+            return aliasHandler.apply(digest);
         }
     }
 

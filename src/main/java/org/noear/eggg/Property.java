@@ -28,7 +28,7 @@ public interface Property {
     }
 
     /**
-     *
+     * 是临时的（不需要持久化）
      */
     boolean isTransient();
 
@@ -48,11 +48,6 @@ public interface Property {
     TypeWrap getTypeWrap();
 
     /**
-     * 附件
-     */
-    <Att extends Object> Att getAttach();
-
-    /**
      * 名字
      */
     String getName();
@@ -61,4 +56,9 @@ public interface Property {
      * 别名
      */
     String getAlias();
+
+    /**
+     * 提炼物
+     */
+    <T extends Object> T getDigest();
 }

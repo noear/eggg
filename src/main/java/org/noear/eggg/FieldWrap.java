@@ -32,8 +32,7 @@ public class FieldWrap implements Property {
 
     private final String name;
     private final String alias;
-
-    private final Object attach;
+    private final Object digest;
 
     private boolean isFinal;
     private boolean isTransient;
@@ -49,8 +48,8 @@ public class FieldWrap implements Property {
         this.isTransient = Modifier.isTransient(field.getModifiers());
 
         this.name = field.getName();
-        this.attach = eggg.findDigest(classWrap, this, field, null);
-        this.alias = eggg.findAlias(attach);
+        this.digest = eggg.findDigest(classWrap, this, field, null);
+        this.alias = eggg.findAlias(digest);
     }
 
     public Field getField() {
@@ -92,11 +91,6 @@ public class FieldWrap implements Property {
     }
 
     @Override
-    public <Att extends Object> Att getAttach() {
-        return (Att) attach;
-    }
-
-    @Override
     public String getName() {
         return name;
     }
@@ -104,6 +98,11 @@ public class FieldWrap implements Property {
     @Override
     public String getAlias() {
         return alias;
+    }
+
+    @Override
+    public <T extends Object> T getDigest() {
+        return (T) digest;
     }
 
     @Override

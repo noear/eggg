@@ -34,7 +34,7 @@ public class PropertyMethodWrap implements Property {
 
     private final String name;
     private final String alias;
-    private final Object attach;
+    private final Object digest;
 
     private final boolean isTransient;
     private final boolean isReadMode;
@@ -64,13 +64,13 @@ public class PropertyMethodWrap implements Property {
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attach = eggg.findDigest(classWrap, this, method, null);
+            this.digest = eggg.findDigest(classWrap, this, method, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attach = eggg.findDigest(classWrap, this, method, fieldWrap.getAttach());
+            this.digest = eggg.findDigest(classWrap, this, method, fieldWrap.getDigest());
         }
 
-        this.alias = eggg.findAlias(attach);
+        this.alias = eggg.findAlias(digest);
     }
 
     @Override
@@ -126,8 +126,8 @@ public class PropertyMethodWrap implements Property {
     }
 
     @Override
-    public <Att extends Object> Att getAttach() {
-        return (Att) attach;
+    public <T extends Object> T getDigest() {
+        return (T) digest;
     }
 
     @Override
