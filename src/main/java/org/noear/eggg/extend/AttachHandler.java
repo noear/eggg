@@ -25,6 +25,7 @@ import java.lang.reflect.AnnotatedElement;
  * @author noear
  * @since 1.0
  */
+@FunctionalInterface
 public interface AttachHandler<Att> {
     Att apply(ClassWrap classWrap, Object holder, AnnotatedElement source, Att ref);
 }
