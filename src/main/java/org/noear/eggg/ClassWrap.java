@@ -35,6 +35,7 @@ public class ClassWrap {
     private ConstrWrap constrWrap;
 
     private final Map<String, FieldWrap> fieldWrapsForName = new LinkedHashMap<>();
+    private final Map<String, FieldWrap> fieldWrapsForAlias = new LinkedHashMap<>();
 
     private final Map<String, MethodWrap> methodWrapsForName = new LinkedHashMap<>();
 
@@ -59,6 +60,10 @@ public class ClassWrap {
 
         this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
         this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
+
+        for (Map.Entry<String, FieldWrap> entry : fieldWrapsForName.entrySet()) {
+            fieldWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
+        }
 
         for (Map.Entry<String, PropertyWrap> entry : propertyWrapsForName.entrySet()) {
             propertyWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
@@ -99,6 +104,14 @@ public class ClassWrap {
         return fieldWrapsForName.get(name);
     }
 
+    public Map<String, FieldWrap> getFieldWrapsForAlias() {
+        return fieldWrapsForAlias;
+    }
+
+    public FieldWrap getFieldWrapByAlias(String alias) {
+        return fieldWrapsForAlias.get(alias);
+    }
+
     public Map<String, MethodWrap> getMethodWrapsForName() {
         return methodWrapsForName;
     }
@@ -128,11 +141,11 @@ public class ClassWrap {
     protected void loadConstr() {
         if (typeWrap.getType() != Object.class) {
             //先从静态方法找
-            for (Method m1 : eggg.getDeclaredMethods(typeWrap.getType())) {
-                if (Modifier.isStatic(m1.getModifiers()) && m1.isBridge() == false) {
-                    constrAnno = eggg.findCreator(m1);
+            for (Map.Entry<String, MethodWrap> m1 : methodWrapsForName.entrySet()) {
+                if (m1.getValue().isStatic() && m1.getValue().getMethod().isBridge() == false) {
+                    constrAnno = eggg.findCreator(m1.getValue().getMethod());
                     if (constrAnno != null) {
-                        constr = m1;
+                        constr = m1.getValue().getMethod();
                         break;
                     }
                 }

@@ -32,7 +32,7 @@ public class MethodWrap {
 
     private boolean isFinal;
     private boolean isStatic;
-    private boolean isPrivate;
+    private boolean isPublic;
     private boolean isDeclared;
 
     private final Map<String, ParamWrap> paramAliasMap;
@@ -58,7 +58,7 @@ public class MethodWrap {
 
         this.isFinal = Modifier.isFinal(method.getModifiers());
         this.isStatic = Modifier.isStatic(method.getModifiers());
-        this.isPrivate = Modifier.isPrivate(method.getModifiers());
+        this.isPublic = Modifier.isPublic(method.getModifiers());
         this.isDeclared = method.getDeclaringClass() == classWrap.getTypeWrap().getType();
 
         paramAliasMap = new LinkedHashMap<>();
@@ -95,10 +95,10 @@ public class MethodWrap {
     }
 
     /**
-     * 私有的
+     * 公有的
      */
-    public boolean isPrivate() {
-        return isPrivate;
+    public boolean isPublic() {
+        return isPublic;
     }
 
     /**
