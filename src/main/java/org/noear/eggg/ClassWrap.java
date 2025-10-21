@@ -132,6 +132,10 @@ public class ClassWrap<EA extends Object> {
         return fieldNameMap;
     }
 
+    public FieldWrap<EA> getFieldByName(String name) {
+        return fieldNameMap.get(name);
+    }
+
     public Map<String, PropertyHub<EA>> getPropertyNameMap() {
         return propertyNameMap;
     }

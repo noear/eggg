@@ -30,15 +30,18 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     private final Method property;
     private final TypeWrap propertyTypeWrap;
 
+    private final FieldWrap<EA>  fieldWrap;
+
     private final String name;
     private final String alias;
     private final EA attachment;
 
+    private final boolean isTransient;
     private final boolean isReadMode;
 
     private final Eggg eggg;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap owner, Method property) {
+    public PropertyMethodWrap(Eggg eggg, ClassWrap<EA> owner, Method property) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(owner, "owner");
         Objects.requireNonNull(property, "property");
@@ -59,8 +62,21 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
         String nameTmp = property.getName().substring(3);
         this.name = nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
 
+        this.fieldWrap = owner.getFieldByName(this.name);
+
         this.attachment = (EA) eggg.findAttachment(owner, property);
         this.alias = eggg.findAlias(attachment);
+
+        if (fieldWrap == null) {
+            isTransient = false;
+        } else {
+            isTransient = fieldWrap.isTransient();
+        }
+    }
+
+    @Override
+    public boolean isTransient() {
+        return false;
     }
 
     @Override
@@ -92,6 +108,9 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
         return propertyTypeWrap;
     }
 
+    public FieldWrap<EA> getFieldWrap() {
+        return fieldWrap;
+    }
 
     @Override
     public String getName() {

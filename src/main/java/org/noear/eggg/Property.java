@@ -23,6 +23,11 @@ package org.noear.eggg;
  */
 public interface Property<EA extends Object> {
     /**
+     *
+     */
+    boolean isTransient();
+
+    /**
      * 获取值
      */
     Object getValue(Object target) throws Exception;

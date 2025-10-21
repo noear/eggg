@@ -61,6 +61,7 @@ public class FieldWrap<EA extends Object> implements Property<EA> {
         return isFinal;
     }
 
+    @Override
     public boolean isTransient() {
         return isTransient;
     }
