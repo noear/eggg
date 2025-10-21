@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2025 noear.org and authors
+ * Copyright 2025 ~ noear.org and authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ import java.util.function.Function;
  * @since 1.0
  */
 public class Eggg<EA extends Object> {
-    private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
+    private final Map<Type, TypeWrap<EA>> typeWrapLib = new ConcurrentHashMap<>();
+    private final Map<TypeWrap<EA>, ClassWrap<EA>> classWrapLib = new ConcurrentHashMap<>();
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
     private AttachmentHandler<EA> attachmentHandler;
@@ -103,7 +104,11 @@ public class Eggg<EA extends Object> {
 
     /// //
 
-    public TypeWrap getTypeWrap(Type type) {
+    public TypeWrap<EA> getTypeWrap(Type type) {
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
+    }
+
+    public ClassWrap<EA> getClassWrap(TypeWrap<EA> typeWrap) {
+        return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
     }
 }

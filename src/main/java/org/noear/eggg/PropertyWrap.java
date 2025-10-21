@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2025 noear.org and authors
+ * Copyright 2025 ~ noear.org and authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public class PropertyHub<EA extends Object> {
+public class PropertyWrap<EA extends Object> {
     private final String name;
     private String alias;
 
@@ -31,7 +31,7 @@ public class PropertyHub<EA extends Object> {
     private PropertyMethodWrap<EA> getterWrap;
     private PropertyMethodWrap<EA> setterWrap;
 
-    public PropertyHub(String name) {
+    public PropertyWrap(String name) {
         this.name = name;
     }
 

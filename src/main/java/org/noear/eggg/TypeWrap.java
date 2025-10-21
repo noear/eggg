@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2025 noear.org and authors
+ * Copyright 2025 ~ noear.org and authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class TypeWrap<EA extends Object> {
     private ClassWrap<EA> classWrap;
     public ClassWrap<EA> getClassWrap() {
         if (classWrap == null) {
-            classWrap = eggg.newClassWrap(this);
+            classWrap = eggg.getClassWrap(this);
         }
 
         return classWrap;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2005-2025 noear.org and authors
+ * Copyright 2025 ~ noear.org and authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
         }
 
         this.name = Property.resolvePropertyName(property.getName());
-        this.fieldWrap = owner.getFieldByName(this.name);
+        this.fieldWrap = owner.getFieldWrapByName(this.name);
 
         if (fieldWrap == null) {
             this.isTransient = false;
