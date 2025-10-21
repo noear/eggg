@@ -35,6 +35,10 @@ public class ClassWrap {
     private ConstrWrap constrWrap;
 
     private final Map<String, FieldWrap> fieldWrapsForName = new LinkedHashMap<>();
+    private final Map<String, FieldWrap> staticFieldWrapsForName = new LinkedHashMap<>();
+
+    private final Map<String, MethodWrap> methodWrapsForName = new LinkedHashMap<>();
+
     private final Map<String, PropertyWrap> propertyWrapsForName = new LinkedHashMap<>();
     private final Map<String, PropertyWrap> propertyWrapsForAlias = new LinkedHashMap<>();
 
@@ -96,8 +100,28 @@ public class ClassWrap {
         return fieldWrapsForName.get(name);
     }
 
+    public Map<String, FieldWrap> getStaticFieldWrapsForName() {
+        return staticFieldWrapsForName;
+    }
+
+    public FieldWrap getStaticFieldWrapByName(String name) {
+        return staticFieldWrapsForName.get(name);
+    }
+
+    public Map<String, MethodWrap> getMethodWrapsForName() {
+        return methodWrapsForName;
+    }
+
+    public MethodWrap getMethodWrapByName(String name) {
+        return methodWrapsForName.get(name);
+    }
+
     public Map<String, PropertyWrap> getPropertyWrapsForName() {
         return propertyWrapsForName;
+    }
+
+    public PropertyWrap getPropertyWrapByName(String name) {
+        return propertyWrapsForName.get(name);
     }
 
     public Map<String, PropertyWrap> getPropertyWrapsForAlias() {
@@ -106,10 +130,6 @@ public class ClassWrap {
 
     public PropertyWrap getPropertyWrapByAlias(String alias) {
         return propertyWrapsForAlias.get(alias);
-    }
-
-    public PropertyWrap getPropertyWrapByName(String name) {
-        return propertyWrapsForName.get(name);
     }
 
     /// /////////////////
@@ -160,12 +180,17 @@ public class ClassWrap {
 
                 FieldWrap fieldWrap = eggg.newFieldWrap(this, f);
 
-                //如果全是只读，则
-                likeRecordClass = likeRecordClass && fieldWrap.isFinal();
+                if (Modifier.isStatic(f.getModifiers())) {
+                    //静态的
+                    staticFieldWrapsForName.put(f.getName(), fieldWrap);
+                } else {
+                    //如果全是只读，则
+                    likeRecordClass = likeRecordClass && fieldWrap.isFinal();
 
-                fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
-                propertyWrapsForName.computeIfAbsent(fieldWrap.getName(), k -> new PropertyWrap(k))
-                        .setFieldWrap(fieldWrap);
+                    fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
+                    propertyWrapsForName.computeIfAbsent(fieldWrap.getName(), k -> new PropertyWrap(k))
+                            .setFieldWrap(fieldWrap);
+                }
             }
             c = c.getSuperclass();
         }
@@ -176,6 +201,8 @@ public class ClassWrap {
             if (m.getDeclaringClass() == Object.class) {
                 continue;
             }
+
+            methodWrapsForName.put(m.getName(), eggg.newMethodWrap(this, m));
 
             if (m.getName().length() > 3) {
                 if (m.getReturnType() == void.class && m.getParameterCount() == 1) {

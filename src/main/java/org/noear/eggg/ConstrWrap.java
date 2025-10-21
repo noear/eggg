@@ -87,4 +87,9 @@ public class ConstrWrap {
             return (T) ((Method) constr).invoke(args);
         }
     }
+
+    @Override
+    public String toString() {
+        return constr.toString();
+    }
 }

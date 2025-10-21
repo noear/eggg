@@ -78,6 +78,10 @@ public class Eggg implements ReflectHandler {
         return new FieldWrap(this, classWrap, field);
     }
 
+    public MethodWrap newMethodWrap(ClassWrap classWrap, Method method) {
+        return new MethodWrap(this, classWrap, method);
+    }
+
     public ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
         return new ConstrWrap(this, classWrap, constr, constrAnno);
     }
