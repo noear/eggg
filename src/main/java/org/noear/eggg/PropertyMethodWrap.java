@@ -26,12 +26,12 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class PropertyMethodWrap<A> implements Property<A> {
+public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     private final Method property;
     private final TypeWrap propertyTypeWrap;
 
     private final String name;
-    private final A attachment;
+    private final EA attachment;
 
     private final boolean isReadMode;
 
@@ -58,7 +58,7 @@ public class PropertyMethodWrap<A> implements Property<A> {
         String nameTmp = property.getName().substring(3);
         this.name = nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
 
-        this.attachment = (A) eggg.findAttachment(owner, property);
+        this.attachment = (EA) eggg.findAttachment(owner, property);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class PropertyMethodWrap<A> implements Property<A> {
     }
 
     @Override
-    public A getAttachment() {
+    public EA getAttachment() {
         return attachment;
     }
 

@@ -11,7 +11,7 @@ public class EgggDemo {
     public void case1() {
         TypeWrap typeWrap = eggg.getTypeWrap(EgggDemo.class);
 
-        ClassWrap classWrap = eggg.getClassWrap(typeWrap);
+        ClassWrap classWrap = typeWrap.getClassWrap();
 
         classWrap.getFieldWraps();
     }

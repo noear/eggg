@@ -21,7 +21,7 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public interface Property<EA> {
+public interface Property<EA extends Object> {
     /**
      * 获取值
      */

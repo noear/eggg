@@ -26,12 +26,12 @@ import java.util.Map;
  * @author noear
  * @since 1.0
  */
-public class FieldWrap<A> implements Property<A> {
+public class FieldWrap<EA extends Object> implements Property<EA> {
     private final Field field;
     private final TypeWrap fieldTypeWrap;
 
     private final String name;
-    private final A attachment;
+    private final EA attachment;
 
     private boolean isFinal;
     private boolean isTransient;
@@ -47,7 +47,7 @@ public class FieldWrap<A> implements Property<A> {
         this.isTransient = Modifier.isTransient(field.getModifiers());
 
         this.name = field.getName();
-        this.attachment = (A) eggg.findAttachment(classWrap, field);
+        this.attachment = (EA) eggg.findAttachment(classWrap, field);
     }
 
     public Field getField() {
@@ -88,7 +88,7 @@ public class FieldWrap<A> implements Property<A> {
     }
 
     @Override
-    public A getAttachment() {
+    public EA getAttachment() {
         return attachment;
     }
 

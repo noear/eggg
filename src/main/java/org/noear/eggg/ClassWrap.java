@@ -27,7 +27,7 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class ClassWrap<EA> {
+public class ClassWrap<EA extends Object> {
     protected final TypeWrap typeWrap;
     protected final Map<String, FieldWrap<EA>> fieldWraps = new LinkedHashMap<>();
     protected final Map<String, PropertyHub<EA>> propertyWraps = new LinkedHashMap<>();

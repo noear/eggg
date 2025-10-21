@@ -22,7 +22,7 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public class PropertyHub<EA> {
+public class PropertyHub<EA extends Object> {
     private final String name;
 
     private FieldWrap<EA> fieldWrap;

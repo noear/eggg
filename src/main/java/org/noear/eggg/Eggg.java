@@ -27,9 +27,8 @@ import java.util.function.BiFunction;
  * @author noear
  * @since 1.0
  */
-public class Eggg<EA> {
+public class Eggg<EA extends Object> {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
-    private final Map<Type, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
     private BiFunction<ClassWrap, AnnotatedElement, EA> attachmentHandler;
@@ -44,11 +43,11 @@ public class Eggg<EA> {
         return this;
     }
 
-    public TypeWrap newTypeWrap(Type type) {
+    public TypeWrap<EA> newTypeWrap(Type type) {
         return new TypeWrap(this, type);
     }
 
-    public ClassWrap newClassWrap(TypeWrap typeWrap) {
+    public ClassWrap<EA> newClassWrap(TypeWrap typeWrap) {
         return new ClassWrap(this, typeWrap);
     }
 
@@ -56,7 +55,7 @@ public class Eggg<EA> {
         return new FieldWrap(this, classWrap, field);
     }
 
-    public ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
+    public ConstrWrap<EA> newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
         return new ConstrWrap(this, classWrap, constr, constrAnno);
     }
 
@@ -91,9 +90,5 @@ public class Eggg<EA> {
 
     public TypeWrap getTypeWrap(Type type) {
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
-    }
-
-    public ClassWrap getClassWrap(TypeWrap typeWrap) {
-        return classWrapLib.computeIfAbsent(typeWrap.getGenericType(), t -> newClassWrap(typeWrap));
     }
 }

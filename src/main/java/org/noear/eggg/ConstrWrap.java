@@ -26,7 +26,7 @@ import java.util.List;
  * @author noear
  * @since 1.0
  */
-public class ConstrWrap<Att> {
+public class ConstrWrap<Att extends Object> {
     private final Executable constr;
 
     //private final Map<String, ParamWrap> paramNodeWraps;
