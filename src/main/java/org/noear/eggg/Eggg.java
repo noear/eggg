@@ -18,6 +18,7 @@ package org.noear.eggg;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -26,28 +27,44 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 1.0
  */
-public class Eggg {
+public class Eggg implements ReflectHandler {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
     private AttachmentHandler attachmentHandler;
     private AliasHandler aliasHandler;
+    private ReflectHandler reflectHandler = ReflectHandlerDefault.getInstance();
 
     public Eggg withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
+        Objects.requireNonNull(creatorAnnotationClass, "creatorAnnotationClass");
+
         this.creatorAnnotationClass = creatorAnnotationClass;
         return this;
     }
 
     public <Att extends Object> Eggg withAttachmentHandler(AttachmentHandler<Att> attachmentHandler) {
+        Objects.requireNonNull(attachmentHandler, "attachmentHandler");
+
         this.attachmentHandler = attachmentHandler;
         return this;
     }
 
     public <Att extends Object> Eggg withAliasHandler(AliasHandler<Att> aliasHandler) {
+        Objects.requireNonNull(aliasHandler, "aliasHandler");
+
         this.aliasHandler = aliasHandler;
         return this;
     }
+
+    public Eggg withReflectHandler(ReflectHandler reflectHandler) {
+        Objects.requireNonNull(reflectHandler, "reflectHandler");
+
+        this.reflectHandler = reflectHandler;
+        return this;
+    }
+
+    ///
 
     public TypeWrap newTypeWrap(Type type) {
         return new TypeWrap(this, type);
@@ -73,8 +90,7 @@ public class Eggg {
         return new ParamWrap(this, classWrap, param);
     }
 
-
-    /// //////////////
+    ///
 
     public Annotation findCreator(Executable executable) {
         if (creatorAnnotationClass == null) {
@@ -100,7 +116,7 @@ public class Eggg {
         }
     }
 
-    /// //
+    ///
 
     public TypeWrap getTypeWrap(Type type) {
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
@@ -108,5 +124,22 @@ public class Eggg {
 
     public ClassWrap getClassWrap(TypeWrap typeWrap) {
         return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
+    }
+
+    ///
+
+    @Override
+    public Field[] getDeclaredFields(Class<?> clazz) {
+        return reflectHandler.getDeclaredFields(clazz);
+    }
+
+    @Override
+    public Method[] getDeclaredMethods(Class<?> clazz) {
+        return reflectHandler.getDeclaredMethods(clazz);
+    }
+
+    @Override
+    public Method[] getMethods(Class<?> clazz) {
+        return reflectHandler.getMethods(clazz);
     }
 }

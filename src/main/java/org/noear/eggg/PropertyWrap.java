@@ -15,7 +15,6 @@
  */
 package org.noear.eggg;
 
-
 /**
  * 属性集成
  *

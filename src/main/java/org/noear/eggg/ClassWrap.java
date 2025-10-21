@@ -117,7 +117,7 @@ public class ClassWrap {
     protected void loadConstr() {
         if (typeWrap.getType() != Object.class) {
             //先从静态方法找
-            for (Method m1 : typeWrap.getType().getDeclaredMethods()) {
+            for (Method m1 : eggg.getDeclaredMethods(typeWrap.getType())) {
                 if (Modifier.isStatic(m1.getModifiers())) {
                     constrAnno = eggg.findCreator(m1);
                     if (constrAnno != null) {
@@ -153,7 +153,7 @@ public class ClassWrap {
         Class<?> c = typeWrap.getType();
 
         while (c != null) {
-            for (Field f : c.getDeclaredFields()) {
+            for (Field f : eggg.getDeclaredFields(c)) {
                 if (Modifier.isStatic(f.getModifiers())) {
                     continue;
                 }
@@ -172,7 +172,7 @@ public class ClassWrap {
     }
 
     protected void loadDeclaredPropertys() {
-        for (Method m : typeWrap.getType().getMethods()) {
+        for (Method m : eggg.getMethods(typeWrap.getType())) {
             if (m.getDeclaringClass() == Object.class) {
                 continue;
             }
