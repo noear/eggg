@@ -25,7 +25,7 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ConstrWrap<Att extends Object> {
+public class ConstrWrap<Att> {
     private final Executable constr;
 
     private final Map<String, ParamWrap<Att>> paramAliasMap;

@@ -27,16 +27,16 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class ClassWrap<EA extends Object> {
+public class ClassWrap<Att> {
     private final TypeWrap typeWrap;
 
     private Executable constr;
     private Annotation constrAnno;
     private ConstrWrap constrWrap;
 
-    private final Map<String, FieldWrap<EA>> fieldWrapsForName = new LinkedHashMap<>();
-    private final Map<String, PropertyWrap<EA>> propertyWrapsForName = new LinkedHashMap<>();
-    private final Map<String, PropertyWrap<EA>> propertyWrapsForAlias = new LinkedHashMap<>();
+    private final Map<String, FieldWrap<Att>> fieldWrapsForName = new LinkedHashMap<>();
+    private final Map<String, PropertyWrap<Att>> propertyWrapsForName = new LinkedHashMap<>();
+    private final Map<String, PropertyWrap<Att>> propertyWrapsForAlias = new LinkedHashMap<>();
 
     private boolean likeRecordClass = true;
     private boolean realRecordClass;
@@ -57,7 +57,7 @@ public class ClassWrap<EA extends Object> {
         this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
         this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
 
-        for (Map.Entry<String, PropertyWrap<EA>> entry : propertyWrapsForName.entrySet()) {
+        for (Map.Entry<String, PropertyWrap<Att>> entry : propertyWrapsForName.entrySet()) {
             propertyWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
@@ -88,27 +88,27 @@ public class ClassWrap<EA extends Object> {
         return constrWrap;
     }
 
-    public Map<String, FieldWrap<EA>> getFieldWrapsForName() {
+    public Map<String, FieldWrap<Att>> getFieldWrapsForName() {
         return fieldWrapsForName;
     }
 
-    public FieldWrap<EA> getFieldWrapByName(String name) {
+    public FieldWrap<Att> getFieldWrapByName(String name) {
         return fieldWrapsForName.get(name);
     }
 
-    public Map<String, PropertyWrap<EA>> getPropertyWrapsForName() {
+    public Map<String, PropertyWrap<Att>> getPropertyWrapsForName() {
         return propertyWrapsForName;
     }
 
-    public Map<String, PropertyWrap<EA>> getPropertyWrapsForAlias() {
+    public Map<String, PropertyWrap<Att>> getPropertyWrapsForAlias() {
         return propertyWrapsForAlias;
     }
 
-    public PropertyWrap<EA> getPropertyWrapByAlias(String alias) {
+    public PropertyWrap<Att> getPropertyWrapByAlias(String alias) {
         return propertyWrapsForAlias.get(alias);
     }
 
-    public PropertyWrap<EA> getPropertyWrapByName(String name) {
+    public PropertyWrap<Att> getPropertyWrapByName(String name) {
         return propertyWrapsForName.get(name);
     }
 

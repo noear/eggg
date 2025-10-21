@@ -22,14 +22,14 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public class PropertyWrap<EA extends Object> {
+public class PropertyWrap<Att> {
     private final String name;
     private String alias;
 
 
-    private FieldWrap<EA> fieldWrap;
-    private PropertyMethodWrap<EA> getterWrap;
-    private PropertyMethodWrap<EA> setterWrap;
+    private FieldWrap<Att> fieldWrap;
+    private PropertyMethodWrap<Att> getterWrap;
+    private PropertyMethodWrap<Att> setterWrap;
 
     public PropertyWrap(String name) {
         this.name = name;
@@ -43,31 +43,31 @@ public class PropertyWrap<EA extends Object> {
         return alias;
     }
 
-    public FieldWrap<EA> getFieldWrap() {
+    public FieldWrap<Att> getFieldWrap() {
         return fieldWrap;
     }
 
-    public PropertyMethodWrap<EA> getGetterWrap() {
+    public PropertyMethodWrap<Att> getGetterWrap() {
         return getterWrap;
     }
 
-    public PropertyMethodWrap<EA> getSetterWrap() {
+    public PropertyMethodWrap<Att> getSetterWrap() {
         return setterWrap;
     }
 
     /// //////////
 
-    protected void setFieldWrap(FieldWrap<EA> f) {
+    protected void setFieldWrap(FieldWrap<Att> f) {
         this.fieldWrap = f;
         this.alias = f.getAlias();
     }
 
-    protected void setGetterWrap(PropertyMethodWrap<EA> g) {
+    protected void setGetterWrap(PropertyMethodWrap<Att> g) {
         this.getterWrap = g;
         this.alias = g.getAlias();
     }
 
-    protected void setSetterWrap(PropertyMethodWrap<EA> s) {
+    protected void setSetterWrap(PropertyMethodWrap<Att> s) {
         this.setterWrap = s;
         this.alias = s.getAlias();
     }

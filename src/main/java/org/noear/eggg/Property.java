@@ -21,7 +21,7 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public interface Property<EA extends Object> {
+public interface Property<Att> {
     static String resolvePropertyName(String methodName) {
         String nameTmp = methodName.substring(3);
         return nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
@@ -50,7 +50,7 @@ public interface Property<EA extends Object> {
     /**
      * 附件
      */
-    EA getAttachment();
+    Att getAttachment();
 
     /**
      * 名字

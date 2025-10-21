@@ -26,22 +26,22 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
+public class PropertyMethodWrap<Att> implements Property<Att> {
     private final Method property;
     private final TypeWrap propertyTypeWrap;
 
-    private final FieldWrap<EA> fieldWrap;
+    private final FieldWrap<Att> fieldWrap;
 
     private final String name;
     private final String alias;
-    private final EA attachment;
+    private final Att attachment;
 
     private final boolean isTransient;
     private final boolean isReadMode;
 
     private final Eggg eggg;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap<EA> owner, Method property) {
+    public PropertyMethodWrap(Eggg eggg, ClassWrap<Att> owner, Method property) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(owner, "owner");
         Objects.requireNonNull(property, "property");
@@ -64,10 +64,10 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
 
         if (fieldWrap == null) {
             this.isTransient = false;
-            this.attachment = (EA) eggg.findAttachment(owner, property, null);
+            this.attachment = (Att) eggg.findAttachment(owner, property, null);
         } else {
             this.isTransient = fieldWrap.isTransient();
-            this.attachment = (EA) eggg.findAttachment(owner, property, fieldWrap.getAttachment());
+            this.attachment = (Att) eggg.findAttachment(owner, property, fieldWrap.getAttachment());
         }
 
         this.alias = eggg.findAlias(attachment);
@@ -107,7 +107,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
         return propertyTypeWrap;
     }
 
-    public FieldWrap<EA> getFieldWrap() {
+    public FieldWrap<Att> getFieldWrap() {
         return fieldWrap;
     }
 
@@ -122,7 +122,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     }
 
     @Override
-    public EA getAttachment() {
+    public Att getAttachment() {
         return attachment;
     }
 

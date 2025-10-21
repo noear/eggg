@@ -25,7 +25,7 @@ import java.util.Map;
  * @author noear
  * @since 1.0
  */
-public class TypeWrap<EA extends Object> {
+public class TypeWrap<Att> {
     private final Type genericType;
     private final Map<String, Type> genericInfo;
 
@@ -65,8 +65,8 @@ public class TypeWrap<EA extends Object> {
         }
     }
 
-    private ClassWrap<EA> classWrap;
-    public ClassWrap<EA> getClassWrap() {
+    private ClassWrap<Att> classWrap;
+    public ClassWrap<Att> getClassWrap() {
         if (classWrap == null) {
             classWrap = eggg.getClassWrap(this);
         }
