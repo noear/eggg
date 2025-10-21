@@ -46,4 +46,9 @@ public interface Property<EA extends Object> {
      * 名字
      */
     String getName();
+
+    /**
+     * 别名
+     */
+    String getAlias();
 }

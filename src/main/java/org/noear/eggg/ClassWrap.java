@@ -29,8 +29,10 @@ import java.util.Objects;
  */
 public class ClassWrap<EA extends Object> {
     protected final TypeWrap typeWrap;
-    protected final Map<String, FieldWrap<EA>> fieldWraps = new LinkedHashMap<>();
-    protected final Map<String, PropertyHub<EA>> propertyWraps = new LinkedHashMap<>();
+
+    protected final Map<String, FieldWrap<EA>> fieldNameMap = new LinkedHashMap<>();
+    protected final Map<String, PropertyHub<EA>> propertyNameMap = new LinkedHashMap<>();
+    protected final Map<String, PropertyHub<EA>> propertyAliasMap = new LinkedHashMap<>();
 
     protected boolean likeRecordClass = true;
     protected boolean realRecordClass;
@@ -49,7 +51,11 @@ public class ClassWrap<EA extends Object> {
         loadDeclaredPropertys();
 
         this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
-        this.likeRecordClass = likeRecordClass && fieldWraps.size() > 0;
+        this.likeRecordClass = likeRecordClass && fieldNameMap.size() > 0;
+
+        for (Map.Entry<String, PropertyHub<EA>> entry : propertyNameMap.entrySet()) {
+            propertyAliasMap.put(entry.getValue().getAlias(), entry.getValue());
+        }
     }
 
 
@@ -122,12 +128,24 @@ public class ClassWrap<EA extends Object> {
         return typeWrap;
     }
 
-    public Map<String, FieldWrap<EA>> getFieldWraps() {
-        return fieldWraps;
+    public Map<String, FieldWrap<EA>> getFieldNameMap() {
+        return fieldNameMap;
     }
 
-    public Map<String, PropertyHub<EA>> getPropertyWraps() {
-        return propertyWraps;
+    public Map<String, PropertyHub<EA>> getPropertyNameMap() {
+        return propertyNameMap;
+    }
+
+    public Map<String, PropertyHub<EA>> getPropertyAliasMap() {
+        return propertyAliasMap;
+    }
+
+    public PropertyHub<EA> getPropertyByAlias(String alias) {
+        return propertyAliasMap.get(alias);
+    }
+
+    public PropertyHub<EA> getPropertyByName(String name) {
+        return propertyNameMap.get(name);
     }
 
     protected void loadDeclaredFields() {
@@ -144,8 +162,8 @@ public class ClassWrap<EA extends Object> {
                 //如果全是只读，则
                 likeRecordClass = likeRecordClass && fieldWrap.isFinal();
 
-                fieldWraps.put(fieldWrap.getName(), fieldWrap);
-                propertyWraps.computeIfAbsent(fieldWrap.getName(), k -> new PropertyHub(k))
+                fieldNameMap.put(fieldWrap.getName(), fieldWrap);
+                propertyNameMap.computeIfAbsent(fieldWrap.getName(), k -> new PropertyHub(k))
                         .setFieldWrap(fieldWrap);
             }
             c = c.getSuperclass();
@@ -164,7 +182,7 @@ public class ClassWrap<EA extends Object> {
                     if (m.getName().startsWith("set")) {
                         PropertyMethodWrap sw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyWraps.computeIfAbsent(sw.getName(), k -> new PropertyHub(k))
+                        propertyNameMap.computeIfAbsent(sw.getName(), k -> new PropertyHub(k))
                                 .setSetterWrap(sw);
                     }
                 } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
@@ -172,7 +190,7 @@ public class ClassWrap<EA extends Object> {
                     if (m.getName().startsWith("get")) {
                         PropertyMethodWrap gw = eggg.newPropertyMethodWrap(this, m);
 
-                        propertyWraps.computeIfAbsent(gw.getName(), k -> new PropertyHub(k))
+                        propertyNameMap.computeIfAbsent(gw.getName(), k -> new PropertyHub(k))
                                 .setGetterWrap(gw);
                     }
                 }

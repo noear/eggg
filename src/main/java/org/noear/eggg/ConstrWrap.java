@@ -17,8 +17,7 @@ package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 构造包装器
@@ -29,7 +28,7 @@ import java.util.List;
 public class ConstrWrap<Att extends Object> {
     private final Executable constr;
 
-    //private final Map<String, ParamWrap> paramNodeWraps;
+    private final Map<String, ParamWrap<Att>> paramAliasMap;
     private final List<ParamWrap<Att>> paramAry;
 
     private final boolean security;
@@ -40,13 +39,13 @@ public class ConstrWrap<Att extends Object> {
         this.eggg = eggg;
         this.constr = constr;
 
-        //paramNodeWraps = new HashMap<>();
+        paramAliasMap = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
             ParamWrap<Att> paramWrap = eggg.newParamWrap(classWrap, p1);
 
-            //paramNodeWraps.put(paramWrap.getNodeName(), paramWrap);
+            paramAliasMap.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
         }
 
@@ -60,12 +59,20 @@ public class ConstrWrap<Att extends Object> {
         return security;
     }
 
+    public int getParamCount() {
+        return paramAry.size();
+    }
+
     public List<ParamWrap<Att>> getParamAry() {
         return paramAry;
     }
 
-    public int getParamCount() {
-        return paramAry.size();
+    public ParamWrap<Att> getParamByAlias(String alias) {
+        return paramAliasMap.get(alias);
+    }
+
+    public boolean hasParamByAlias(String alias) {
+        return paramAliasMap.containsKey(alias);
     }
 
     public <T> T newInstance(Object... args)

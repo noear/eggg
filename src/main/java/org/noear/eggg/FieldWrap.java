@@ -31,6 +31,8 @@ public class FieldWrap<EA extends Object> implements Property<EA> {
     private final TypeWrap fieldTypeWrap;
 
     private final String name;
+    private final String alias;
+
     private final EA attachment;
 
     private boolean isFinal;
@@ -48,6 +50,7 @@ public class FieldWrap<EA extends Object> implements Property<EA> {
 
         this.name = field.getName();
         this.attachment = (EA) eggg.findAttachment(classWrap, field);
+        this.alias = eggg.findAlias(attachment);
     }
 
     public Field getField() {
@@ -95,6 +98,11 @@ public class FieldWrap<EA extends Object> implements Property<EA> {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
     }
 
     @Override

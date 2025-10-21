@@ -24,6 +24,8 @@ package org.noear.eggg;
  */
 public class PropertyHub<EA extends Object> {
     private final String name;
+    private String alias;
+
 
     private FieldWrap<EA> fieldWrap;
     private PropertyMethodWrap<EA> getterWrap;
@@ -35,6 +37,10 @@ public class PropertyHub<EA extends Object> {
 
     public String getName() {
         return name;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 
     public FieldWrap<EA> getFieldWrap() {
@@ -53,13 +59,16 @@ public class PropertyHub<EA extends Object> {
 
     protected void setFieldWrap(FieldWrap<EA> f) {
         this.fieldWrap = f;
+        this.alias = f.getAlias();
     }
 
     protected void setGetterWrap(PropertyMethodWrap<EA> g) {
         this.getterWrap = g;
+        this.alias = g.getAlias();
     }
 
     protected void setSetterWrap(PropertyMethodWrap<EA> s) {
         this.setterWrap = s;
+        this.alias = s.getAlias();
     }
 }

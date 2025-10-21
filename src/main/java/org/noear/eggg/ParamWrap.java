@@ -28,6 +28,7 @@ public class ParamWrap<EA extends Object> {
     private final TypeWrap paramTypeWrap;
 
     private final String name;
+    private final String alias;
     private final EA attachment;
 
     public ParamWrap(Eggg eggg, ClassWrap classWrap, Parameter param) {
@@ -36,6 +37,7 @@ public class ParamWrap<EA extends Object> {
 
         this.name = param.getName();
         this.attachment = (EA) eggg.findAttachment(classWrap, param);
+        this.alias = eggg.findAlias(attachment);
     }
 
     public Parameter getParam() {
@@ -48,6 +50,10 @@ public class ParamWrap<EA extends Object> {
 
     public String getName() {
         return name;
+    }
+
+    public String getAlias() {
+        return alias;
     }
 
     public EA getAttachment() {

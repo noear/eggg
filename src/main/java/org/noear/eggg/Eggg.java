@@ -20,6 +20,7 @@ import java.lang.reflect.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * 泛型蛋
@@ -32,6 +33,7 @@ public class Eggg<EA extends Object> {
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
     private BiFunction<ClassWrap, AnnotatedElement, EA> attachmentHandler;
+    private Function<EA, String> aliasHandler;
 
     public Eggg<EA> withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
         this.creatorAnnotationClass = creatorAnnotationClass;
@@ -40,6 +42,11 @@ public class Eggg<EA extends Object> {
 
     public Eggg<EA> withAttachmentHandler(BiFunction<ClassWrap, AnnotatedElement, EA> attachmentHandler) {
         this.attachmentHandler = attachmentHandler;
+        return this;
+    }
+
+    public Eggg<EA> withAliasHandler(Function<EA, String> aliasHandler) {
+        this.aliasHandler = aliasHandler;
         return this;
     }
 
@@ -83,6 +90,14 @@ public class Eggg<EA extends Object> {
             return null;
         } else {
             return attachmentHandler.apply(classWrap, element);
+        }
+    }
+
+    public String findAlias(EA attachment) {
+        if (aliasHandler == null) {
+            return null;
+        } else {
+            return aliasHandler.apply(attachment);
         }
     }
 

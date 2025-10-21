@@ -31,6 +31,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     private final TypeWrap propertyTypeWrap;
 
     private final String name;
+    private final String alias;
     private final EA attachment;
 
     private final boolean isReadMode;
@@ -59,6 +60,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
         this.name = nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
 
         this.attachment = (EA) eggg.findAttachment(owner, property);
+        this.alias = eggg.findAlias(attachment);
     }
 
     @Override
@@ -94,6 +96,11 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public String getAlias() {
+        return alias;
     }
 
     @Override
