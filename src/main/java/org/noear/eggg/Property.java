@@ -22,6 +22,11 @@ package org.noear.eggg;
  * @since 1.0
  */
 public interface Property<EA extends Object> {
+    static String resolvePropertyName(String methodName) {
+        String nameTmp = methodName.substring(3);
+        return nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
+    }
+
     /**
      *
      */

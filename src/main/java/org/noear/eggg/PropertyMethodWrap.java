@@ -30,7 +30,7 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
     private final Method property;
     private final TypeWrap propertyTypeWrap;
 
-    private final FieldWrap<EA>  fieldWrap;
+    private final FieldWrap<EA> fieldWrap;
 
     private final String name;
     private final String alias;
@@ -59,19 +59,18 @@ public class PropertyMethodWrap<EA extends Object> implements Property<EA> {
             this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(property.getGenericParameterTypes()[0], getGenericInfo(owner.getTypeWrap(), property)));
         }
 
-        String nameTmp = property.getName().substring(3);
-        this.name = nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
-
+        this.name = Property.resolvePropertyName(property.getName());
         this.fieldWrap = owner.getFieldByName(this.name);
 
-        this.attachment = (EA) eggg.findAttachment(owner, property);
-        this.alias = eggg.findAlias(attachment);
-
         if (fieldWrap == null) {
-            isTransient = false;
+            this.isTransient = false;
+            this.attachment = (EA) eggg.findAttachment(owner, property, null);
         } else {
-            isTransient = fieldWrap.isTransient();
+            this.isTransient = fieldWrap.isTransient();
+            this.attachment = (EA) eggg.findAttachment(owner, property, fieldWrap.getAttachment());
         }
+
+        this.alias = eggg.findAlias(attachment);
     }
 
     @Override

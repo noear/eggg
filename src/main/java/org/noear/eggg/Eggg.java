@@ -32,7 +32,7 @@ public class Eggg<EA extends Object> {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
 
     private Class<? extends Annotation> creatorAnnotationClass = null;
-    private BiFunction<ClassWrap, AnnotatedElement, EA> attachmentHandler;
+    private AttachmentHandler<EA> attachmentHandler;
     private Function<EA, String> aliasHandler;
 
     public Eggg<EA> withCreatorAnnotationClass(Class<? extends Annotation> creatorAnnotationClass) {
@@ -40,7 +40,7 @@ public class Eggg<EA extends Object> {
         return this;
     }
 
-    public Eggg<EA> withAttachmentHandler(BiFunction<ClassWrap, AnnotatedElement, EA> attachmentHandler) {
+    public Eggg<EA> withAttachmentHandler(AttachmentHandler<EA> attachmentHandler) {
         this.attachmentHandler = attachmentHandler;
         return this;
     }
@@ -85,11 +85,11 @@ public class Eggg<EA extends Object> {
         }
     }
 
-    public EA findAttachment(ClassWrap classWrap, AnnotatedElement element) {
+    public EA findAttachment(ClassWrap classWrap, AnnotatedElement element, EA ref) {
         if (attachmentHandler == null) {
             return null;
         } else {
-            return attachmentHandler.apply(classWrap, element);
+            return attachmentHandler.apply(classWrap, element, ref);
         }
     }
 
