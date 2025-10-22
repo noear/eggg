@@ -52,6 +52,14 @@ public class TypeWrap {
 
         if (genericType instanceof Class<?>) {
             type = (Class<?>) genericType;
+
+            if (type == String.class) {
+                isString = true;
+            } else if (type == Boolean.class || type == Boolean.TYPE) {
+                isBoolean = true;
+            } else if (Number.class.isAssignableFrom(type)) {
+                isNumber = true;
+            }
         } else if (isParameterizedType()) {
             Type tmp = getParameterizedType().getRawType();
 
@@ -66,12 +74,6 @@ public class TypeWrap {
             if (tmp instanceof Class) {
                 type = (Class<?>) tmp;
             }
-        } else if (type == String.class) {
-            isString = true;
-        } else if (type == Boolean.class || type == Boolean.TYPE) {
-            isBoolean = true;
-        } else if (Number.class.isAssignableFrom(type)) {
-            isNumber = true;
         }
     }
 
