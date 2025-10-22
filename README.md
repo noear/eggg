@@ -1,2 +1,62 @@
-# gegg
-Java generic tools
+## gegg
+
+A java generic analysis tool
+
+## gegg examples
+
+
+```java
+package org.noear.snack4.codec.util;
+
+import org.noear.eggg.*;
+import org.noear.snack4.annotation.ONodeAttrHolder;
+import org.noear.snack4.annotation.ONodeAttr;
+import org.noear.snack4.annotation.ONodeCreator;
+
+import java.lang.reflect.*;
+
+/**
+ *
+ * @author noear 2025/10/21 created
+ * @since 4.0
+ */
+public class EgggUtil {
+    private static final Eggg eggg = new Eggg()
+            .withCreatorClass(ONodeCreator.class)
+            .withDigestHandler(EgggUtil::doDigestHandle)
+            .withAliasHandler(EgggUtil::doAliasHandle);
+
+    private static String doAliasHandle(ClassWrap cw, Object h, Object digest) {
+        if (digest instanceof ONodeAttrHolder) {
+            return ((ONodeAttrHolder) digest).getAlias();
+        } else {
+            return null;
+        }
+    }
+
+    private static ONodeAttrHolder doDigestHandle(ClassWrap cw, Object h, AnnotatedElement e, ONodeAttrHolder ref) {
+        ONodeAttr attr = e.getAnnotation(ONodeAttr.class);
+
+        if (attr == null && ref != null) {
+            return ref;
+        }
+
+        if (h instanceof FieldWrap) {
+            return new ONodeAttrHolder(attr, ((Field) e).getName());
+        } else if (h instanceof PropertyMethodWrap) {
+            return new ONodeAttrHolder(attr, Property.resolvePropertyName(((Method) e).getName()));
+        } else if (h instanceof ParamWrap) {
+            return new ONodeAttrHolder(attr, ((Parameter) e).getName());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 获取类型包装器
+     */
+    public static TypeWrap getTypeWrap(Type type) {
+        return eggg.getTypeWrap(type);
+    }
+}
+```
