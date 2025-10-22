@@ -1,9 +1,39 @@
-## gegg
+## 关于 gegg
 
-A java generic analysis tool
+是一个 Java 泛型分析的小工具（大概 30k 左右）
 
-## gegg examples
+## 示例1
 
+```java
+public class EgggDemo {
+    //一般，应用内全局单例
+    private static Eggg eggg = new Eggg();
+
+    @Test
+    public void case1() {
+        TypeWrap typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
+
+        if (typeWrap.isMap()) {
+            if (typeWrap.isParameterizedType()) {
+                //已经分析过的
+                Type keyType = typeWrap.getActualTypeArguments()[0];
+                Type ValueType = typeWrap.getActualTypeArguments()[1];
+
+                assert keyType.equals(Integer.class);
+                assert ValueType.equals(UserModel.class);
+                return;
+            }
+        }
+
+        assert false;
+    }
+}
+```
+
+
+## 示例2 (for snack4)
+
+这个示例需要根据 "注解" 生成提炼物、别名。需要添加定制内容。
 
 ```java
 package org.noear.snack4.codec.util;
@@ -15,12 +45,8 @@ import org.noear.snack4.annotation.ONodeCreator;
 
 import java.lang.reflect.*;
 
-/**
- *
- * @author noear 2025/10/21 created
- * @since 4.0
- */
 public class EgggUtil {
+    //一般，应用内全局单例
     private static final Eggg eggg = new Eggg()
             .withCreatorClass(ONodeCreator.class)
             .withDigestHandler(EgggUtil::doDigestHandle)
@@ -57,6 +83,24 @@ public class EgggUtil {
      */
     public static TypeWrap getTypeWrap(Type type) {
         return eggg.getTypeWrap(type);
+    }
+}
+```
+
+
+```java
+public class Demo {
+    public void case1(){
+        ypeWrap typeWrap =  EgggUtil.getTypeWrap(clazz);
+
+        for (FieldWrap fw : typeWrap.getClassWrap().getFieldWraps()) {
+            if (fw.isStatic()) {
+                continue;
+            }
+
+            //已经分析过的泛型
+            fw.getTypeWrap();
+        }
     }
 }
 ```
