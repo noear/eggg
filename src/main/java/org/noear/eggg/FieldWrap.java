@@ -30,15 +30,11 @@ public class FieldWrap implements Property {
     private final Field field;
     private final TypeWrap fieldTypeWrap;
 
+    private ClassWrap classWrap;
+
     private final String name;
     private final String alias;
     private final Object digest;
-
-    private boolean isFinal;
-    private boolean isStatic;
-    private boolean isPrivate;
-    private boolean isDeclared;
-    private boolean isTransient;
 
     private Eggg eggg;
 
@@ -46,12 +42,7 @@ public class FieldWrap implements Property {
         this.eggg = eggg;
         this.field = field;
         this.fieldTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(field.getGenericType(), getGenericInfo(classWrap.getTypeWrap(), field)));
-
-        this.isFinal = Modifier.isFinal(field.getModifiers());
-        this.isStatic = Modifier.isStatic(field.getModifiers());
-        this.isPrivate = Modifier.isPrivate(field.getModifiers());
-        this.isTransient = Modifier.isTransient(field.getModifiers());
-        this.isDeclared = field.getDeclaringClass() == classWrap.getTypeWrap().getType();
+        this.classWrap = classWrap;
 
         this.name = field.getName();
         this.digest = eggg.findDigest(classWrap, this, field, null);
@@ -71,28 +62,28 @@ public class FieldWrap implements Property {
      * 只读的
      */
     public boolean isFinal() {
-        return isFinal;
+        return Modifier.isFinal(field.getModifiers());
     }
 
     /**
      * 静态的
      */
     public boolean isStatic() {
-        return isStatic;
+        return Modifier.isStatic(field.getModifiers());
     }
 
     /**
      * 私有的
      */
     public boolean isPrivate() {
-        return isPrivate;
+        return Modifier.isPrivate(field.getModifiers());
     }
 
     /**
-     * 声明的
+     * 私有的
      */
-    public boolean isDeclared() {
-        return isDeclared;
+    public boolean isPublic() {
+        return Modifier.isPublic(field.getModifiers());
     }
 
     /**
@@ -100,7 +91,14 @@ public class FieldWrap implements Property {
      */
     @Override
     public boolean isTransient() {
-        return isTransient;
+        return Modifier.isTransient(field.getModifiers());
+    }
+
+    /**
+     * 声明的
+     */
+    public boolean isDeclared() {
+        return field.getDeclaringClass() == classWrap.getTypeWrap().getType();
     }
 
     @Override
@@ -114,7 +112,7 @@ public class FieldWrap implements Property {
 
     @Override
     public void setValue(Object target, Object value) throws Exception {
-        if (isFinal == false) {
+        if (isFinal() == false) {
             if (field.isAccessible() == false) {
                 field.setAccessible(true);
             }

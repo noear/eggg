@@ -23,7 +23,13 @@ package org.noear.eggg;
  */
 public interface Property {
     static String resolvePropertyName(String methodName) {
-        String nameTmp = methodName.substring(3);
+        String nameTmp = null;
+        if (methodName.startsWith("is")) {
+            nameTmp = methodName.substring(2);
+        } else {
+            nameTmp = methodName.substring(3);
+        }
+
         return nameTmp.substring(0, 1).toLowerCase() + nameTmp.substring(1);
     }
 

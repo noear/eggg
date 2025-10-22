@@ -230,7 +230,7 @@ public class ClassWrap {
                 if (m.getName().length() > 3) {
                     if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
                         //setter
-                        if (m.getName().startsWith("set")) {
+                        if (m.getName().startsWith("set") || m.getName().startsWith("is")) {
                             PropertyMethodWrap sw = eggg.newPropertyMethodWrap(this, m);
 
                             propertyWrapsForName.computeIfAbsent(sw.getName(), k -> new PropertyWrap(k))
