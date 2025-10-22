@@ -35,10 +35,7 @@ public class ConstrWrap {
 
     private final boolean security;
 
-    private final Eggg eggg;
-
     public ConstrWrap(Eggg eggg, ClassWrap classWrap, Executable constr, Annotation constrAnno) {
-        this.eggg = eggg;
         this.constr = constr;
 
         paramAliasMap = new LinkedHashMap<>();
