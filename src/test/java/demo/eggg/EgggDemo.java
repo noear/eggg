@@ -1,4 +1,8 @@
-package org.noear.eggg;
+package demo.eggg;
+
+import org.noear.eggg.ClassWrap;
+import org.noear.eggg.Eggg;
+import org.noear.eggg.TypeWrap;
 
 /**
  *

@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,9 +25,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * 泛型工具
  *
  * @author noear
- * @since 4.0
+ * @since 1.0
  */
 public class GenericUtil {
+    private static final Map<Type, SoftReference<Map<String, Type>>> genericInfoCached = new ConcurrentHashMap<>();
+
     /**
      * 转换为参数化类型
      *
@@ -79,9 +82,6 @@ public class GenericUtil {
         return result;
     }
 
-    /// ////////////////////////
-
-    private static final Map<Type, Map<String, Type>> genericInfoCached = new ConcurrentHashMap<>();
 
     /**
      * 获取泛型变量和泛型实际类型的对应关系Map
@@ -90,7 +90,12 @@ public class GenericUtil {
      * @return 泛型对应关系Map
      */
     public static Map<String, Type> getGenericInfo(Type type) {
-        return genericInfoCached.computeIfAbsent(type, GenericUtil::createTypeGenericMap);
+        return genericInfoCached.compute(type, (k, v) -> {
+            if (v != null && v.get() != null) {
+                return v;
+            }
+            return new SoftReference<>(createTypeGenericMap(type));
+        }).get();
     }
 
 

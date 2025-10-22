@@ -52,11 +52,11 @@ public class PropertyMethodWrap implements Property {
         if (method.getReturnType() != void.class) {
             //getter
             this.isReadMode = true;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), getGenericInfo(classWrap.getTypeWrap(), method)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             //setter
             this.isReadMode = false;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], getGenericInfo(classWrap.getTypeWrap(), method)));
+            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());
@@ -133,19 +133,5 @@ public class PropertyMethodWrap implements Property {
     @Override
     public String toString() {
         return method.toString();
-    }
-
-    private Map<String, Type> getGenericInfo(TypeWrap owner, Method method) {
-        if (method.getDeclaringClass() == owner.getType()) {
-            return owner.getGenericInfo();
-        } else {
-            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-
-            if (superType == null || superType == Object.class) {
-                return owner.getGenericInfo();
-            } else {
-                return getGenericInfo(eggg.getTypeWrap(superType), method);
-            }
-        }
     }
 }

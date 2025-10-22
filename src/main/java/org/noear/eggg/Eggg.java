@@ -104,6 +104,12 @@ public class Eggg {
         return this;
     }
 
+    ///
+
+    public void clear(){
+        typeWrapLib.clear();
+        classWrapLib.clear();
+    }
 
     ///
 
@@ -197,5 +203,18 @@ public class Eggg {
 
     protected Method[] getMethods(Class<?> clazz) {
         return reflectHandler.getMethods(clazz);
+    }
+
+    protected Map<String, Type> getMethodGenericInfo(TypeWrap owner, Method method) {
+        if (method.getDeclaringClass() == owner.getType()) {
+            return owner.getGenericInfo();
+        } else {
+            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            if (superType == null || superType == Object.class) {
+                return owner.getGenericInfo();
+            } else {
+                return getMethodGenericInfo(getTypeWrap(superType), method);
+            }
+        }
     }
 }

@@ -49,7 +49,7 @@ public class MethodWrap {
         this.method = method;
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), getGenericInfo(classWrap.getTypeWrap(), method)));
+            this.returnTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             this.returnTypeWrap = null;
         }
@@ -144,19 +144,5 @@ public class MethodWrap {
     @Override
     public String toString() {
         return method.toString();
-    }
-
-    private Map<String, Type> getGenericInfo(TypeWrap owner, Method method) {
-        if (method.getDeclaringClass() == owner.getType()) {
-            return owner.getGenericInfo();
-        } else {
-            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-
-            if (superType == null || superType == Object.class) {
-                return owner.getGenericInfo();
-            } else {
-                return getGenericInfo(eggg.getTypeWrap(superType), method);
-            }
-        }
     }
 }
