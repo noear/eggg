@@ -26,18 +26,18 @@ import java.util.List;
  * @since 1.0
  */
 public class TypeWrap {
+    private static final byte FLAG_STRING = 1;
+    private static final byte FLAG_BOOLEAN = 1 << 1;
+    private static final byte FLAG_NUMBER = 1 << 2;
+    private static final byte FLAG_MAP = 1 << 3;
+    private static final byte FLAG_LIST = 1 << 4;
+
     private final Type genericType;
     private final Map<String, Type> genericInfo;
 
     private Class<?> type = Object.class;
 
-    private boolean isString;
-    private boolean isBoolean;
-    private boolean isNumber;
-
-    private boolean isMap;
-    private boolean isList;
-
+    private final byte flags;
     private final Eggg eggg;
 
     public TypeWrap(Eggg eggg, Type genericType) {
@@ -64,15 +64,17 @@ public class TypeWrap {
         }
 
         if (type == String.class) {
-            isString = true;
+            flags = FLAG_STRING;
         } else if (type == Boolean.class || type == Boolean.TYPE) {
-            isBoolean = true;
+            flags = FLAG_BOOLEAN;
         } else if (Number.class.isAssignableFrom(type)) {
-            isNumber = true;
+            flags = FLAG_NUMBER;
         } else if (List.class.isAssignableFrom(type)) {
-            isList = true;
+            flags = FLAG_LIST;
         } else if (Map.class.isAssignableFrom(type)) {
-            isMap = true;
+            flags = FLAG_MAP;
+        } else {
+            flags = 0;
         }
     }
 
@@ -115,23 +117,23 @@ public class TypeWrap {
     }
 
     public boolean isList() {
-        return isList;
+        return (flags & FLAG_LIST) != 0;
     }
 
     public boolean isMap() {
-        return isMap;
+        return (flags & FLAG_MAP) != 0;
     }
 
     public boolean isString() {
-        return isString;
+        return (flags & FLAG_STRING) != 0;
     }
 
     public boolean isBoolean() {
-        return isBoolean;
+        return (flags & FLAG_BOOLEAN) != 0;
     }
 
     public boolean isNumber() {
-        return isNumber;
+        return (flags & FLAG_NUMBER) != 0;
     }
 
     ///

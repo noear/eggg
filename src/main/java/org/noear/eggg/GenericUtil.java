@@ -169,7 +169,7 @@ public class GenericUtil {
      *
      */
     public static Type reviewType(Type type, Map<String, Type> genericInfo) {
-        if (genericInfo == null || genericInfo.isEmpty()) {
+        if (genericInfo == null || genericInfo.isEmpty() || type instanceof Class) {
             return type;
         }
 
