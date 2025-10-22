@@ -2,6 +2,7 @@ package org.noear.eggg;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.noear.eggg.model.UserModel;
 
 import java.util.Map;
 
@@ -23,8 +24,26 @@ public class EgggTest {
 
         Assertions.assertNull(constrWrap);
 
-        for (Map.Entry<String, PropertyWrap> entry : classWrap.getPropertyWrapsForAlias().entrySet()) {
-
+        for (PropertyWrap p1 : classWrap.getPropertyWraps()) {
+            System.out.println(p1);
         }
+    }
+
+    @Test
+    public void case2() {
+        TypeWrap typeWrap = eggg.getTypeWrap(UserModel.class);
+
+        ClassWrap classWrap = typeWrap.getClassWrap();
+
+        ConstrWrap constrWrap = classWrap.getConstrWrap();
+
+        Assertions.assertNotNull(constrWrap);
+        Assertions.assertEquals(0, constrWrap.getParamCount());
+
+        for (PropertyWrap p1 : classWrap.getPropertyWraps()) {
+            System.out.println(p1);
+        }
+
+        Assertions.assertEquals(1, classWrap.getPropertyWraps().size());
     }
 }

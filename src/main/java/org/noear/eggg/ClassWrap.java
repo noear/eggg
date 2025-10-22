@@ -17,11 +17,7 @@ package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 类包装器
@@ -100,40 +96,32 @@ public class ClassWrap {
         return constrWrap;
     }
 
-    public List<MethodWrap> getPublicMethodWraps() {
+    public Collection<MethodWrap> getPublicMethodWraps() {
         return publicMethodWraps;
     }
 
-    public List<MethodWrap> getDeclaredMethodWraps() {
+    public Collection<MethodWrap> getDeclaredMethodWraps() {
         return declaredMethodWraps;
     }
 
-    public Map<String, FieldWrap> getFieldWrapsForName() {
-        return fieldWrapsForName;
+    public Collection<FieldWrap> getFieldWraps() {
+        return fieldWrapsForName.values();
     }
 
     public FieldWrap getFieldWrapByName(String name) {
         return fieldWrapsForName.get(name);
     }
 
-    public Map<String, FieldWrap> getFieldWrapsForAlias() {
-        return fieldWrapsForAlias;
-    }
-
     public FieldWrap getFieldWrapByAlias(String alias) {
         return fieldWrapsForAlias.get(alias);
     }
 
-    public Map<String, PropertyWrap> getPropertyWrapsForName() {
-        return propertyWrapsForName;
+    public Collection<PropertyWrap> getPropertyWraps() {
+        return propertyWrapsForName.values();
     }
 
     public PropertyWrap getPropertyWrapByName(String name) {
         return propertyWrapsForName.get(name);
-    }
-
-    public Map<String, PropertyWrap> getPropertyWrapsForAlias() {
-        return propertyWrapsForAlias;
     }
 
     public PropertyWrap getPropertyWrapByAlias(String alias) {
@@ -215,11 +203,11 @@ public class ClassWrap {
                 continue;
             }
 
-            if(m.isBridge()){
+            if (m.isBridge()) {
                 m = findActualMethod(typeWrap.getType().getSuperclass(), m);
             }
 
-            if(m == null){
+            if (m == null) {
                 continue;
             }
 
@@ -268,5 +256,10 @@ public class ClassWrap {
         }
 
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return typeWrap.getType().toString();
     }
 }

@@ -70,4 +70,15 @@ public class PropertyWrap {
         this.setterWrap = s;
         this.alias = s.getAlias();
     }
+
+    @Override
+    public String toString() {
+        return "PropertyWrap{" +
+                "name='" + name + '\'' +
+                ", alias='" + alias + '\'' +
+                ", fieldWrap=" + fieldWrap +
+                ", getterWrap=" + getterWrap +
+                ", setterWrap=" + setterWrap +
+                '}';
+    }
 }

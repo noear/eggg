@@ -37,8 +37,8 @@ public class FieldWrap implements Property {
     private boolean isFinal;
     private boolean isStatic;
     private boolean isPrivate;
-    private boolean isTransient;
     private boolean isDeclared;
+    private boolean isTransient;
 
     private Eggg eggg;
 
@@ -81,6 +81,13 @@ public class FieldWrap implements Property {
      */
     public boolean isPrivate() {
         return isPrivate;
+    }
+
+    /**
+     * 声明的
+     */
+    public boolean isDeclared() {
+        return isDeclared;
     }
 
     /**

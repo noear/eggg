@@ -35,7 +35,7 @@ public class MethodWrap {
     private boolean isPublic;
     private boolean isDeclared;
 
-    private final Map<String, ParamWrap> paramAliasMap;
+    private final Map<String, ParamWrap> paramWrapsForAlias;
     private final List<ParamWrap> paramAry;
 
     private final Eggg eggg;
@@ -61,13 +61,13 @@ public class MethodWrap {
         this.isPublic = Modifier.isPublic(method.getModifiers());
         this.isDeclared = method.getDeclaringClass() == classWrap.getTypeWrap().getType();
 
-        paramAliasMap = new LinkedHashMap<>();
+        paramWrapsForAlias = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
             ParamWrap paramWrap = eggg.newParamWrap(classWrap, p1);
 
-            paramAliasMap.put(paramWrap.getAlias(), paramWrap);
+            paramWrapsForAlias.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
         }
     }
@@ -102,8 +102,7 @@ public class MethodWrap {
     }
 
     /**
-     * 声报的
-     *
+     * 声明的
      */
     public boolean isDeclared() {
         return isDeclared;
@@ -126,11 +125,11 @@ public class MethodWrap {
     }
 
     public ParamWrap getParamWrapByAlias(String alias) {
-        return paramAliasMap.get(alias);
+        return paramWrapsForAlias.get(alias);
     }
 
     public boolean hasParamWrapByAlias(String alias) {
-        return paramAliasMap.containsKey(alias);
+        return paramWrapsForAlias.containsKey(alias);
     }
 
     public <T> T newInstance(Object target, Object... args)
