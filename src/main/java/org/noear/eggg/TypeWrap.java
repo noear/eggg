@@ -17,6 +17,7 @@ package org.noear.eggg;
 
 import java.lang.reflect.*;
 import java.util.Map;
+import java.util.List;
 
 /**
  * 类型包装器
@@ -34,32 +35,18 @@ public class TypeWrap {
     private boolean isBoolean;
     private boolean isNumber;
 
+    private boolean isMap;
+    private boolean isList;
+
     private final Eggg eggg;
 
     public TypeWrap(Eggg eggg, Type genericType) {
-        if (genericType instanceof Class<?>) {
-            if (genericType instanceof Class) {
-                Class<?> clazz = (Class<?>) genericType;
-                if (clazz.isAnonymousClass()) {
-                    genericType = clazz.getGenericSuperclass();
-                }
-            }
-        }
-
         this.eggg = eggg;
         this.genericInfo = GenericUtil.getGenericInfo(genericType);
         this.genericType = GenericUtil.reviewType(genericType, this.genericInfo);
 
         if (genericType instanceof Class<?>) {
             type = (Class<?>) genericType;
-
-            if (type == String.class) {
-                isString = true;
-            } else if (type == Boolean.class || type == Boolean.TYPE) {
-                isBoolean = true;
-            } else if (Number.class.isAssignableFrom(type)) {
-                isNumber = true;
-            }
         } else if (isParameterizedType()) {
             Type tmp = getParameterizedType().getRawType();
 
@@ -74,6 +61,18 @@ public class TypeWrap {
             if (tmp instanceof Class) {
                 type = (Class<?>) tmp;
             }
+        }
+
+        if (type == String.class) {
+            isString = true;
+        } else if (type == Boolean.class || type == Boolean.TYPE) {
+            isBoolean = true;
+        } else if (Number.class.isAssignableFrom(type)) {
+            isNumber = true;
+        } else if (List.class.isAssignableFrom(type)) {
+            isList = true;
+        } else if (Map.class.isAssignableFrom(type)) {
+            isMap = true;
         }
     }
 
@@ -109,6 +108,18 @@ public class TypeWrap {
 
     public boolean isEnum() {
         return type.isEnum();
+    }
+
+    public boolean isPrimitive() {
+        return type.isPrimitive();
+    }
+
+    public boolean isList() {
+        return isList;
+    }
+
+    public boolean isMap() {
+        return isMap;
     }
 
     public boolean isString() {

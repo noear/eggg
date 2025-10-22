@@ -67,7 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 1.0
  */
-public class Eggg implements ReflectHandler {
+public class Eggg {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
 
@@ -104,66 +104,20 @@ public class Eggg implements ReflectHandler {
         return this;
     }
 
-    ///
-
-    public TypeWrap newTypeWrap(Type type) {
-        return new TypeWrap(this, type);
-    }
-
-    public ClassWrap newClassWrap(TypeWrap typeWrap) {
-        return new ClassWrap(this, typeWrap);
-    }
-
-    public FieldWrap newFieldWrap(ClassWrap classWrap, Field field) {
-        return new FieldWrap(this, classWrap, field);
-    }
-
-    public MethodWrap newMethodWrap(ClassWrap classWrap, Method method) {
-        return new MethodWrap(this, classWrap, method);
-    }
-
-    public ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
-        return new ConstrWrap(this, classWrap, constr, constrAnno);
-    }
-
-    public PropertyMethodWrap newPropertyMethodWrap(ClassWrap classWrap, Method property) {
-        return new PropertyMethodWrap(this, classWrap, property);
-    }
-
-    public ParamWrap newParamWrap(ClassWrap classWrap, Parameter param) {
-        return new ParamWrap(this, classWrap, param);
-    }
-
-    ///
-
-    public Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
-        if (digestHandler == null) {
-            return null;
-        } else {
-            return digestHandler.apply(classWrap, holder, source, ref);
-        }
-    }
-
-    public String findAlias(ClassWrap classWrap, Object holder, Object digest) {
-        if (aliasHandler == null) {
-            return null;
-        } else {
-            return aliasHandler.apply(classWrap, holder, digest);
-        }
-    }
-
-    public Annotation findCreator(Executable executable) {
-        if (creatorClass == null) {
-            return null;
-        } else {
-            return executable.getAnnotation(creatorClass);
-        }
-    }
 
     ///
 
     public TypeWrap getTypeWrap(Type type) {
         Objects.requireNonNull(type, "type");
+
+        if (type instanceof Class<?>) {
+            if (type instanceof Class) {
+                Class<?> clazz = (Class<?>) type;
+                if (clazz.isAnonymousClass()) {
+                    type = clazz.getGenericSuperclass();
+                }
+            }
+        }
 
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
     }
@@ -174,20 +128,74 @@ public class Eggg implements ReflectHandler {
         return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
     }
 
+
     ///
 
-    @Override
-    public Field[] getDeclaredFields(Class<?> clazz) {
+    protected TypeWrap newTypeWrap(Type type) {
+        return new TypeWrap(this, type);
+    }
+
+    protected ClassWrap newClassWrap(TypeWrap typeWrap) {
+        return new ClassWrap(this, typeWrap);
+    }
+
+    protected FieldWrap newFieldWrap(ClassWrap classWrap, Field field) {
+        return new FieldWrap(this, classWrap, field);
+    }
+
+    protected MethodWrap newMethodWrap(ClassWrap classWrap, Method method) {
+        return new MethodWrap(this, classWrap, method);
+    }
+
+    protected ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
+        return new ConstrWrap(this, classWrap, constr, constrAnno);
+    }
+
+    protected PropertyMethodWrap newPropertyMethodWrap(ClassWrap classWrap, Method property) {
+        return new PropertyMethodWrap(this, classWrap, property);
+    }
+
+    protected ParamWrap newParamWrap(ClassWrap classWrap, Parameter param) {
+        return new ParamWrap(this, classWrap, param);
+    }
+
+    ///
+
+    protected Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
+        if (digestHandler == null) {
+            return null;
+        } else {
+            return digestHandler.apply(classWrap, holder, source, ref);
+        }
+    }
+
+    protected String findAlias(ClassWrap classWrap, Object holder, Object digest) {
+        if (aliasHandler == null) {
+            return null;
+        } else {
+            return aliasHandler.apply(classWrap, holder, digest);
+        }
+    }
+
+    protected Annotation findCreator(Executable executable) {
+        if (creatorClass == null) {
+            return null;
+        } else {
+            return executable.getAnnotation(creatorClass);
+        }
+    }
+
+    ///
+
+    protected Field[] getDeclaredFields(Class<?> clazz) {
         return reflectHandler.getDeclaredFields(clazz);
     }
 
-    @Override
-    public Method[] getDeclaredMethods(Class<?> clazz) {
+    protected Method[] getDeclaredMethods(Class<?> clazz) {
         return reflectHandler.getDeclaredMethods(clazz);
     }
 
-    @Override
-    public Method[] getMethods(Class<?> clazz) {
+    protected Method[] getMethods(Class<?> clazz) {
         return reflectHandler.getMethods(clazz);
     }
 }

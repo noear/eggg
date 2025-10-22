@@ -5,7 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.noear.eggg.model.MyList;
 import org.noear.eggg.model.UserModel;
 
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 
 /**
  *
@@ -56,5 +57,24 @@ public class EgggTest {
         for (MethodWrap mw : typeWrap.getClassWrap().getPublicMethodWraps()) {
             System.out.println(mw);
         }
+    }
+
+    @Test
+    public void case4() {
+        TypeWrap typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
+
+        if (typeWrap.isMap()) {
+            if (typeWrap.isParameterizedType()) {
+                //已经分析过的
+                Type keyType = typeWrap.getActualTypeArguments()[0];
+                Type ValueType = typeWrap.getActualTypeArguments()[1];
+
+                assert keyType.equals(Integer.class);
+                assert ValueType.equals(UserModel.class);
+                return;
+            }
+        }
+
+        assert false;
     }
 }
