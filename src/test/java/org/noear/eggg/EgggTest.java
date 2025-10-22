@@ -1,10 +1,9 @@
-package features.eggg;
+package org.noear.eggg;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import features.eggg.model.MyList;
-import features.eggg.model.UserModel;
-import org.noear.eggg.*;
+import org.noear.eggg.model.MyList;
+import org.noear.eggg.model.UserModel;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;

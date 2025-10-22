@@ -69,6 +69,14 @@ public class TypeWrap {
             flags = FLAG_BOOLEAN;
         } else if (Number.class.isAssignableFrom(type)) {
             flags = FLAG_NUMBER;
+        } else if (type.isPrimitive() && (
+                        type == byte.class ||
+                        type == short.class ||
+                        type == int.class ||
+                        type == long.class ||
+                        type == float.class ||
+                        type == double.class)) {
+            flags = FLAG_NUMBER;
         } else if (List.class.isAssignableFrom(type)) {
             flags = FLAG_LIST;
         } else if (Map.class.isAssignableFrom(type)) {

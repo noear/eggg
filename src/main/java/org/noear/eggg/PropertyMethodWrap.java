@@ -86,6 +86,10 @@ public class PropertyMethodWrap implements Property {
         return isTransient;
     }
 
+    public boolean isReadMode() {
+        return isReadMode;
+    }
+
     @Override
     public Object getValue(Object target) throws Throwable {
         if (isReadMode) {

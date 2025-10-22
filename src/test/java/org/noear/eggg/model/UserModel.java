@@ -1,4 +1,4 @@
-package features.eggg.model;
+package org.noear.eggg.model;
 
 /**
  *
