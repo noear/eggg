@@ -24,6 +24,46 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * 泛型蛋
  *
+ * <pre>{@code
+ * // for snack4 demo
+ * public class EgggUtil {
+ *     private static final Eggg eggg = new Eggg()
+ *             .withCreatorClass(ONodeCreator.class)
+ *             .withDigestHandler(EgggUtil::doDigestHandle)
+ *             .withAliasHandler(EgggUtil::doAliasHandle);
+ *
+ *     private static String doAliasHandle(ClassWrap cw, Object h, Object digest) {
+ *         if (digest instanceof ONodeAttrHolder) {
+ *             return ((ONodeAttrHolder) digest).getAlias();
+ *         } else {
+ *             return null;
+ *         }
+ *     }
+ *
+ *     private static ONodeAttrHolder doDigestHandle(ClassWrap cw, Object h, AnnotatedElement e, ONodeAttrHolder ref) {
+ *         ONodeAttr attr = e.getAnnotation(ONodeAttr.class);
+ *
+ *         if (attr == null && ref != null) {
+ *             return ref;
+ *         }
+ *
+ *         if (h instanceof FieldWrap) {
+ *             return new ONodeAttrHolder(attr, ((Field) e).getName());
+ *         } else if (h instanceof PropertyMethodWrap) {
+ *             return new ONodeAttrHolder(attr, Property.resolvePropertyName(((Method) e).getName()));
+ *         } else if (h instanceof ParamWrap) {
+ *             return new ONodeAttrHolder(attr, ((Parameter) e).getName());
+ *         } else {
+ *             return null;
+ *         }
+ *     }
+ *
+ *     //获取类型包装器
+ *     public static TypeWrap getTypeWrap(Type type) {
+ *         return eggg.getTypeWrap(type);
+ *     }
+ *  }
+ * }</pre>
  * @author noear
  * @since 1.0
  */
@@ -104,15 +144,11 @@ public class Eggg implements ReflectHandler {
         }
     }
 
-    public String findAlias(Object digest) {
-        if (digest == null) {
-            return null;
-        }
-
+    public String findAlias(ClassWrap classWrap, Object holder, Object digest) {
         if (aliasHandler == null) {
             return null;
         } else {
-            return aliasHandler.apply(digest);
+            return aliasHandler.apply(classWrap, holder, digest);
         }
     }
 
