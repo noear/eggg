@@ -47,7 +47,7 @@
 
 ### About gegg
 
-Java Generic analysis is a small tool (about 30k). It covers types, classes, constructors, methods, fields, properties, parameters, extension propagation, and more.
+Java Generic analysis is a small tool (about 30k). It covers types, classes, constructors, methods, fields, properties, parameters, extension propagation, and more. Suitable for: framework projects involving generics.
 
 ### Example 1
 
