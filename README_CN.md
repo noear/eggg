@@ -2,7 +2,7 @@
   EggG
 </h1>
 <p align="center">
-	<strong>A Java Generic Analysis Tool (Generic Egg)</strong>
+	<strong>一个 Java 泛型分析工具（泛型蛋）</strong>
 </p>
 <p align="center">
     <a target="_blank" href="https://deepwiki.com/noear/eggg">
@@ -40,16 +40,16 @@
 
 <hr />
 
-##### Language: English | [中文](README_CN.md)
+##### 语言： 中文 | [English](README.md)
 
 <hr />
 
 
-### About gegg
+### 关于 gegg
 
-Java Generic analysis is a small tool (about 30k). It covers types, classes, constructors, methods, fields, properties, parameters, extension propagation, and more.
+是一个 Java 泛型分析的小工具（大概 30k 左右）。分析会涉及：类型、类、构造器、方法、字段、属性、参数，扩展传导等细节。
 
-### Example 1
+### 示例1
 
 ```java
 public class EgggDemo {
@@ -78,9 +78,9 @@ public class EgggDemo {
 ```
 
 
-### Example 2 (for snack4)
+### 示例2 (for snack4)
 
-This example needs to generate refinements, aliases, and specify constructors based on the annotation. Custom content needs to be added.
+这个示例需要根据 "注解" 生成提炼物、别名，以及指定构造器。需要添加定制内容。
 
 ```java
 package org.noear.snack4.codec.util;
