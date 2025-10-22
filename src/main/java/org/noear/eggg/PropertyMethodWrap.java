@@ -15,9 +15,9 @@
  */
 package org.noear.eggg;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,7 +28,9 @@ import java.util.Objects;
  */
 public class PropertyMethodWrap implements Property {
     private final Method method;
-    private final TypeWrap methodTypeWrap;
+    private MethodHandle methodHandle;
+
+    private final TypeWrap propertyTypeWrap;
 
     private final FieldWrap fieldWrap;
 
@@ -49,14 +51,20 @@ public class PropertyMethodWrap implements Property {
         this.eggg = eggg;
         this.method = method;
 
+        try {
+            this.methodHandle = MethodHandles.lookup().unreflect(method);
+        } catch (Throwable e) {
+            this.methodHandle = null;
+        }
+
         if (method.getReturnType() != void.class) {
             //getter
             this.isReadMode = true;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             //setter
             this.isReadMode = false;
-            this.methodTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());
@@ -79,26 +87,34 @@ public class PropertyMethodWrap implements Property {
     }
 
     @Override
-    public Object getValue(Object target) throws Exception {
+    public Object getValue(Object target) throws Throwable {
         if (isReadMode) {
-            if (method.isAccessible() == false) {
-                method.setAccessible(true);
-            }
+            if (methodHandle == null) {
+                if (method.isAccessible() == false) {
+                    method.setAccessible(true);
+                }
 
-            return method.invoke(target);
+                return method.invoke(target);
+            } else {
+                return methodHandle.bindTo(target).invokeWithArguments();
+            }
         } else {
             return null;
         }
     }
 
     @Override
-    public void setValue(Object target, Object value) throws Exception {
+    public void setValue(Object target, Object value) throws Throwable {
         if (isReadMode == false) {
-            if (method.isAccessible() == false) {
-                method.setAccessible(true);
-            }
+            if (methodHandle == null) {
+                if (method.isAccessible() == false) {
+                    method.setAccessible(true);
+                }
 
-            method.invoke(target, value);
+                method.invoke(target, value);
+            } else {
+                methodHandle.bindTo(target).invokeWithArguments(value);
+            }
         }
     }
 
@@ -113,7 +129,7 @@ public class PropertyMethodWrap implements Property {
 
     @Override
     public TypeWrap getTypeWrap() {
-        return methodTypeWrap;
+        return propertyTypeWrap;
     }
 
     public FieldWrap getFieldWrap() {

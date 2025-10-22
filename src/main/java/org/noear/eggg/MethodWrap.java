@@ -15,6 +15,8 @@
  */
 package org.noear.eggg;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -26,6 +28,8 @@ import java.util.*;
  */
 public class MethodWrap {
     private final Method method;
+    private MethodHandle methodHandle;
+
     private final TypeWrap returnTypeWrap;
 
     private final Object digest;
@@ -47,6 +51,12 @@ public class MethodWrap {
 
         this.eggg = eggg;
         this.method = method;
+
+        try {
+            this.methodHandle = MethodHandles.lookup().unreflect(method);
+        } catch (Throwable e) {
+            this.methodHandle = null;
+        }
 
         if (method.getReturnType() != void.class) {
             this.returnTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
@@ -133,12 +143,21 @@ public class MethodWrap {
     }
 
     public <T> T newInstance(Object target, Object... args)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        if (method.isAccessible() == false) {
-            method.setAccessible(true);
-        }
+            throws Throwable {
 
-        return (T) method.invoke(target, args);
+        if (methodHandle == null) {
+            if (method.isAccessible() == false) {
+                method.setAccessible(true);
+            }
+
+            return (T) method.invoke(target, args);
+        } else {
+            if (target == null && isStatic()) {
+                return (T) methodHandle.invokeWithArguments(args);
+            } else {
+                return (T) methodHandle.bindTo(target).invokeWithArguments(args);
+            }
+        }
     }
 
     @Override

@@ -35,12 +35,12 @@ public interface Property {
     /**
      * 获取值
      */
-    Object getValue(Object target) throws Exception;
+    Object getValue(Object target) throws Throwable;
 
     /**
      * 设置值
      */
-    void setValue(Object target, Object value) throws Exception;
+    void setValue(Object target, Object value) throws Throwable;
 
     /**
      * 类型包装
