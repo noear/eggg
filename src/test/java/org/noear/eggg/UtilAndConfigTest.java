@@ -28,7 +28,7 @@ class UtilAndConfigTest {
     @Test
     void testEgggConfiguration() {
         Eggg eggg = new Eggg()
-                .withAliasHandler((cw, holder, digest) -> "custom_alias")
+                .withAliasHandler((cw, holder, digest, def) -> "custom_alias")
                 .withDigestHandler((cw, holder, source, ref) -> "custom_digest");
 
         // Test that configuration is accepted without error
@@ -80,7 +80,7 @@ class UtilAndConfigTest {
             return "default_digest";
         };
 
-        AliasHandler<String> aliasHandler = (cw, holder, digest) -> "custom_" + digest;
+        AliasHandler<String> aliasHandler = (cw, holder, digest, def) -> "custom_" + digest;
 
         Eggg eggg = new Eggg()
                 .withDigestHandler(digestHandler)

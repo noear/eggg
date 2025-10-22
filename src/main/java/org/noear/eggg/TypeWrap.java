@@ -70,7 +70,7 @@ public class TypeWrap {
         } else if (Number.class.isAssignableFrom(type)) {
             flags = FLAG_NUMBER;
         } else if (type.isPrimitive() && (
-                        type == byte.class ||
+                type == byte.class ||
                         type == short.class ||
                         type == int.class ||
                         type == long.class ||
@@ -110,6 +110,10 @@ public class TypeWrap {
 
     public boolean isInterface() {
         return type.isInterface();
+    }
+
+    public boolean isAbstract() {
+        return Modifier.isAbstract(type.getModifiers());
     }
 
     public boolean isArray() {

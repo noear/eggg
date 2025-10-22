@@ -78,7 +78,7 @@ public class PropertyMethodWrap implements Property {
             this.digest = eggg.findDigest(classWrap, this, method, fieldWrap.getDigest());
         }
 
-        this.alias = eggg.findAlias(classWrap, this, digest);
+        this.alias = eggg.findAlias(classWrap, this, digest, name);
     }
 
     @Override

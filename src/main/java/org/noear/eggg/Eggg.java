@@ -106,7 +106,7 @@ public class Eggg {
 
     ///
 
-    public void clear(){
+    public void clear() {
         typeWrapLib.clear();
         classWrapLib.clear();
     }
@@ -167,19 +167,19 @@ public class Eggg {
 
     ///
 
-    protected Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object ref) {
+    protected Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object defaultValue) {
         if (digestHandler == null) {
-            return null;
+            return defaultValue;
         } else {
-            return digestHandler.apply(classWrap, holder, source, ref);
+            return digestHandler.apply(classWrap, holder, source, defaultValue);
         }
     }
 
-    protected String findAlias(ClassWrap classWrap, Object holder, Object digest) {
+    protected String findAlias(ClassWrap classWrap, Object holder, Object digest, String defaultValue) {
         if (aliasHandler == null) {
-            return null;
+            return defaultValue;
         } else {
-            return aliasHandler.apply(classWrap, holder, digest);
+            return aliasHandler.apply(classWrap, holder, digest, defaultValue);
         }
     }
 

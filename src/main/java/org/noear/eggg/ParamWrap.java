@@ -37,7 +37,7 @@ public class ParamWrap {
 
         this.name = param.getName();
         this.digest = eggg.findDigest(classWrap, this, param, null);
-        this.alias = eggg.findAlias(classWrap, this, digest);
+        this.alias = eggg.findAlias(classWrap, this, digest, name);
     }
 
     public Parameter getParam() {

@@ -55,7 +55,7 @@ public class FieldWrap implements Property {
 
         this.name = field.getName();
         this.digest = eggg.findDigest(classWrap, this, field, null);
-        this.alias = eggg.findAlias(classWrap, this, digest);
+        this.alias = eggg.findAlias(classWrap, this, digest, name);
     }
 
     public Field getField() {
