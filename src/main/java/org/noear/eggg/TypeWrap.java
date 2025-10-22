@@ -16,7 +16,6 @@
 package org.noear.eggg;
 
 import java.lang.reflect.*;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -30,6 +29,11 @@ public class TypeWrap {
     private final Map<String, Type> genericInfo;
 
     private Class<?> type = Object.class;
+
+    private boolean isString;
+    private boolean isBoolean;
+    private boolean isNumber;
+
     private final Eggg eggg;
 
     public TypeWrap(Eggg eggg, Type genericType) {
@@ -62,10 +66,17 @@ public class TypeWrap {
             if (tmp instanceof Class) {
                 type = (Class<?>) tmp;
             }
+        } else if (type == String.class) {
+            isString = true;
+        } else if (type == Boolean.class || type == Boolean.TYPE) {
+            isBoolean = true;
+        } else if (Number.class.isAssignableFrom(type)) {
+            isNumber = true;
         }
     }
 
     private ClassWrap classWrap;
+
     public ClassWrap getClassWrap() {
         if (classWrap == null) {
             classWrap = eggg.getClassWrap(this);
@@ -98,21 +109,19 @@ public class TypeWrap {
         return type.isEnum();
     }
 
-    public boolean isList() {
-        return type == List.class;
-    }
-
     public boolean isString() {
-        return String.class.isAssignableFrom(type);
+        return isString;
     }
 
     public boolean isBoolean() {
-        return Boolean.class.isAssignableFrom(type);
+        return isBoolean;
     }
 
     public boolean isNumber() {
-        return Number.class.isAssignableFrom(type);
+        return isNumber;
     }
+
+    ///
 
     public boolean isParameterizedType() {
         return genericType instanceof ParameterizedType;

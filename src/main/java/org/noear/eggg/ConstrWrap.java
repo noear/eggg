@@ -28,6 +28,8 @@ import java.util.*;
 public class ConstrWrap {
     private final Executable constr;
 
+    private final Object digest;
+
     private final Map<String, ParamWrap> paramAliasMap;
     private final List<ParamWrap> paramAry;
 
@@ -50,6 +52,16 @@ public class ConstrWrap {
         }
 
         security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(classWrap.getTypeWrap().getType()));
+
+        digest = eggg.findDigest(classWrap, this, constr, null);
+    }
+
+    public Executable getConstr() {
+        return constr;
+    }
+
+    public <T extends Object> T getDigest() {
+        return (T) digest;
     }
 
     /**

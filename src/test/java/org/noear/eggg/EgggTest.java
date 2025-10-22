@@ -2,6 +2,7 @@ package org.noear.eggg;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.noear.eggg.model.MyList;
 import org.noear.eggg.model.UserModel;
 
 import java.util.Map;
@@ -45,5 +46,15 @@ public class EgggTest {
         }
 
         Assertions.assertEquals(1, classWrap.getPropertyWraps().size());
+    }
+
+    @Test
+    public void case3() {
+        TypeWrap typeWrap = eggg.getTypeWrap(new MyList<UserModel>() {
+        }.getClass());
+
+        for (MethodWrap mw : typeWrap.getClassWrap().getPublicMethodWraps()) {
+            System.out.println(mw);
+        }
     }
 }

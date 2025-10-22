@@ -62,6 +62,11 @@ public class FieldWrap implements Property {
         return field;
     }
 
+    @Override
+    public <T extends Object> T getDigest() {
+        return (T) digest;
+    }
+
     /**
      * 只读的
      */
@@ -131,11 +136,6 @@ public class FieldWrap implements Property {
     @Override
     public String getAlias() {
         return alias;
-    }
-
-    @Override
-    public <T extends Object> T getDigest() {
-        return (T) digest;
     }
 
     @Override

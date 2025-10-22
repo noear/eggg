@@ -127,10 +127,14 @@ public class Eggg implements ReflectHandler {
     ///
 
     public TypeWrap getTypeWrap(Type type) {
+        Objects.requireNonNull(type, "type");
+
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
     }
 
     public ClassWrap getClassWrap(TypeWrap typeWrap) {
+        Objects.requireNonNull(typeWrap, "typeWrap");
+
         return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
     }
 

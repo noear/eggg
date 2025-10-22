@@ -44,6 +44,10 @@ public class ParamWrap {
         return param;
     }
 
+    public <T extends Object> T getDigest() {
+        return (T) digest;
+    }
+
     public TypeWrap getTypeWrap() {
         return paramTypeWrap;
     }
@@ -54,9 +58,5 @@ public class ParamWrap {
 
     public String getAlias() {
         return alias;
-    }
-
-    public <T extends Object> T getDigest() {
-        return (T) digest;
     }
 }

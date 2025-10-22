@@ -28,6 +28,8 @@ import java.util.*;
 public class ClassWrap {
     private final TypeWrap typeWrap;
 
+    private final Object digest;
+
     private Executable constr;
     private Annotation constrAnno;
     private ConstrWrap constrWrap;
@@ -72,6 +74,8 @@ public class ClassWrap {
         if (constr != null) {
             constrWrap = eggg.newConstrWrap(this, constr, constrAnno);
         }
+
+        this.digest = eggg.findDigest(this, this, typeWrap.getType(), null);
     }
 
     /**
@@ -90,6 +94,10 @@ public class ClassWrap {
 
     public TypeWrap getTypeWrap() {
         return typeWrap;
+    }
+
+    public <T extends Object> T getDigest() {
+        return (T) digest;
     }
 
     public ConstrWrap getConstrWrap() {
@@ -192,6 +200,10 @@ public class ClassWrap {
 
     protected void loadDeclaredMethods() {
         for (Method m : eggg.getDeclaredMethods(typeWrap.getType())) {
+            if (m.getDeclaringClass() == Object.class) {
+                continue;
+            }
+
             if (m.isBridge() == false) {
                 MethodWrap methodWrap = eggg.newMethodWrap(this, m);
                 declaredMethodWraps.add(methodWrap);

@@ -72,12 +72,16 @@ public class MethodWrap {
         }
     }
 
-    public TypeWrap getReturnTypeWrap() {
-        return returnTypeWrap;
-    }
-
     public Method getMethod() {
         return method;
+    }
+
+    public <T extends Object> T getDigest() {
+        return (T) digest;
+    }
+
+    public TypeWrap getReturnTypeWrap() {
+        return returnTypeWrap;
     }
 
     /**
@@ -110,10 +114,6 @@ public class MethodWrap {
 
     public String getName() {
         return method.getName();
-    }
-
-    public <T extends Object> T getDigest() {
-        return (T) digest;
     }
 
     public int getParamCount() {
@@ -151,7 +151,12 @@ public class MethodWrap {
             return owner.getGenericInfo();
         } else {
             Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            return getGenericInfo(eggg.getTypeWrap(superType), method);
+
+            if (superType == null || superType == Object.class) {
+                return owner.getGenericInfo();
+            } else {
+                return getGenericInfo(eggg.getTypeWrap(superType), method);
+            }
         }
     }
 }

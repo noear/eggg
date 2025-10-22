@@ -102,6 +102,15 @@ public class PropertyMethodWrap implements Property {
         }
     }
 
+    public Method getMethod() {
+        return method;
+    }
+
+    @Override
+    public <T extends Object> T getDigest() {
+        return (T) digest;
+    }
+
     @Override
     public TypeWrap getTypeWrap() {
         return methodTypeWrap;
@@ -109,10 +118,6 @@ public class PropertyMethodWrap implements Property {
 
     public FieldWrap getFieldWrap() {
         return fieldWrap;
-    }
-
-    public Method getMethod() {
-        return method;
     }
 
     @Override
@@ -126,11 +131,6 @@ public class PropertyMethodWrap implements Property {
     }
 
     @Override
-    public <T extends Object> T getDigest() {
-        return (T) digest;
-    }
-
-    @Override
     public String toString() {
         return method.toString();
     }
@@ -140,7 +140,12 @@ public class PropertyMethodWrap implements Property {
             return owner.getGenericInfo();
         } else {
             Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            return getGenericInfo(eggg.getTypeWrap(superType), method);
+
+            if (superType == null || superType == Object.class) {
+                return owner.getGenericInfo();
+            } else {
+                return getGenericInfo(eggg.getTypeWrap(superType), method);
+            }
         }
     }
 }
