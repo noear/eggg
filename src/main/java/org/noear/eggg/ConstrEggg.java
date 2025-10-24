@@ -25,24 +25,24 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ConstrWrap {
+public class ConstrEggg {
     private final Executable constr;
 
     private final Object digest;
 
-    private final Map<String, ParamWrap> paramAliasMap;
-    private final List<ParamWrap> paramAry;
+    private final Map<String, ParamEggg> paramAliasMap;
+    private final List<ParamEggg> paramAry;
 
     private final boolean security;
 
-    public ConstrWrap(Eggg eggg, ClassWrap classWrap, Executable constr, Annotation constrAnno) {
+    public ConstrEggg(Eggg eggg, ClassEggg classWrap, Executable constr, Annotation constrAnno) {
         this.constr = constr;
 
         paramAliasMap = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamWrap paramWrap = eggg.newParamWrap(classWrap, p1);
+            ParamEggg paramWrap = eggg.newParamWrap(classWrap, p1);
 
             paramAliasMap.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
@@ -72,11 +72,11 @@ public class ConstrWrap {
         return paramAry.size();
     }
 
-    public List<ParamWrap> getParamWrapAry() {
+    public List<ParamEggg> getParamWrapAry() {
         return paramAry;
     }
 
-    public ParamWrap getParamWrapByAlias(String alias) {
+    public ParamEggg getParamWrapByAlias(String alias) {
         return paramAliasMap.get(alias);
     }
 

@@ -24,15 +24,15 @@ import java.lang.reflect.Modifier;
  * @author noear
  * @since 1.0
  */
-public class FieldWrap implements Property {
+public class FieldEggg implements Property {
     private final Field field;
-    private final TypeWrap fieldTypeWrap;
+    private final TypeEggg fieldTypeWrap;
 
     private final String name;
     private final String alias;
     private final Object digest;
 
-    public FieldWrap(Eggg eggg, ClassWrap classWrap, Field field) {
+    public FieldEggg(Eggg eggg, ClassEggg classWrap, Field field) {
         this.field = field;
         this.fieldTypeWrap = eggg.getTypeWrap(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classWrap.getTypeWrap(), field)));
 
@@ -107,7 +107,7 @@ public class FieldWrap implements Property {
     }
 
     @Override
-    public TypeWrap getTypeWrap() {
+    public TypeEggg getTypeWrap() {
         return fieldTypeWrap;
     }
 

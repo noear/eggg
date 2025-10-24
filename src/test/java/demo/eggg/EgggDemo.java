@@ -1,8 +1,8 @@
 package demo.eggg;
 
-import org.noear.eggg.ClassWrap;
+import org.noear.eggg.ClassEggg;
 import org.noear.eggg.Eggg;
-import org.noear.eggg.TypeWrap;
+import org.noear.eggg.TypeEggg;
 
 /**
  *
@@ -13,9 +13,9 @@ public class EgggDemo {
     Eggg eggg = new Eggg();
 
     public void case1() {
-        TypeWrap typeWrap = eggg.getTypeWrap(EgggDemo.class);
+        TypeEggg typeWrap = eggg.getTypeWrap(EgggDemo.class);
 
-        ClassWrap classWrap = typeWrap.getClassWrap();
+        ClassEggg classWrap = typeWrap.getClassWrap();
 
         classWrap.getFieldWraps();
     }

@@ -25,5 +25,5 @@ import java.lang.reflect.AnnotatedElement;
  */
 @FunctionalInterface
 public interface DigestHandler<T> {
-    T apply(ClassWrap classWrap, Object holder, AnnotatedElement source, T defaultValue);
+    T apply(ClassEggg classWrap, Object holder, AnnotatedElement source, T defaultValue);
 }

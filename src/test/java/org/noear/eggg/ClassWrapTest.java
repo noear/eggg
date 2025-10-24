@@ -29,20 +29,20 @@ class ClassWrapTest {
 
     @Test
     void testClassWrapCreation() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         assertNotNull(classWrap);
         assertEquals(TestClass.class, classWrap.getTypeWrap().getType());
     }
 
     @Test
     void testFieldWraps() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        Collection<FieldWrap> fields = classWrap.getFieldWraps();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        Collection<FieldEggg> fields = classWrap.getFieldWraps();
 
         assertNotNull(fields);
         assertTrue(fields.size() >= 3);
 
-        FieldWrap field1 = classWrap.getFieldWrapByName("field1");
+        FieldEggg field1 = classWrap.getFieldWrapByName("field1");
         assertNotNull(field1);
         assertEquals("field1", field1.getName());
         assertEquals(String.class, field1.getTypeWrap().getType());
@@ -50,16 +50,16 @@ class ClassWrapTest {
 
     @Test
     void testMethodWraps() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        Collection<MethodWrap> publicMethods = classWrap.getPublicMethodWraps();
-        Collection<MethodWrap> declaredMethods = classWrap.getDeclaredMethodWraps();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        Collection<MethodEggg> publicMethods = classWrap.getPublicMethodWraps();
+        Collection<MethodEggg> declaredMethods = classWrap.getDeclaredMethodWraps();
 
         assertNotNull(publicMethods);
         assertNotNull(declaredMethods);
         assertTrue(publicMethods.size() > 0);
         assertTrue(declaredMethods.size() > 0);
 
-        Optional<MethodWrap> getterMethod = publicMethods.stream()
+        Optional<MethodEggg> getterMethod = publicMethods.stream()
                 .filter(m -> m.getName().equals("getField1"))
                 .findFirst();
         assertTrue(getterMethod.isPresent());
@@ -67,13 +67,13 @@ class ClassWrapTest {
 
     @Test
     void testPropertyWraps() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        Collection<PropertyWrap> properties = classWrap.getPropertyWraps();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        Collection<PropertyEggg> properties = classWrap.getPropertyWraps();
 
         assertNotNull(properties);
         assertTrue(properties.size() >= 2);
 
-        PropertyWrap property1 = classWrap.getPropertyWrapByName("field1");
+        PropertyEggg property1 = classWrap.getPropertyWrapByName("field1");
         assertNotNull(property1);
         assertNotNull(property1.getGetterWrap());
         assertNotNull(property1.getSetterWrap());
@@ -81,8 +81,8 @@ class ClassWrapTest {
 
     @Test
     void testConstructorWrap() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        ConstrWrap constrWrap = classWrap.getConstrWrap();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ConstrEggg constrWrap = classWrap.getConstrWrap();
 
         assertNotNull(constrWrap);
         assertTrue(constrWrap.isSecurity());
@@ -90,16 +90,16 @@ class ClassWrapTest {
 
     @Test
     void testLikeRecordClass() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         assertFalse(classWrap.isLikeRecordClass());
         assertFalse(classWrap.isRealRecordClass());
     }
 
     @Test
     void testClassWrapCaching() {
-        TypeWrap typeWrap = eggg.getTypeWrap(TestClass.class);
-        ClassWrap classWrap1 = eggg.getClassWrap(typeWrap);
-        ClassWrap classWrap2 = eggg.getClassWrap(typeWrap);
+        TypeEggg typeWrap = eggg.getTypeWrap(TestClass.class);
+        ClassEggg classWrap1 = eggg.getClassWrap(typeWrap);
+        ClassEggg classWrap2 = eggg.getClassWrap(typeWrap);
 
         assertSame(classWrap1, classWrap2, "ClassWrap should be cached");
     }

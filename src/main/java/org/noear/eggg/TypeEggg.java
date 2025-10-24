@@ -25,7 +25,7 @@ import java.util.List;
  * @author noear
  * @since 1.0
  */
-public class TypeWrap {
+public class TypeEggg {
     private static final byte FLAG_STRING = 1;
     private static final byte FLAG_BOOLEAN = 1 << 1;
     private static final byte FLAG_NUMBER = 1 << 2;
@@ -40,7 +40,7 @@ public class TypeWrap {
     private final byte flags;
     private final Eggg eggg;
 
-    public TypeWrap(Eggg eggg, Type genericType) {
+    public TypeEggg(Eggg eggg, Type genericType) {
         this.eggg = eggg;
         this.genericInfo = eggg.getGenericInfo(genericType);
         this.genericType = eggg.reviewType(genericType, this.genericInfo);
@@ -86,9 +86,9 @@ public class TypeWrap {
         }
     }
 
-    private ClassWrap classWrap;
+    private ClassEggg classWrap;
 
-    public ClassWrap getClassWrap() {
+    public ClassEggg getClassWrap() {
         if (classWrap == null) {
             classWrap = eggg.getClassWrap(this);
         }

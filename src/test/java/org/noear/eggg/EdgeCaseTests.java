@@ -24,7 +24,7 @@ class EdgeCaseTests {
 
     @Test
     void testEmptyClass() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(EmptyClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(EmptyClass.class));
 
         assertNotNull(classWrap);
         assertTrue(classWrap.getFieldWraps().isEmpty());
@@ -36,7 +36,7 @@ class EdgeCaseTests {
 
     @Test
     void testClassWithOnlyStaticMethods() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithOnlyStaticMethods.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithOnlyStaticMethods.class));
 
         assertNotNull(classWrap);
         assertTrue(classWrap.getFieldWraps().isEmpty());
@@ -48,10 +48,10 @@ class EdgeCaseTests {
 
     @Test
     void testClassWithOnlyPrivateConstructor() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithOnlyPrivateConstructor.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithOnlyPrivateConstructor.class));
 
         assertNotNull(classWrap);
-        ConstrWrap constrWrap = classWrap.getConstrWrap();
+        ConstrEggg constrWrap = classWrap.getConstrWrap();
         assertNotNull(constrWrap);
 
         // Should be able to access private constructor
@@ -62,7 +62,7 @@ class EdgeCaseTests {
 
     @Test
     void testObjectClass() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(Object.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(Object.class));
 
         assertNotNull(classWrap);
         // Object class should have methods but no fields (in our context)
@@ -71,7 +71,7 @@ class EdgeCaseTests {
 
     @Test
     void testInterface() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(Runnable.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(Runnable.class));
 
         assertNotNull(classWrap);
         assertTrue(classWrap.getTypeWrap().isInterface());
@@ -85,13 +85,13 @@ class EdgeCaseTests {
             public void run() {}
         };
 
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(anonymous.getClass()));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(anonymous.getClass()));
         assertNotNull(classWrap);
     }
 
     @Test
     void testArrayClass() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(String[].class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(String[].class));
         assertNotNull(classWrap);
         assertTrue(classWrap.getTypeWrap().isArray());
     }

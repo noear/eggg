@@ -21,16 +21,16 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public class PropertyWrap {
+public class PropertyEggg {
     private final String name;
     private String alias;
 
 
-    private FieldWrap fieldWrap;
-    private PropertyMethodWrap getterWrap;
-    private PropertyMethodWrap setterWrap;
+    private FieldEggg fieldWrap;
+    private PropertyMethodEggg getterWrap;
+    private PropertyMethodEggg setterWrap;
 
-    public PropertyWrap(String name) {
+    public PropertyEggg(String name) {
         this.name = name;
     }
 
@@ -42,31 +42,31 @@ public class PropertyWrap {
         return alias;
     }
 
-    public FieldWrap getFieldWrap() {
+    public FieldEggg getFieldWrap() {
         return fieldWrap;
     }
 
-    public PropertyMethodWrap getGetterWrap() {
+    public PropertyMethodEggg getGetterWrap() {
         return getterWrap;
     }
 
-    public PropertyMethodWrap getSetterWrap() {
+    public PropertyMethodEggg getSetterWrap() {
         return setterWrap;
     }
 
     /// //////////
 
-    protected void setFieldWrap(FieldWrap f) {
+    protected void setFieldWrap(FieldEggg f) {
         this.fieldWrap = f;
         this.alias = f.getAlias();
     }
 
-    protected void setGetterWrap(PropertyMethodWrap g) {
+    protected void setGetterWrap(PropertyMethodEggg g) {
         this.getterWrap = g;
         this.alias = g.getAlias();
     }
 
-    protected void setSetterWrap(PropertyMethodWrap s) {
+    protected void setSetterWrap(PropertyMethodEggg s) {
         this.setterWrap = s;
         this.alias = s.getAlias();
     }

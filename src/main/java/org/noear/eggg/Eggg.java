@@ -68,8 +68,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public class Eggg {
-    private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
-    private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
+    private final Map<Type, TypeEggg> typeWrapLib = new ConcurrentHashMap<>();
+    private final Map<TypeEggg, ClassEggg> classWrapLib = new ConcurrentHashMap<>();
     private GenericResolver genericResolver = GenericResolver.getDefault();
 
     private AliasHandler aliasHandler;
@@ -122,7 +122,7 @@ public class Eggg {
 
     ///
 
-    public TypeWrap getTypeWrap(Type type) {
+    public TypeEggg getTypeWrap(Type type) {
         Objects.requireNonNull(type, "type");
 
         if (type instanceof Class<?>) {
@@ -137,7 +137,7 @@ public class Eggg {
         return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
     }
 
-    public ClassWrap getClassWrap(TypeWrap typeWrap) {
+    public ClassEggg getClassWrap(TypeEggg typeWrap) {
         Objects.requireNonNull(typeWrap, "typeWrap");
 
         return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
@@ -146,37 +146,37 @@ public class Eggg {
 
     ///
 
-    protected TypeWrap newTypeWrap(Type type) {
-        return new TypeWrap(this, type);
+    protected TypeEggg newTypeWrap(Type type) {
+        return new TypeEggg(this, type);
     }
 
-    protected ClassWrap newClassWrap(TypeWrap typeWrap) {
-        return new ClassWrap(this, typeWrap);
+    protected ClassEggg newClassWrap(TypeEggg typeWrap) {
+        return new ClassEggg(this, typeWrap);
     }
 
-    protected FieldWrap newFieldWrap(ClassWrap classWrap, Field field) {
-        return new FieldWrap(this, classWrap, field);
+    protected FieldEggg newFieldWrap(ClassEggg classWrap, Field field) {
+        return new FieldEggg(this, classWrap, field);
     }
 
-    protected MethodWrap newMethodWrap(ClassWrap classWrap, Method method) {
-        return new MethodWrap(this, classWrap, method);
+    protected MethodEggg newMethodWrap(ClassEggg classWrap, Method method) {
+        return new MethodEggg(this, classWrap, method);
     }
 
-    protected ConstrWrap newConstrWrap(ClassWrap classWrap, Executable constr, Annotation constrAnno) {
-        return new ConstrWrap(this, classWrap, constr, constrAnno);
+    protected ConstrEggg newConstrWrap(ClassEggg classWrap, Executable constr, Annotation constrAnno) {
+        return new ConstrEggg(this, classWrap, constr, constrAnno);
     }
 
-    protected PropertyMethodWrap newPropertyMethodWrap(ClassWrap classWrap, Method property) {
-        return new PropertyMethodWrap(this, classWrap, property);
+    protected PropertyMethodEggg newPropertyMethodWrap(ClassEggg classWrap, Method property) {
+        return new PropertyMethodEggg(this, classWrap, property);
     }
 
-    protected ParamWrap newParamWrap(ClassWrap classWrap, Parameter param) {
-        return new ParamWrap(this, classWrap, param);
+    protected ParamEggg newParamWrap(ClassEggg classWrap, Parameter param) {
+        return new ParamEggg(this, classWrap, param);
     }
 
     ///
 
-    protected Object findDigest(ClassWrap classWrap, Object holder, AnnotatedElement source, Object defaultValue) {
+    protected Object findDigest(ClassEggg classWrap, Object holder, AnnotatedElement source, Object defaultValue) {
         if (digestHandler == null) {
             return defaultValue;
         } else {
@@ -184,7 +184,7 @@ public class Eggg {
         }
     }
 
-    protected String findAlias(ClassWrap classWrap, Object holder, Object digest, String defaultValue) {
+    protected String findAlias(ClassEggg classWrap, Object holder, Object digest, String defaultValue) {
         if (aliasHandler == null) {
             return defaultValue;
         } else {
@@ -228,7 +228,7 @@ public class Eggg {
     /**
      * 获取方法的泛型信息
      */
-    protected Map<String, Type> getMethodGenericInfo(TypeWrap owner, Method method) {
+    protected Map<String, Type> getMethodGenericInfo(TypeEggg owner, Method method) {
         if (method.getDeclaringClass() == owner.getType()) {
             return owner.getGenericInfo();
         } else {
@@ -244,7 +244,7 @@ public class Eggg {
     /**
      * 获取字段的泛型信息
      */
-    protected Map<String, Type> getFieldGenericInfo(TypeWrap owner, Field field) {
+    protected Map<String, Type> getFieldGenericInfo(TypeEggg owner, Field field) {
         if (field.getDeclaringClass() == owner.getType()) {
             return owner.getGenericInfo();
         } else {

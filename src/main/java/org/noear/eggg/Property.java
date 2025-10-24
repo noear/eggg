@@ -51,7 +51,7 @@ public interface Property {
     /**
      * 类型包装
      */
-    TypeWrap getTypeWrap();
+    TypeEggg getTypeWrap();
 
     /**
      * 名字

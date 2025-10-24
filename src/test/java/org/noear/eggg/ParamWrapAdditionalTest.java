@@ -25,14 +25,14 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testVariousParameterTypes() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams",
                 String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
         assertNotNull(methodWrap);
 
-        java.util.List<ParamWrap> params = methodWrap.getParamWrapAry();
+        java.util.List<ParamEggg> params = methodWrap.getParamWrapAry();
         assertEquals(5, params.size());
 
         // Test different parameter types
@@ -45,12 +45,12 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testParameterProperties() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams",
                 String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
         Parameter parameter = method.getParameters()[0];
-        ParamWrap paramWrap = eggg.newParamWrap(classWrap, parameter);
+        ParamEggg paramWrap = eggg.newParamWrap(classWrap, parameter);
 
         assertNotNull(paramWrap);
         assertEquals("stringParam", paramWrap.getName());
@@ -66,11 +66,11 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testFinalParameter() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithFinalParam", String.class);
 
         Parameter parameter = method.getParameters()[0];
-        ParamWrap paramWrap = eggg.newParamWrap(classWrap, parameter);
+        ParamEggg paramWrap = eggg.newParamWrap(classWrap, parameter);
 
         assertNotNull(paramWrap);
         assertEquals("finalParam", paramWrap.getName());
@@ -78,11 +78,11 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testAnnotatedParameter() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithAnnotatedParam", String.class);
 
         Parameter parameter = method.getParameters()[0];
-        ParamWrap paramWrap = eggg.newParamWrap(classWrap, parameter);
+        ParamEggg paramWrap = eggg.newParamWrap(classWrap, parameter);
 
         assertNotNull(paramWrap);
         assertEquals("annotatedParam", paramWrap.getName());
@@ -102,11 +102,11 @@ class ParamWrapAdditionalTest {
                 .withDigestHandler(digestHandler)
                 .withAliasHandler(aliasHandler);
 
-        ClassWrap classWrap = customEggg.getClassWrap(customEggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = customEggg.getClassWrap(customEggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams", String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
         Parameter parameter = method.getParameters()[0];
-        ParamWrap paramWrap = customEggg.newParamWrap(classWrap, parameter);
+        ParamEggg paramWrap = customEggg.newParamWrap(classWrap, parameter);
 
         assertNotNull(paramWrap);
         assertEquals("param_digest", paramWrap.getDigest());
@@ -115,14 +115,14 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testParameterTypeWrap() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams", String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
         Parameter parameter = method.getParameters()[4]; // List parameter
-        ParamWrap paramWrap = eggg.newParamWrap(classWrap, parameter);
+        ParamEggg paramWrap = eggg.newParamWrap(classWrap, parameter);
 
         assertNotNull(paramWrap);
-        TypeWrap typeWrap = paramWrap.getTypeWrap();
+        TypeEggg typeWrap = paramWrap.getTypeWrap();
         assertNotNull(typeWrap);
         assertTrue(typeWrap.isList());
         assertTrue(typeWrap.isParameterizedType());
@@ -138,13 +138,13 @@ class ParamWrapAdditionalTest {
 
     @Test
     void testParameterInConstructor() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithParameterizedConstructor.class));
-        ConstrWrap constrWrap = classWrap.getConstrWrap();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithParameterizedConstructor.class));
+        ConstrEggg constrWrap = classWrap.getConstrWrap();
 
         assertNotNull(constrWrap);
         assertEquals(1, constrWrap.getParamCount());
 
-        ParamWrap paramWrap = constrWrap.getParamWrapAry().get(0);
+        ParamEggg paramWrap = constrWrap.getParamWrapAry().get(0);
         assertNotNull(paramWrap);
         assertEquals("value", paramWrap.getName());
         assertEquals(String.class, paramWrap.getTypeWrap().getType());
@@ -158,17 +158,17 @@ class ParamWrapAdditionalTest {
 
         class StringClass extends GenericClass<String> {}
 
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringClass.class));
         Method method = GenericClass.class.getMethod("process", Object.class);
 
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
         assertNotNull(methodWrap);
 
-        ParamWrap paramWrap = methodWrap.getParamWrapAry().get(0);
+        ParamEggg paramWrap = methodWrap.getParamWrapAry().get(0);
         assertNotNull(paramWrap);
 
         // The parameter type should be resolved to String due to generic inheritance
-        TypeWrap typeWrap = paramWrap.getTypeWrap();
+        TypeEggg typeWrap = paramWrap.getTypeWrap();
         assertNotNull(typeWrap);
         assertEquals(String.class, typeWrap.getType());
     }

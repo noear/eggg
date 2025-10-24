@@ -37,19 +37,19 @@ class ComprehensiveTest {
 
     @Test
     void testComplexGenericInheritance() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ConcreteClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ConcreteClass.class));
 
         // Test fields
-        FieldWrap genericField = classWrap.getFieldWrapByName("genericField");
+        FieldEggg genericField = classWrap.getFieldWrapByName("genericField");
         assertNotNull(genericField);
         assertEquals(String.class, genericField.getTypeWrap().getType());
 
-        FieldWrap numberListField = classWrap.getFieldWrapByName("numberList");
+        FieldEggg numberListField = classWrap.getFieldWrapByName("numberList");
         assertNotNull(numberListField);
         assertTrue(numberListField.getTypeWrap().isList());
 
         // Test properties
-        PropertyWrap genericProperty = classWrap.getPropertyWrapByName("genericField");
+        PropertyEggg genericProperty = classWrap.getPropertyWrapByName("genericField");
         assertNotNull(genericProperty);
         assertNotNull(genericProperty.getGetterWrap());
         assertNotNull(genericProperty.getSetterWrap());
@@ -57,17 +57,17 @@ class ComprehensiveTest {
 
     @Test
     void testGenericMethodInComplexClass() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ComplexGenericClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ComplexGenericClass.class));
 
-        Optional<MethodWrap> processMethod = classWrap.getPublicMethodWraps().stream()
+        Optional<MethodEggg> processMethod = classWrap.getPublicMethodWraps().stream()
                 .filter(m -> m.getName().equals("processData"))
                 .findFirst();
 
         assertTrue(processMethod.isPresent());
-        MethodWrap methodWrap = processMethod.get();
+        MethodEggg methodWrap = processMethod.get();
         assertEquals(3, methodWrap.getParamCount());
 
-        List<ParamWrap> params = methodWrap.getParamWrapAry();
+        List<ParamEggg> params = methodWrap.getParamWrapAry();
         assertNotNull(params);
         assertEquals(3, params.size());
     }
@@ -78,8 +78,8 @@ class ComprehensiveTest {
 
         // Repeated access should be fast due to caching
         for (int i = 0; i < 100; i++) {
-            TypeWrap typeWrap = eggg.getTypeWrap(String.class);
-            ClassWrap classWrap = eggg.getClassWrap(typeWrap);
+            TypeEggg typeWrap = eggg.getTypeWrap(String.class);
+            ClassEggg classWrap = eggg.getClassWrap(typeWrap);
             assertNotNull(classWrap);
         }
 
@@ -92,9 +92,9 @@ class ComprehensiveTest {
 
     @Test
     void testMultipleGenericTypes() {
-        TypeWrap typeWrap1 = eggg.getTypeWrap(List.class);
-        TypeWrap typeWrap2 = eggg.getTypeWrap(Map.class);
-        TypeWrap typeWrap3 = eggg.getTypeWrap(Set.class);
+        TypeEggg typeWrap1 = eggg.getTypeWrap(List.class);
+        TypeEggg typeWrap2 = eggg.getTypeWrap(Map.class);
+        TypeEggg typeWrap3 = eggg.getTypeWrap(Set.class);
 
         assertNotNull(typeWrap1);
         assertNotNull(typeWrap2);
@@ -112,7 +112,7 @@ class ComprehensiveTest {
         assertThrows(NullPointerException.class, () -> eggg.getTypeWrap(null));
 
         // Test with invalid types (should not throw)
-        TypeWrap typeWrap = eggg.getTypeWrap(Object.class);
+        TypeEggg typeWrap = eggg.getTypeWrap(Object.class);
         assertNotNull(typeWrap);
     }
 }

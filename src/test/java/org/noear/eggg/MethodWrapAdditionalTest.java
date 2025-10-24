@@ -44,9 +44,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodWrapCreation() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("stringMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertEquals("stringMethod", methodWrap.getName());
@@ -56,9 +56,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testVoidReturnType() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("voidMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertNull(methodWrap.getReturnTypeWrap()); // void return type should be null
@@ -66,29 +66,29 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodModifiers() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
 
         // Test static method
         Method staticMethod = MethodTestClass.class.getMethod("staticMethod");
-        MethodWrap staticMethodWrap = eggg.newMethodWrap(classWrap, staticMethod);
+        MethodEggg staticMethodWrap = eggg.newMethodWrap(classWrap, staticMethod);
         assertTrue(staticMethodWrap.isStatic());
 
         // Test final method
         Method finalMethod = MethodTestClass.class.getMethod("finalMethod");
-        MethodWrap finalMethodWrap = eggg.newMethodWrap(classWrap, finalMethod);
+        MethodEggg finalMethodWrap = eggg.newMethodWrap(classWrap, finalMethod);
         assertTrue(finalMethodWrap.isFinal());
 
         // Test public method
         Method publicMethod = MethodTestClass.class.getMethod("stringMethod");
-        MethodWrap publicMethodWrap = eggg.newMethodWrap(classWrap, publicMethod);
+        MethodEggg publicMethodWrap = eggg.newMethodWrap(classWrap, publicMethod);
         assertTrue(publicMethodWrap.isPublic());
     }
 
     @Test
     void testPrivateMethod() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getDeclaredMethod("privateMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertFalse(methodWrap.isPublic());
@@ -96,20 +96,20 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodWithParameters() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("methodWithParams", String.class, int.class);
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertEquals(2, methodWrap.getParamCount());
 
-        List<ParamWrap> params = methodWrap.getParamWrapAry();
+        List<ParamEggg> params = methodWrap.getParamWrapAry();
         assertEquals(2, params.size());
         assertEquals("param1", params.get(0).getName());
         assertEquals("param2", params.get(1).getName());
 
         // Test parameter access by alias
-        ParamWrap param1 = methodWrap.getParamWrapByAlias("param1");
+        ParamEggg param1 = methodWrap.getParamWrapByAlias("param1");
         assertNotNull(param1);
         assertEquals(String.class, param1.getTypeWrap().getType());
 
@@ -120,12 +120,12 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testGenericMethod() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringMethodClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringMethodClass.class));
         Method method = GenericMethodClass.class.getMethod("genericMethod", Object.class);
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
-        TypeWrap returnType = methodWrap.getReturnTypeWrap();
+        TypeEggg returnType = methodWrap.getReturnTypeWrap();
         assertNotNull(returnType);
         // Generic should be resolved to String due to inheritance
         assertEquals(String.class, returnType.getType());
@@ -133,21 +133,21 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testGenericReturnType() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("genericMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
-        TypeWrap returnType = methodWrap.getReturnTypeWrap();
+        TypeEggg returnType = methodWrap.getReturnTypeWrap();
         assertNotNull(returnType);
         assertTrue(returnType.isList());
     }
 
     @Test
     void testMethodInvocation() throws Throwable {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("methodWithReturn", String.class);
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         MethodTestClass instance = new MethodTestClass();
         Object result = methodWrap.newInstance(instance, "testInput");
@@ -157,9 +157,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testStaticMethodInvocation() throws Throwable {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("staticMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         // Static method can be invoked with null instance
         methodWrap.newInstance(null);
@@ -168,9 +168,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodWithException() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("methodWithException");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         // Method declares Exception in throws clause
@@ -179,9 +179,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testSynchronizedMethod() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("synchronizedMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertTrue(Modifier.isSynchronized(method.getModifiers()));
@@ -189,23 +189,23 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testOverloadedMethods() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
 
         // Find both overloaded methods
-        List<MethodWrap> overloadedMethods = classWrap.getPublicMethodWraps().stream()
+        List<MethodEggg> overloadedMethods = classWrap.getPublicMethodWraps().stream()
                 .filter(m -> m.getName().equals("overloaded"))
                 .collect(Collectors.toList());
 
         assertEquals(2, overloadedMethods.size());
 
         // One should have 0 parameters, the other should have 1
-        MethodWrap noParam = overloadedMethods.stream()
+        MethodEggg noParam = overloadedMethods.stream()
                 .filter(m -> m.getParamCount() == 0)
                 .findFirst()
                 .orElse(null);
         assertNotNull(noParam);
 
-        MethodWrap oneParam = overloadedMethods.stream()
+        MethodEggg oneParam = overloadedMethods.stream()
                 .filter(m -> m.getParamCount() == 1)
                 .findFirst()
                 .orElse(null);
@@ -214,9 +214,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodToString() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("stringMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         String toString = methodWrap.toString();
         assertNotNull(toString);
@@ -225,9 +225,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodDigest() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("stringMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         Object digest = methodWrap.getDigest();
         assertNull(digest); // No digest handler set
@@ -235,9 +235,9 @@ class MethodWrapAdditionalTest {
 
     @Test
     void testMethodHandleInvocation() throws Throwable {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(MethodTestClass.class));
         Method method = MethodTestClass.class.getMethod("methodWithReturn", String.class);
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         MethodTestClass instance = new MethodTestClass();
 

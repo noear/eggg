@@ -28,7 +28,7 @@ class GenericTypeTest {
     @Test
     void testParameterizedType() {
         Type type = StringGenericClass.class.getGenericSuperclass();
-        TypeWrap typeWrap = eggg.getTypeWrap(type);
+        TypeEggg typeWrap = eggg.getTypeWrap(type);
 
         assertNotNull(typeWrap);
         assertTrue(typeWrap.isParameterizedType());
@@ -42,32 +42,32 @@ class GenericTypeTest {
 
     @Test
     void testGenericFieldType() throws NoSuchFieldException {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringGenericClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("value");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringGenericClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("value");
 
         assertNotNull(fieldWrap);
-        TypeWrap fieldTypeWrap = fieldWrap.getTypeWrap();
+        TypeEggg fieldTypeWrap = fieldWrap.getTypeWrap();
         assertEquals(String.class, fieldTypeWrap.getType());
     }
 
     @Test
     void testGenericListFieldType() throws NoSuchFieldException {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringGenericClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("list");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(StringGenericClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("list");
 
         assertNotNull(fieldWrap);
-        TypeWrap fieldTypeWrap = fieldWrap.getTypeWrap();
+        TypeEggg fieldTypeWrap = fieldWrap.getTypeWrap();
         assertTrue(fieldTypeWrap.isList());
         assertTrue(fieldTypeWrap.isParameterizedType());
     }
 
     @Test
     void testNestedGenericType() throws NoSuchFieldException {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(NestedGenericClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("complexMap");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(NestedGenericClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("complexMap");
 
         assertNotNull(fieldWrap);
-        TypeWrap fieldTypeWrap = fieldWrap.getTypeWrap();
+        TypeEggg fieldTypeWrap = fieldWrap.getTypeWrap();
         assertTrue(fieldTypeWrap.isMap());
         assertTrue(fieldTypeWrap.isParameterizedType());
     }
@@ -78,13 +78,13 @@ class GenericTypeTest {
             public <T> List<T> getList() { return null; }
         }
 
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        Optional<MethodWrap> methodWrap = classWrap.getPublicMethodWraps().stream()
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        Optional<MethodEggg> methodWrap = classWrap.getPublicMethodWraps().stream()
                 .filter(m -> m.getName().equals("getList"))
                 .findFirst();
 
         assertTrue(methodWrap.isPresent());
-        TypeWrap returnType = methodWrap.get().getReturnTypeWrap();
+        TypeEggg returnType = methodWrap.get().getReturnTypeWrap();
         assertNotNull(returnType);
         assertTrue(returnType.isList());
     }
@@ -106,7 +106,7 @@ class GenericTypeTest {
             public String getTypeName() { return "java.util.List<? extends java.lang.Number>"; }
         };
 
-        TypeWrap typeWrap = eggg.getTypeWrap(type);
+        TypeEggg typeWrap = eggg.getTypeWrap(type);
         assertNotNull(typeWrap);
         assertTrue(typeWrap.isList());
     }

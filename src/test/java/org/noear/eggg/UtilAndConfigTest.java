@@ -49,9 +49,9 @@ class UtilAndConfigTest {
     @Test
     void testEgggClearCache() {
         Eggg eggg = new Eggg();
-        TypeWrap type1 = eggg.getTypeWrap(String.class);
+        TypeEggg type1 = eggg.getTypeWrap(String.class);
         eggg.clear();
-        TypeWrap type2 = eggg.getTypeWrap(String.class);
+        TypeEggg type2 = eggg.getTypeWrap(String.class);
 
         // After clear, should create new instance (not guaranteed but likely)
         assertNotNull(type1);
@@ -86,8 +86,8 @@ class UtilAndConfigTest {
                 .withDigestHandler(digestHandler)
                 .withAliasHandler(aliasHandler);
 
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(AnnotatedClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("annotatedField");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(AnnotatedClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("annotatedField");
 
         assertEquals("field_digest", fieldWrap.getDigest());
         assertEquals("custom_field_digest", fieldWrap.getAlias());

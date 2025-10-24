@@ -26,19 +26,19 @@ import java.util.Objects;
  * @author noear
  * @since 1.0
  */
-public class PropertyMethodWrap implements Property {
+public class PropertyMethodEggg implements Property {
     private final Method method;
     private MethodHandle methodHandle;
 
-    private final TypeWrap propertyTypeWrap;
+    private final TypeEggg propertyTypeWrap;
 
-    private final FieldWrap fieldWrap;
+    private final FieldEggg fieldWrap;
 
     private final String name;
     private final String alias;
     private final Object digest;
 
-    public PropertyMethodWrap(Eggg eggg, ClassWrap classWrap, Method method) {
+    public PropertyMethodEggg(Eggg eggg, ClassEggg classWrap, Method method) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(classWrap, "classWrap");
         Objects.requireNonNull(method, "property");
@@ -122,11 +122,11 @@ public class PropertyMethodWrap implements Property {
     }
 
     @Override
-    public TypeWrap getTypeWrap() {
+    public TypeEggg getTypeWrap() {
         return propertyTypeWrap;
     }
 
-    public FieldWrap getFieldWrap() {
+    public FieldEggg getFieldWrap() {
         return fieldWrap;
     }
 

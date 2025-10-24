@@ -18,31 +18,31 @@ public class EgggTest {
 
     @Test
     public void case1() {
-        TypeWrap typeWrap = eggg.getTypeWrap(Object.class);
+        TypeEggg typeWrap = eggg.getTypeWrap(Object.class);
 
-        ClassWrap classWrap = typeWrap.getClassWrap();
+        ClassEggg classWrap = typeWrap.getClassWrap();
 
-        ConstrWrap constrWrap = classWrap.getConstrWrap();
+        ConstrEggg constrWrap = classWrap.getConstrWrap();
 
         Assertions.assertNull(constrWrap);
 
-        for (PropertyWrap p1 : classWrap.getPropertyWraps()) {
+        for (PropertyEggg p1 : classWrap.getPropertyWraps()) {
             System.out.println(p1);
         }
     }
 
     @Test
     public void case2() {
-        TypeWrap typeWrap = eggg.getTypeWrap(UserModel.class);
+        TypeEggg typeWrap = eggg.getTypeWrap(UserModel.class);
 
-        ClassWrap classWrap = typeWrap.getClassWrap();
+        ClassEggg classWrap = typeWrap.getClassWrap();
 
-        ConstrWrap constrWrap = classWrap.getConstrWrap();
+        ConstrEggg constrWrap = classWrap.getConstrWrap();
 
         Assertions.assertNotNull(constrWrap);
         Assertions.assertEquals(0, constrWrap.getParamCount());
 
-        for (PropertyWrap p1 : classWrap.getPropertyWraps()) {
+        for (PropertyEggg p1 : classWrap.getPropertyWraps()) {
             System.out.println(p1);
         }
 
@@ -51,17 +51,17 @@ public class EgggTest {
 
     @Test
     public void case3() {
-        TypeWrap typeWrap = eggg.getTypeWrap(new MyList<UserModel>() {
+        TypeEggg typeWrap = eggg.getTypeWrap(new MyList<UserModel>() {
         }.getClass());
 
-        for (MethodWrap mw : typeWrap.getClassWrap().getPublicMethodWraps()) {
+        for (MethodEggg mw : typeWrap.getClassWrap().getPublicMethodWraps()) {
             System.out.println(mw);
         }
     }
 
     @Test
     public void case4() {
-        TypeWrap typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
+        TypeEggg typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
 
         if (typeWrap.isMap()) {
             if (typeWrap.isParameterizedType()) {

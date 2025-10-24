@@ -30,8 +30,8 @@ class PropertyWrapTest {
 
     @Test
     void testPropertyDetection() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        Collection<PropertyWrap> properties = classWrap.getPropertyWraps();
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        Collection<PropertyEggg> properties = classWrap.getPropertyWraps();
 
         assertNotNull(properties);
         assertTrue(properties.size() >= 4);
@@ -43,8 +43,8 @@ class PropertyWrapTest {
 
     @Test
     void testPropertyComponents() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap nameProperty = classWrap.getPropertyWrapByName("name");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg nameProperty = classWrap.getPropertyWrapByName("name");
 
         assertNotNull(nameProperty);
         assertNotNull(nameProperty.getGetterWrap());
@@ -56,8 +56,8 @@ class PropertyWrapTest {
 
     @Test
     void testReadOnlyProperty() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap readOnlyProperty = classWrap.getPropertyWrapByName("readOnly");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg readOnlyProperty = classWrap.getPropertyWrapByName("readOnly");
 
         assertNotNull(readOnlyProperty);
         assertNotNull(readOnlyProperty.getGetterWrap());
@@ -66,8 +66,8 @@ class PropertyWrapTest {
 
     @Test
     void testWriteOnlyProperty() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap writeOnlyProperty = classWrap.getPropertyWrapByName("writeOnly");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg writeOnlyProperty = classWrap.getPropertyWrapByName("writeOnly");
 
         assertNotNull(writeOnlyProperty);
         assertNull(writeOnlyProperty.getGetterWrap());
@@ -76,8 +76,8 @@ class PropertyWrapTest {
 
     @Test
     void testTransientProperty() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap tempDataProperty = classWrap.getPropertyWrapByName("tempData");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg tempDataProperty = classWrap.getPropertyWrapByName("tempData");
 
         assertNotNull(tempDataProperty);
         assertTrue(tempDataProperty.getFieldWrap().isTransient());
@@ -85,8 +85,8 @@ class PropertyWrapTest {
 
     @Test
     void testPropertyAccess() throws Throwable {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap nameProperty = classWrap.getPropertyWrapByName("name");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg nameProperty = classWrap.getPropertyWrapByName("name");
 
         TestClass instance = new TestClass();
         nameProperty.getSetterWrap().setValue(instance, "John");
@@ -97,11 +97,11 @@ class PropertyWrapTest {
 
     @Test
     void testPropertyMethodWrap() {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        PropertyWrap ageProperty = classWrap.getPropertyWrapByName("age");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        PropertyEggg ageProperty = classWrap.getPropertyWrapByName("age");
 
-        PropertyMethodWrap getter = ageProperty.getGetterWrap();
-        PropertyMethodWrap setter = ageProperty.getSetterWrap();
+        PropertyMethodEggg getter = ageProperty.getGetterWrap();
+        PropertyMethodEggg setter = ageProperty.getSetterWrap();
 
         assertNotNull(getter);
         assertNotNull(setter);

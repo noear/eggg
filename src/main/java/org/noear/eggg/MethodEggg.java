@@ -26,18 +26,18 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class MethodWrap {
+public class MethodEggg {
     private final Method method;
     private MethodHandle methodHandle;
 
-    private final TypeWrap returnTypeWrap;
+    private final TypeEggg returnTypeWrap;
 
     private final Object digest;
 
-    private final Map<String, ParamWrap> paramWrapsForAlias;
-    private final List<ParamWrap> paramAry;
+    private final Map<String, ParamEggg> paramWrapsForAlias;
+    private final List<ParamEggg> paramAry;
 
-    public MethodWrap(Eggg eggg, ClassWrap classWrap, Method method) {
+    public MethodEggg(Eggg eggg, ClassEggg classWrap, Method method) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(classWrap, "classWrap");
         Objects.requireNonNull(method, "property");
@@ -62,7 +62,7 @@ public class MethodWrap {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
-            ParamWrap paramWrap = eggg.newParamWrap(classWrap, p1);
+            ParamEggg paramWrap = eggg.newParamWrap(classWrap, p1);
 
             paramWrapsForAlias.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
@@ -77,7 +77,7 @@ public class MethodWrap {
         return (T) digest;
     }
 
-    public TypeWrap getReturnTypeWrap() {
+    public TypeEggg getReturnTypeWrap() {
         return returnTypeWrap;
     }
 
@@ -110,11 +110,11 @@ public class MethodWrap {
         return paramAry.size();
     }
 
-    public List<ParamWrap> getParamWrapAry() {
+    public List<ParamEggg> getParamWrapAry() {
         return paramAry;
     }
 
-    public ParamWrap getParamWrapByAlias(String alias) {
+    public ParamEggg getParamWrapByAlias(String alias) {
         return paramWrapsForAlias.get(alias);
     }
 

@@ -23,15 +23,15 @@ import java.lang.reflect.Parameter;
  * @author noear
  * @since 1.0
  */
-public class ParamWrap {
+public class ParamEggg {
     private final Parameter param;
-    private final TypeWrap paramTypeWrap;
+    private final TypeEggg paramTypeWrap;
 
     private final String name;
     private final String alias;
     private final Object digest;
 
-    public ParamWrap(Eggg eggg, ClassWrap classWrap, Parameter param) {
+    public ParamEggg(Eggg eggg, ClassEggg classWrap, Parameter param) {
         this.param = param;
         this.paramTypeWrap = eggg.getTypeWrap(eggg.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
 
@@ -48,7 +48,7 @@ public class ParamWrap {
         return (T) digest;
     }
 
-    public TypeWrap getTypeWrap() {
+    public TypeEggg getTypeWrap() {
         return paramTypeWrap;
     }
 

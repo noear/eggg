@@ -26,9 +26,9 @@ class MethodFieldWrapTest {
 
     @Test
     void testMethodWrapProperties() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         Method method = TestClass.class.getMethod("getValue");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertEquals("getValue", methodWrap.getName());
@@ -40,9 +40,9 @@ class MethodFieldWrapTest {
 
     @Test
     void testStaticMethodWrap() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         Method method = TestClass.class.getMethod("staticMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertTrue(methodWrap.isStatic());
@@ -50,9 +50,9 @@ class MethodFieldWrapTest {
 
     @Test
     void testFinalMethodWrap() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         Method method = TestClass.class.getMethod("finalMethod");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertTrue(methodWrap.isFinal());
@@ -60,14 +60,14 @@ class MethodFieldWrapTest {
 
     @Test
     void testMethodWithParameters() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         Method method = TestClass.class.getMethod("methodWithParams", String.class, int.class);
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         assertNotNull(methodWrap);
         assertEquals(2, methodWrap.getParamCount());
 
-        List<ParamWrap> params = methodWrap.getParamWrapAry();
+        List<ParamEggg> params = methodWrap.getParamWrapAry();
         assertEquals(2, params.size());
         assertEquals("param1", params.get(0).getName());
         assertEquals("param2", params.get(1).getName());
@@ -75,8 +75,8 @@ class MethodFieldWrapTest {
 
     @Test
     void testFieldWrapProperties() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("value");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("value");
 
         assertNotNull(fieldWrap);
         assertEquals("value", fieldWrap.getName());
@@ -88,8 +88,8 @@ class MethodFieldWrapTest {
 
     @Test
     void testFinalFieldWrap() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("finalField");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("finalField");
 
         assertNotNull(fieldWrap);
         assertTrue(fieldWrap.isFinal());
@@ -97,9 +97,9 @@ class MethodFieldWrapTest {
 
     @Test
     void testMethodInvocation() throws Throwable {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
         Method method = TestClass.class.getMethod("getValue");
-        MethodWrap methodWrap = eggg.newMethodWrap(classWrap, method);
+        MethodEggg methodWrap = eggg.newMethodWrap(classWrap, method);
 
         TestClass instance = new TestClass();
         instance.setValue("test");
@@ -110,8 +110,8 @@ class MethodFieldWrapTest {
 
     @Test
     void testFieldAccess() throws Exception {
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
-        FieldWrap fieldWrap = classWrap.getFieldWrapByName("value");
+        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClass.class));
+        FieldEggg fieldWrap = classWrap.getFieldWrapByName("value");
 
         TestClass instance = new TestClass();
         fieldWrap.setValue(instance, "testValue");
