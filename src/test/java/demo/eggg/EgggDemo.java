@@ -13,10 +13,10 @@ public class EgggDemo {
     Eggg eggg = new Eggg();
 
     public void case1() {
-        TypeEggg typeWrap = eggg.getTypeWrap(EgggDemo.class);
+        TypeEggg typeEggg = eggg.getTypeEggg(EgggDemo.class);
 
-        ClassEggg classWrap = typeWrap.getClassWrap();
+        ClassEggg classEggg = typeEggg.getClassEggg();
 
-        classWrap.getFieldWraps();
+        classEggg.getFieldWraps();
     }
 }

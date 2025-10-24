@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *             .withDigestHandler(EgggUtil::doDigestHandle)
  *             .withAliasHandler(EgggUtil::doAliasHandle);
  *
- *     private static String doAliasHandle(ClassWrap cw, Object h, Object digest) {
+ *     private static String doAliasHandle(ClassEggg cw, Object h, Object digest) {
  *         if (digest instanceof ONodeAttrHolder) {
  *             return ((ONodeAttrHolder) digest).getAlias();
  *         } else {
@@ -40,7 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *         }
  *     }
  *
- *     private static ONodeAttrHolder doDigestHandle(ClassWrap cw, Object h, AnnotatedElement e, ONodeAttrHolder ref) {
+ *     private static ONodeAttrHolder doDigestHandle(ClassEggg cw, Object h, AnnotatedElement e, ONodeAttrHolder ref) {
  *         ONodeAttr attr = e.getAnnotation(ONodeAttr.class);
  *
  *         if (attr == null && ref != null) {
@@ -59,8 +59,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *     }
  *
  *     //获取类型包装器
- *     public static TypeWrap getTypeWrap(Type type) {
- *         return eggg.getTypeWrap(type);
+ *     public static TypeEggg getTypeEggg(Type type) {
+ *         return eggg.getTypeEggg(type);
  *     }
  *  }
  * }</pre>
@@ -68,8 +68,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public class Eggg {
-    private final Map<Type, TypeEggg> typeWrapLib = new ConcurrentHashMap<>();
-    private final Map<TypeEggg, ClassEggg> classWrapLib = new ConcurrentHashMap<>();
+    private final Map<Type, TypeEggg> typeEgggLib = new ConcurrentHashMap<>();
+    private final Map<TypeEggg, ClassEggg> classEgggLib = new ConcurrentHashMap<>();
     private GenericResolver genericResolver = GenericResolver.getDefault();
 
     private AliasHandler aliasHandler;
@@ -115,14 +115,14 @@ public class Eggg {
     ///
 
     public void clear() {
-        typeWrapLib.clear();
-        classWrapLib.clear();
+        typeEgggLib.clear();
+        classEgggLib.clear();
         genericResolver.clear();
     }
 
     ///
 
-    public TypeEggg getTypeWrap(Type type) {
+    public TypeEggg getTypeEggg(Type type) {
         Objects.requireNonNull(type, "type");
 
         if (type instanceof Class<?>) {
@@ -134,61 +134,61 @@ public class Eggg {
             }
         }
 
-        return typeWrapLib.computeIfAbsent(type, t -> newTypeWrap(t));
+        return typeEgggLib.computeIfAbsent(type, t -> newTypeEggg(t));
     }
 
-    public ClassEggg getClassWrap(TypeEggg typeWrap) {
-        Objects.requireNonNull(typeWrap, "typeWrap");
+    public ClassEggg getClassEggg(TypeEggg typeEggg) {
+        Objects.requireNonNull(typeEggg, "typeEggg");
 
-        return classWrapLib.computeIfAbsent(typeWrap, t -> newClassWrap(t));
+        return classEgggLib.computeIfAbsent(typeEggg, t -> newClassEggg(t));
     }
 
 
     ///
 
-    protected TypeEggg newTypeWrap(Type type) {
+    protected TypeEggg newTypeEggg(Type type) {
         return new TypeEggg(this, type);
     }
 
-    protected ClassEggg newClassWrap(TypeEggg typeWrap) {
-        return new ClassEggg(this, typeWrap);
+    protected ClassEggg newClassEggg(TypeEggg typeEggg) {
+        return new ClassEggg(this, typeEggg);
     }
 
-    protected FieldEggg newFieldWrap(ClassEggg classWrap, Field field) {
-        return new FieldEggg(this, classWrap, field);
+    protected FieldEggg newFieldWrap(ClassEggg classEggg, Field field) {
+        return new FieldEggg(this, classEggg, field);
     }
 
-    protected MethodEggg newMethodWrap(ClassEggg classWrap, Method method) {
-        return new MethodEggg(this, classWrap, method);
+    protected MethodEggg newMethodWrap(ClassEggg classEggg, Method method) {
+        return new MethodEggg(this, classEggg, method);
     }
 
-    protected ConstrEggg newConstrWrap(ClassEggg classWrap, Executable constr, Annotation constrAnno) {
-        return new ConstrEggg(this, classWrap, constr, constrAnno);
+    protected ConstrEggg newConstrWrap(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
+        return new ConstrEggg(this, classEggg, constr, constrAnno);
     }
 
-    protected PropertyMethodEggg newPropertyMethodWrap(ClassEggg classWrap, Method property) {
-        return new PropertyMethodEggg(this, classWrap, property);
+    protected PropertyMethodEggg newPropertyMethodWrap(ClassEggg classEggg, Method property) {
+        return new PropertyMethodEggg(this, classEggg, property);
     }
 
-    protected ParamEggg newParamWrap(ClassEggg classWrap, Parameter param) {
-        return new ParamEggg(this, classWrap, param);
+    protected ParamEggg newParamWrap(ClassEggg classEggg, Parameter param) {
+        return new ParamEggg(this, classEggg, param);
     }
 
     ///
 
-    protected Object findDigest(ClassEggg classWrap, Object holder, AnnotatedElement source, Object defaultValue) {
+    protected Object findDigest(ClassEggg classEggg, Object holder, AnnotatedElement source, Object defaultValue) {
         if (digestHandler == null) {
             return defaultValue;
         } else {
-            return digestHandler.apply(classWrap, holder, source, defaultValue);
+            return digestHandler.apply(classEggg, holder, source, defaultValue);
         }
     }
 
-    protected String findAlias(ClassEggg classWrap, Object holder, Object digest, String defaultValue) {
+    protected String findAlias(ClassEggg classEggg, Object holder, Object digest, String defaultValue) {
         if (aliasHandler == null) {
             return defaultValue;
         } else {
-            return aliasHandler.apply(classWrap, holder, digest, defaultValue);
+            return aliasHandler.apply(classEggg, holder, digest, defaultValue);
         }
     }
 
@@ -236,7 +236,7 @@ public class Eggg {
             if (superType == null || superType == Object.class) {
                 return owner.getGenericInfo();
             } else {
-                return getMethodGenericInfo(getTypeWrap(superType), method);
+                return getMethodGenericInfo(getTypeEggg(superType), method);
             }
         }
     }
@@ -249,7 +249,7 @@ public class Eggg {
             return owner.getGenericInfo();
         } else {
             Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            return getFieldGenericInfo(getTypeWrap(superType), field);
+            return getFieldGenericInfo(getTypeEggg(superType), field);
         }
     }
 

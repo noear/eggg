@@ -23,5 +23,5 @@ package org.noear.eggg;
  */
 @FunctionalInterface
 public interface AliasHandler<T> {
-    String apply(ClassEggg classWrap, Object holder, T digest, String defaultValue);
+    String apply(ClassEggg classEggg, Object holder, T digest, String defaultValue);
 }

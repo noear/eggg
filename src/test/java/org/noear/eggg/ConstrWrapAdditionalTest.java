@@ -61,8 +61,8 @@ class ConstrWrapAdditionalTest {
     @Test
     void testAnnotatedConstructorSecurity() {
         Eggg customEggg = new Eggg().withCreatorClass(TestCreator.class);
-        ClassEggg classWrap = customEggg.getClassWrap(customEggg.getTypeWrap(ClassWithAnnotatedConstructor.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(ClassWithAnnotatedConstructor.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         assertTrue(constrWrap.isSecurity()); // Should be secure because it has annotation
@@ -71,8 +71,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testNoArgConstructorSecurity() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithAnnotatedConstructor.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithAnnotatedConstructor.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         assertTrue(constrWrap.isSecurity()); // Should be secure because it has no parameters
@@ -81,8 +81,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testMultipleParameterConstructor() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         assertEquals(2, constrWrap.getParamCount());
@@ -91,17 +91,17 @@ class ConstrWrapAdditionalTest {
         // Test parameter access
         ParamEggg param1 = constrWrap.getParamWrapByAlias("param1");
         assertNotNull(param1);
-        assertEquals(String.class, param1.getTypeWrap().getType());
+        assertEquals(String.class, param1.getTypeEggg().getType());
 
         ParamEggg param2 = constrWrap.getParamWrapByAlias("param2");
         assertNotNull(param2);
-        assertEquals(int.class, param2.getTypeWrap().getType());
+        assertEquals(int.class, param2.getTypeEggg().getType());
     }
 
     @Test
     void testParameterAliasAccess() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
 
@@ -120,8 +120,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testConstructorInvocation() throws Exception {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
 
@@ -137,8 +137,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testPrivateConstructor() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithPrivateConstructor.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithPrivateConstructor.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         // Should still find private constructor
         assertNotNull(constrWrap);
@@ -146,8 +146,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testConstructorDigest() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         Object digest = constrWrap.getDigest();
@@ -156,8 +156,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testConstructorToString() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         String toString = constrWrap.toString();
@@ -167,8 +167,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testConstructorExecutableAccess() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         Executable executable = constrWrap.getConstr();
@@ -178,8 +178,8 @@ class ConstrWrapAdditionalTest {
 
     @Test
     void testParameterListAccess() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ClassWithMultipleParams.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
 

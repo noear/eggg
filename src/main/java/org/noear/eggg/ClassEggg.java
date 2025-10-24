@@ -26,7 +26,7 @@ import java.util.*;
  * @since 1.0
  */
 public class ClassEggg {
-    private final TypeEggg typeWrap;
+    private final TypeEggg typeEggg;
 
     private final Object digest;
 
@@ -48,19 +48,19 @@ public class ClassEggg {
 
     private final Eggg eggg;
 
-    public ClassEggg(Eggg eggg, TypeEggg typeWrap) {
+    public ClassEggg(Eggg eggg, TypeEggg typeEggg) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(typeWrap, "typeWrap");
+        Objects.requireNonNull(typeEggg, "typeEggg");
 
         this.eggg = eggg;
-        this.typeWrap = typeWrap;
+        this.typeEggg = typeEggg;
 
         //顺序不要变
         loadDeclaredFields();
         loadDeclaredMethods();
         loadConstr();
 
-        this.realRecordClass = JavaUtil.isRecordClass(typeWrap.getType());
+        this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType());
         this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
 
         for (Map.Entry<String, FieldEggg> entry : fieldWrapsForName.entrySet()) {
@@ -75,7 +75,7 @@ public class ClassEggg {
             constrWrap = eggg.newConstrWrap(this, constr, constrAnno);
         }
 
-        this.digest = eggg.findDigest(this, this, typeWrap.getType(), null);
+        this.digest = eggg.findDigest(this, this, typeEggg.getType(), null);
     }
 
     /**
@@ -92,8 +92,8 @@ public class ClassEggg {
         return likeRecordClass;
     }
 
-    public TypeEggg getTypeWrap() {
-        return typeWrap;
+    public TypeEggg getTypeEggg() {
+        return typeEggg;
     }
 
     public <T extends Object> T getDigest() {
@@ -139,7 +139,7 @@ public class ClassEggg {
     /// /////////////////
 
     protected void loadConstr() {
-        if (typeWrap.getType() != Object.class) {
+        if (typeEggg.getType() != Object.class) {
             //先从静态方法找
             for (MethodEggg mw : declaredMethodWraps) {
                 if (mw.isStatic()) {
@@ -153,7 +153,7 @@ public class ClassEggg {
 
             //再从构造方法找
             if (constr == null) {
-                for (Constructor c1 : typeWrap.getType().getDeclaredConstructors()) {
+                for (Constructor c1 : typeEggg.getType().getDeclaredConstructors()) {
                     if (constr == null) {
                         //初始化
                         constr = c1;
@@ -174,7 +174,7 @@ public class ClassEggg {
     }
 
     protected void loadDeclaredFields() {
-        Class<?> c = typeWrap.getType();
+        Class<?> c = typeEggg.getType();
 
         while (c != null) {
             for (Field f : eggg.getDeclaredFields(c)) {
@@ -199,7 +199,7 @@ public class ClassEggg {
     }
 
     protected void loadDeclaredMethods() {
-        for (Method m : eggg.getDeclaredMethods(typeWrap.getType())) {
+        for (Method m : eggg.getDeclaredMethods(typeEggg.getType())) {
             if (m.getDeclaringClass() == Object.class) {
                 continue;
             }
@@ -210,13 +210,13 @@ public class ClassEggg {
             }
         }
 
-        for (Method m : eggg.getMethods(typeWrap.getType())) {
+        for (Method m : eggg.getMethods(typeEggg.getType())) {
             if (m.getDeclaringClass() == Object.class) {
                 continue;
             }
 
             if (m.isBridge()) {
-                m = findActualMethod(typeWrap.getType().getSuperclass(), m);
+                m = findActualMethod(typeEggg.getType().getSuperclass(), m);
             }
 
             if (m == null) {
@@ -272,6 +272,6 @@ public class ClassEggg {
 
     @Override
     public String toString() {
-        return typeWrap.getType().toString();
+        return typeEggg.getType().toString();
     }
 }

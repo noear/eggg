@@ -58,13 +58,13 @@ public class EgggDemo {
 
     @Test
     public void case1() {
-        TypeWrap typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
+        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {}.getClass());
 
-        if (typeWrap.isMap()) {
-            if (typeWrap.isParameterizedType()) {
+        if (typeEggg.isMap()) {
+            if (typeEggg.isParameterizedType()) {
                 //已经分析过的
-                Type keyType = typeWrap.getActualTypeArguments()[0];
-                Type ValueType = typeWrap.getActualTypeArguments()[1];
+                Type keyType = typeEggg.getActualTypeArguments()[0];
+                Type ValueType = typeEggg.getActualTypeArguments()[1];
 
                 assert keyType.equals(Integer.class);
                 assert ValueType.equals(UserModel.class);
@@ -128,8 +128,8 @@ public class EgggUtil {
     /**
      * 获取类型包装器
      */
-    public static TypeEggg getTypeWrap(Type type) {
-        return eggg.getTypeWrap(type);
+    public static TypeEggg getTypeEggg(Type type) {
+        return eggg.getTypeEggg(type);
     }
 }
 ```
@@ -138,15 +138,15 @@ public class EgggUtil {
 ```java
 public class Demo {
     public void case1(){
-        ypeWrap typeWrap =  EgggUtil.getTypeWrap(clazz);
+        ypeWrap typeEggg =  EgggUtil.getTypeEggg(clazz);
 
-        for (FieldWrap fw : typeWrap.getClassWrap().getFieldWraps()) {
+        for (FieldWrap fw : typeEggg.getClassEggg().getFieldWraps()) {
             if (fw.isStatic()) {
                 continue;
             }
 
             //已经分析过的泛型
-            fw.getTypeWrap();
+            fw.getTypeEggg();
         }
     }
 }

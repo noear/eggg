@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClassWrapAdditionalTest {
+class ClassEgggAdditionalTest {
 
     private final Eggg eggg = new Eggg();
 
@@ -45,8 +45,8 @@ class ClassWrapAdditionalTest {
 
     @Test
     void testClassWithMultipleConstructors() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClassWithMultipleConstructors.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
         // Should select the constructor with least parameters (no-arg constructor)
@@ -58,17 +58,17 @@ class ClassWrapAdditionalTest {
         // Test with creator annotation simulation
         Eggg customEggg = new Eggg().withCreatorClass(java.lang.Deprecated.class);
 
-        ClassEggg classWrap = customEggg.getClassWrap(customEggg.getTypeWrap(TestClassWithStaticMethods.class));
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(TestClassWithStaticMethods.class));
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         assertNotNull(constrWrap);
     }
 
     @Test
     void testBridgeMethodHandling() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClassWithBridgeMethods.class));
-        Collection<MethodEggg> declaredMethods = classWrap.getDeclaredMethodWraps();
-        Collection<MethodEggg> publicMethods = classWrap.getPublicMethodWraps();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithBridgeMethods.class));
+        Collection<MethodEggg> declaredMethods = classEggg.getDeclaredMethodWraps();
+        Collection<MethodEggg> publicMethods = classEggg.getPublicMethodWraps();
 
         // Bridge methods should be handled properly
         assertNotNull(declaredMethods);
@@ -84,12 +84,12 @@ class ClassWrapAdditionalTest {
 
     @Test
     void testAbstractClass() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(AbstractClass.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(AbstractClass.class));
 
-        assertNotNull(classWrap);
-        assertTrue(classWrap.getTypeWrap().isAbstract());
+        assertNotNull(classEggg);
+        assertTrue(classEggg.getTypeEggg().isAbstract());
 
-        Collection<MethodEggg> methods = classWrap.getPublicMethodWraps();
+        Collection<MethodEggg> methods = classEggg.getPublicMethodWraps();
         assertTrue(methods.size() >= 2); // abstractMethod and concreteMethod
 
         Optional<MethodEggg> abstractMethod = methods.stream()
@@ -100,42 +100,42 @@ class ClassWrapAdditionalTest {
 
     @Test
     void testFieldAccessByAlias() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClassWithMultipleConstructors.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
 
         // Test field access by alias (when alias handler is not set, alias should be null)
-        FieldEggg fieldWrap = classWrap.getFieldWrapByAlias("value");
+        FieldEggg fieldWrap = classEggg.getFieldWrapByAlias("value");
         assertNotNull(fieldWrap); // No alias handler set
 
         // But should be accessible by name
-        fieldWrap = classWrap.getFieldWrapByName("value");
+        fieldWrap = classEggg.getFieldWrapByName("value");
         assertNotNull(fieldWrap);
     }
 
     @Test
     void testPropertyAccessByAlias() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(TestClassWithMultipleConstructors.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
 
         // Test property access by alias
-        PropertyEggg propertyWrap = classWrap.getPropertyWrapByAlias("value");
+        PropertyEggg propertyWrap = classEggg.getPropertyWrapByAlias("value");
         assertNotNull(propertyWrap); // No alias handler set
 
         // But should be accessible by name
-        propertyWrap = classWrap.getPropertyWrapByName("value");
+        propertyWrap = classEggg.getPropertyWrapByName("value");
         assertNotNull(propertyWrap);
     }
 
     @Test
     void testToStringMethod() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(String.class));
-        String toString = classWrap.toString();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(String.class));
+        String toString = classEggg.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("java.lang.String"));
     }
 
     @Test
     void testDigestRetrieval() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(String.class));
-        Object digest = classWrap.getDigest();
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(String.class));
+        Object digest = classEggg.getDigest();
         assertNull(digest); // No digest handler set
     }
 
@@ -154,11 +154,11 @@ class ClassWrapAdditionalTest {
             public int getAge() { return age; }
         }
 
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(RecordLikeClass.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(RecordLikeClass.class));
 
         // Should be detected as record-like if all fields are final
-        assertTrue(classWrap.isLikeRecordClass());
-        assertFalse(classWrap.isRealRecordClass());
+        assertTrue(classEggg.isLikeRecordClass());
+        assertFalse(classEggg.isRealRecordClass());
     }
 
     @Test
@@ -177,8 +177,8 @@ class ClassWrapAdditionalTest {
             public int getAge() { return age; }
         }
 
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(NonRecordLikeClass.class));
-        assertFalse(classWrap.isLikeRecordClass());
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(NonRecordLikeClass.class));
+        assertFalse(classEggg.isLikeRecordClass());
     }
 
 //    @Test
@@ -191,17 +191,17 @@ class ClassWrapAdditionalTest {
 //            public void childMethod() {}
 //        }
 //
-//        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
+//        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ChildClass.class));
 //
 //        // Test declared methods
-//        Optional<MethodWrap> childMethod = classWrap.getDeclaredMethodWraps().stream()
+//        Optional<MethodWrap> childMethod = classEggg.getDeclaredMethodWraps().stream()
 //                .filter(m -> m.getName().equals("childMethod"))
 //                .findFirst();
 //        assertTrue(childMethod.isPresent());
 //        assertTrue(childMethod.get().isDeclared());
 //
 //        // Test public methods (including inherited)
-//        Optional<MethodWrap> parentMethod = classWrap.getPublicMethodWraps().stream()
+//        Optional<MethodWrap> parentMethod = classEggg.getPublicMethodWraps().stream()
 //                .filter(m -> m.getName().equals("parentMethod"))
 //                .findFirst();
 //        assertTrue(parentMethod.isPresent());

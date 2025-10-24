@@ -37,19 +37,19 @@ class ComprehensiveTest {
 
     @Test
     void testComplexGenericInheritance() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ConcreteClass.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ConcreteClass.class));
 
         // Test fields
-        FieldEggg genericField = classWrap.getFieldWrapByName("genericField");
+        FieldEggg genericField = classEggg.getFieldWrapByName("genericField");
         assertNotNull(genericField);
-        assertEquals(String.class, genericField.getTypeWrap().getType());
+        assertEquals(String.class, genericField.getTypeEggg().getType());
 
-        FieldEggg numberListField = classWrap.getFieldWrapByName("numberList");
+        FieldEggg numberListField = classEggg.getFieldWrapByName("numberList");
         assertNotNull(numberListField);
-        assertTrue(numberListField.getTypeWrap().isList());
+        assertTrue(numberListField.getTypeEggg().isList());
 
         // Test properties
-        PropertyEggg genericProperty = classWrap.getPropertyWrapByName("genericField");
+        PropertyEggg genericProperty = classEggg.getPropertyWrapByName("genericField");
         assertNotNull(genericProperty);
         assertNotNull(genericProperty.getGetterWrap());
         assertNotNull(genericProperty.getSetterWrap());
@@ -57,9 +57,9 @@ class ComprehensiveTest {
 
     @Test
     void testGenericMethodInComplexClass() {
-        ClassEggg classWrap = eggg.getClassWrap(eggg.getTypeWrap(ComplexGenericClass.class));
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexGenericClass.class));
 
-        Optional<MethodEggg> processMethod = classWrap.getPublicMethodWraps().stream()
+        Optional<MethodEggg> processMethod = classEggg.getPublicMethodWraps().stream()
                 .filter(m -> m.getName().equals("processData"))
                 .findFirst();
 
@@ -78,9 +78,9 @@ class ComprehensiveTest {
 
         // Repeated access should be fast due to caching
         for (int i = 0; i < 100; i++) {
-            TypeEggg typeWrap = eggg.getTypeWrap(String.class);
-            ClassEggg classWrap = eggg.getClassWrap(typeWrap);
-            assertNotNull(classWrap);
+            TypeEggg typeEggg = eggg.getTypeEggg(String.class);
+            ClassEggg classEggg = eggg.getClassEggg(typeEggg);
+            assertNotNull(classEggg);
         }
 
         long endTime = System.currentTimeMillis();
@@ -92,27 +92,27 @@ class ComprehensiveTest {
 
     @Test
     void testMultipleGenericTypes() {
-        TypeEggg typeWrap1 = eggg.getTypeWrap(List.class);
-        TypeEggg typeWrap2 = eggg.getTypeWrap(Map.class);
-        TypeEggg typeWrap3 = eggg.getTypeWrap(Set.class);
+        TypeEggg typeEggg1 = eggg.getTypeEggg(List.class);
+        TypeEggg typeEggg2 = eggg.getTypeEggg(Map.class);
+        TypeEggg typeEggg3 = eggg.getTypeEggg(Set.class);
 
-        assertNotNull(typeWrap1);
-        assertNotNull(typeWrap2);
-        assertNotNull(typeWrap3);
+        assertNotNull(typeEggg1);
+        assertNotNull(typeEggg2);
+        assertNotNull(typeEggg3);
 
-        assertTrue(typeWrap1.isList());
-        assertTrue(typeWrap2.isMap());
-        assertFalse(typeWrap3.isList());
-        assertFalse(typeWrap3.isMap());
+        assertTrue(typeEggg1.isList());
+        assertTrue(typeEggg2.isMap());
+        assertFalse(typeEggg3.isList());
+        assertFalse(typeEggg3.isMap());
     }
 
     @Test
     void testErrorConditions() {
         // Test null safety
-        assertThrows(NullPointerException.class, () -> eggg.getTypeWrap(null));
+        assertThrows(NullPointerException.class, () -> eggg.getTypeEggg(null));
 
         // Test with invalid types (should not throw)
-        TypeEggg typeWrap = eggg.getTypeWrap(Object.class);
-        assertNotNull(typeWrap);
+        TypeEggg typeEggg = eggg.getTypeEggg(Object.class);
+        assertNotNull(typeEggg);
     }
 }

@@ -30,7 +30,7 @@ public class PropertyMethodEggg implements Property {
     private final Method method;
     private MethodHandle methodHandle;
 
-    private final TypeEggg propertyTypeWrap;
+    private final TypeEggg propertyTypeEggg;
 
     private final FieldEggg fieldWrap;
 
@@ -38,9 +38,9 @@ public class PropertyMethodEggg implements Property {
     private final String alias;
     private final Object digest;
 
-    public PropertyMethodEggg(Eggg eggg, ClassEggg classWrap, Method method) {
+    public PropertyMethodEggg(Eggg eggg, ClassEggg classEggg, Method method) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(classWrap, "classWrap");
+        Objects.requireNonNull(classEggg, "classEggg");
         Objects.requireNonNull(method, "property");
 
         this.method = method;
@@ -53,22 +53,22 @@ public class PropertyMethodEggg implements Property {
 
         if (method.getReturnType() != void.class) {
             //getter
-            this.propertyTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
         } else {
             //setter
-            this.propertyTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());
-        this.fieldWrap = classWrap.getFieldWrapByName(this.name);
+        this.fieldWrap = classEggg.getFieldWrapByName(this.name);
 
         if (fieldWrap == null) {
-            this.digest = eggg.findDigest(classWrap, this, method, null);
+            this.digest = eggg.findDigest(classEggg, this, method, null);
         } else {
-            this.digest = eggg.findDigest(classWrap, this, method, fieldWrap.getDigest());
+            this.digest = eggg.findDigest(classEggg, this, method, fieldWrap.getDigest());
         }
 
-        this.alias = eggg.findAlias(classWrap, this, digest, name);
+        this.alias = eggg.findAlias(classEggg, this, digest, name);
     }
 
     @Override
@@ -122,8 +122,8 @@ public class PropertyMethodEggg implements Property {
     }
 
     @Override
-    public TypeEggg getTypeWrap() {
-        return propertyTypeWrap;
+    public TypeEggg getTypeEggg() {
+        return propertyTypeEggg;
     }
 
     public FieldEggg getFieldWrap() {

@@ -86,14 +86,14 @@ public class TypeEggg {
         }
     }
 
-    private ClassEggg classWrap;
+    private ClassEggg classEggg;
 
-    public ClassEggg getClassWrap() {
-        if (classWrap == null) {
-            classWrap = eggg.getClassWrap(this);
+    public ClassEggg getClassEggg() {
+        if (classEggg == null) {
+            classEggg = eggg.getClassEggg(this);
         }
 
-        return classWrap;
+        return classEggg;
     }
 
     public Class<?> getType() {

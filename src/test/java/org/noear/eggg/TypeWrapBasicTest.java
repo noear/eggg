@@ -7,13 +7,13 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TypeWrapBasicTest {
+class TypeEgggBasicTest {
 
     private final Eggg eggg = new Eggg();
 
     @Test
-    void testBasicTypeWrap() {
-        TypeEggg stringType = eggg.getTypeWrap(String.class);
+    void testBasicTypeEggg() {
+        TypeEggg stringType = eggg.getTypeEggg(String.class);
         assertNotNull(stringType);
         assertEquals(String.class, stringType.getType());
         assertTrue(stringType.isString());
@@ -22,8 +22,8 @@ class TypeWrapBasicTest {
     }
 
     @Test
-    void testNumberTypeWrap() {
-        TypeEggg intType = eggg.getTypeWrap(Integer.class);
+    void testNumberTypeEggg() {
+        TypeEggg intType = eggg.getTypeEggg(Integer.class);
         assertNotNull(intType);
         assertEquals(Integer.class, intType.getType());
         assertTrue(intType.isNumber());
@@ -31,8 +31,8 @@ class TypeWrapBasicTest {
     }
 
     @Test
-    void testListTypeWrap() {
-        TypeEggg listType = eggg.getTypeWrap(List.class);
+    void testListTypeEggg() {
+        TypeEggg listType = eggg.getTypeEggg(List.class);
         assertNotNull(listType);
         assertEquals(List.class, listType.getType());
         assertTrue(listType.isList());
@@ -40,8 +40,8 @@ class TypeWrapBasicTest {
     }
 
     @Test
-    void testMapTypeWrap() {
-        TypeEggg mapType = eggg.getTypeWrap(Map.class);
+    void testMapTypeEggg() {
+        TypeEggg mapType = eggg.getTypeEggg(Map.class);
         assertNotNull(mapType);
         assertEquals(Map.class, mapType.getType());
         assertTrue(mapType.isMap());
@@ -49,46 +49,46 @@ class TypeWrapBasicTest {
     }
 
     @Test
-    void testPrimitiveTypeWrap() {
-        TypeEggg intType = eggg.getTypeWrap(int.class);
+    void testPrimitiveTypeEggg() {
+        TypeEggg intType = eggg.getTypeEggg(int.class);
         assertNotNull(intType);
         assertTrue(intType.isPrimitive());
         assertTrue(intType.isNumber());
     }
 
     @Test
-    void testInterfaceTypeWrap() {
-        TypeEggg listType = eggg.getTypeWrap(List.class);
+    void testInterfaceTypeEggg() {
+        TypeEggg listType = eggg.getTypeEggg(List.class);
         assertNotNull(listType);
         assertTrue(listType.isInterface());
     }
 
     @Test
-    void testArrayTypeWrap() {
-        TypeEggg arrayType = eggg.getTypeWrap(String[].class);
+    void testArrayTypeEggg() {
+        TypeEggg arrayType = eggg.getTypeEggg(String[].class);
         assertNotNull(arrayType);
         assertTrue(arrayType.isArray());
     }
 
     @Test
-    void testEnumTypeWrap() {
-        TypeEggg enumType = eggg.getTypeWrap(TestEnum.class);
+    void testEnumTypeEggg() {
+        TypeEggg enumType = eggg.getTypeEggg(TestEnum.class);
         assertNotNull(enumType);
         assertTrue(enumType.isEnum());
     }
 
     @Test
     void testGenericInfo() {
-        TypeEggg typeWrap = eggg.getTypeWrap(String.class);
-        assertNotNull(typeWrap.getGenericInfo());
-        assertTrue(typeWrap.getGenericInfo().isEmpty());
+        TypeEggg typeEggg = eggg.getTypeEggg(String.class);
+        assertNotNull(typeEggg.getGenericInfo());
+        assertTrue(typeEggg.getGenericInfo().isEmpty());
     }
 
     @Test
-    void testTypeWrapCaching() {
-        TypeEggg type1 = eggg.getTypeWrap(String.class);
-        TypeEggg type2 = eggg.getTypeWrap(String.class);
-        assertSame(type1, type2, "TypeWrap should be cached");
+    void testTypeEgggCaching() {
+        TypeEggg type1 = eggg.getTypeEggg(String.class);
+        TypeEggg type2 = eggg.getTypeEggg(String.class);
+        assertSame(type1, type2, "TypeEggg should be cached");
     }
 
     enum TestEnum {

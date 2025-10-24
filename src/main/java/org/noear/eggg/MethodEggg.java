@@ -30,16 +30,16 @@ public class MethodEggg {
     private final Method method;
     private MethodHandle methodHandle;
 
-    private final TypeEggg returnTypeWrap;
+    private final TypeEggg returnTypeEggg;
 
     private final Object digest;
 
     private final Map<String, ParamEggg> paramWrapsForAlias;
     private final List<ParamEggg> paramAry;
 
-    public MethodEggg(Eggg eggg, ClassEggg classWrap, Method method) {
+    public MethodEggg(Eggg eggg, ClassEggg classEggg, Method method) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(classWrap, "classWrap");
+        Objects.requireNonNull(classEggg, "classEggg");
         Objects.requireNonNull(method, "property");
 
         this.method = method;
@@ -51,18 +51,18 @@ public class MethodEggg {
         }
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
         } else {
-            this.returnTypeWrap = null;
+            this.returnTypeEggg = null;
         }
 
-        this.digest = eggg.findDigest(classWrap, this, method, null);
+        this.digest = eggg.findDigest(classEggg, this, method, null);
 
         paramWrapsForAlias = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
-            ParamEggg paramWrap = eggg.newParamWrap(classWrap, p1);
+            ParamEggg paramWrap = eggg.newParamWrap(classEggg, p1);
 
             paramWrapsForAlias.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
@@ -77,8 +77,8 @@ public class MethodEggg {
         return (T) digest;
     }
 
-    public TypeEggg getReturnTypeWrap() {
-        return returnTypeWrap;
+    public TypeEggg getReturnTypeEggg() {
+        return returnTypeEggg;
     }
 
     /**

@@ -35,22 +35,22 @@ public class ConstrEggg {
 
     private final boolean security;
 
-    public ConstrEggg(Eggg eggg, ClassEggg classWrap, Executable constr, Annotation constrAnno) {
+    public ConstrEggg(Eggg eggg, ClassEggg classEggg, Executable constr, Annotation constrAnno) {
         this.constr = constr;
 
         paramAliasMap = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamEggg paramWrap = eggg.newParamWrap(classWrap, p1);
+            ParamEggg paramWrap = eggg.newParamWrap(classEggg, p1);
 
             paramAliasMap.put(paramWrap.getAlias(), paramWrap);
             paramAry.add(paramWrap);
         }
 
-        security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(classWrap.getTypeWrap().getType()));
+        security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(classEggg.getTypeEggg().getType()));
 
-        digest = eggg.findDigest(classWrap, this, constr, null);
+        digest = eggg.findDigest(classEggg, this, constr, null);
     }
 
     public Executable getConstr() {

@@ -18,56 +18,56 @@ public class EgggTest {
 
     @Test
     public void case1() {
-        TypeEggg typeWrap = eggg.getTypeWrap(Object.class);
+        TypeEggg typeEggg = eggg.getTypeEggg(Object.class);
 
-        ClassEggg classWrap = typeWrap.getClassWrap();
+        ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         Assertions.assertNull(constrWrap);
 
-        for (PropertyEggg p1 : classWrap.getPropertyWraps()) {
+        for (PropertyEggg p1 : classEggg.getPropertyWraps()) {
             System.out.println(p1);
         }
     }
 
     @Test
     public void case2() {
-        TypeEggg typeWrap = eggg.getTypeWrap(UserModel.class);
+        TypeEggg typeEggg = eggg.getTypeEggg(UserModel.class);
 
-        ClassEggg classWrap = typeWrap.getClassWrap();
+        ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrWrap = classWrap.getConstrWrap();
+        ConstrEggg constrWrap = classEggg.getConstrWrap();
 
         Assertions.assertNotNull(constrWrap);
         Assertions.assertEquals(0, constrWrap.getParamCount());
 
-        for (PropertyEggg p1 : classWrap.getPropertyWraps()) {
+        for (PropertyEggg p1 : classEggg.getPropertyWraps()) {
             System.out.println(p1);
         }
 
-        Assertions.assertEquals(1, classWrap.getPropertyWraps().size());
+        Assertions.assertEquals(1, classEggg.getPropertyWraps().size());
     }
 
     @Test
     public void case3() {
-        TypeEggg typeWrap = eggg.getTypeWrap(new MyList<UserModel>() {
+        TypeEggg typeEggg = eggg.getTypeEggg(new MyList<UserModel>() {
         }.getClass());
 
-        for (MethodEggg mw : typeWrap.getClassWrap().getPublicMethodWraps()) {
+        for (MethodEggg mw : typeEggg.getClassEggg().getPublicMethodWraps()) {
             System.out.println(mw);
         }
     }
 
     @Test
     public void case4() {
-        TypeEggg typeWrap = eggg.getTypeWrap(new HashMap<Integer, UserModel>() {}.getClass());
+        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {}.getClass());
 
-        if (typeWrap.isMap()) {
-            if (typeWrap.isParameterizedType()) {
+        if (typeEggg.isMap()) {
+            if (typeEggg.isParameterizedType()) {
                 //已经分析过的
-                Type keyType = typeWrap.getActualTypeArguments()[0];
-                Type ValueType = typeWrap.getActualTypeArguments()[1];
+                Type keyType = typeEggg.getActualTypeArguments()[0];
+                Type ValueType = typeEggg.getActualTypeArguments()[1];
 
                 assert keyType.equals(Integer.class);
                 assert ValueType.equals(UserModel.class);

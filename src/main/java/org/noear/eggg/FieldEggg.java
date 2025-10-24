@@ -26,19 +26,19 @@ import java.lang.reflect.Modifier;
  */
 public class FieldEggg implements Property {
     private final Field field;
-    private final TypeEggg fieldTypeWrap;
+    private final TypeEggg fieldTypeEggg;
 
     private final String name;
     private final String alias;
     private final Object digest;
 
-    public FieldEggg(Eggg eggg, ClassEggg classWrap, Field field) {
+    public FieldEggg(Eggg eggg, ClassEggg classEggg, Field field) {
         this.field = field;
-        this.fieldTypeWrap = eggg.getTypeWrap(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classWrap.getTypeWrap(), field)));
+        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classEggg.getTypeEggg(), field)));
 
         this.name = field.getName();
-        this.digest = eggg.findDigest(classWrap, this, field, null);
-        this.alias = eggg.findAlias(classWrap, this, digest, name);
+        this.digest = eggg.findDigest(classEggg, this, field, null);
+        this.alias = eggg.findAlias(classEggg, this, digest, name);
     }
 
     public Field getField() {
@@ -107,8 +107,8 @@ public class FieldEggg implements Property {
     }
 
     @Override
-    public TypeEggg getTypeWrap() {
-        return fieldTypeWrap;
+    public TypeEggg getTypeEggg() {
+        return fieldTypeEggg;
     }
 
     @Override

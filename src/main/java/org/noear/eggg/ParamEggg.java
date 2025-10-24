@@ -25,19 +25,19 @@ import java.lang.reflect.Parameter;
  */
 public class ParamEggg {
     private final Parameter param;
-    private final TypeEggg paramTypeWrap;
+    private final TypeEggg paramTypeEggg;
 
     private final String name;
     private final String alias;
     private final Object digest;
 
-    public ParamEggg(Eggg eggg, ClassEggg classWrap, Parameter param) {
+    public ParamEggg(Eggg eggg, ClassEggg classEggg, Parameter param) {
         this.param = param;
-        this.paramTypeWrap = eggg.getTypeWrap(eggg.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
+        this.paramTypeEggg = eggg.getTypeEggg(eggg.reviewType(param.getParameterizedType(), classEggg.getTypeEggg().getGenericInfo()));
 
         this.name = param.getName();
-        this.digest = eggg.findDigest(classWrap, this, param, null);
-        this.alias = eggg.findAlias(classWrap, this, digest, name);
+        this.digest = eggg.findDigest(classEggg, this, param, null);
+        this.alias = eggg.findAlias(classEggg, this, digest, name);
     }
 
     public Parameter getParam() {
@@ -48,8 +48,8 @@ public class ParamEggg {
         return (T) digest;
     }
 
-    public TypeEggg getTypeWrap() {
-        return paramTypeWrap;
+    public TypeEggg getTypeEggg() {
+        return paramTypeEggg;
     }
 
     public String getName() {
