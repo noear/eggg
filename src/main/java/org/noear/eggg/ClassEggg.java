@@ -108,6 +108,34 @@ public class ClassEggg {
         return publicMethodEgggs;
     }
 
+    public MethodEggg findMethodEggg(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
+        for (MethodEggg m1 : declaredMethodEgggs) {
+            if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
+                if (parameterTypes.length == 0) {
+                    return m1;
+                } else {
+                    if (Arrays.equals(m1.getMethod().getParameterTypes(), parameterTypes)) {
+                        return m1;
+                    }
+                }
+            }
+        }
+
+        for (MethodEggg m1 : publicMethodEgggs) {
+            if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
+                if (parameterTypes.length == 0) {
+                    return m1;
+                } else {
+                    if (Arrays.equals(m1.getMethod().getParameterTypes(), parameterTypes)) {
+                        return m1;
+                    }
+                }
+            }
+        }
+
+        throw new NoSuchMethodException(typeEggg.getType().getName() + "." + name + argumentTypesToString(parameterTypes));
+    }
+
     public Collection<MethodEggg> getDeclaredMethodEgggs() {
         return declaredMethodEgggs;
     }
@@ -273,5 +301,21 @@ public class ClassEggg {
     @Override
     public String toString() {
         return typeEggg.getType().toString();
+    }
+
+    private static String argumentTypesToString(Class<?>[] argTypes) {
+        StringBuilder buf = new StringBuilder();
+        buf.append("(");
+        if (argTypes != null) {
+            for (int i = 0; i < argTypes.length; i++) {
+                if (i > 0) {
+                    buf.append(", ");
+                }
+                Class<?> c = argTypes[i];
+                buf.append((c == null) ? "null" : c.getName());
+            }
+        }
+        buf.append(")");
+        return buf.toString();
     }
 }
