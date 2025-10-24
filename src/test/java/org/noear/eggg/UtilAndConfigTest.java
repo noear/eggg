@@ -1,7 +1,7 @@
 package org.noear.eggg;
 
 import org.junit.jupiter.api.Test;
-import java.lang.annotation.Annotation;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -50,7 +50,7 @@ class UtilAndConfigTest {
     void testEgggClearCache() {
         Eggg eggg = new Eggg();
         TypeWrap type1 = eggg.getTypeWrap(String.class);
-        eggg.close();
+        eggg.clear();
         TypeWrap type2 = eggg.getTypeWrap(String.class);
 
         // After clear, should create new instance (not guaranteed but likely)

@@ -27,6 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public class GenericResolver {
+    private static GenericResolver _default = new  GenericResolver();
+
+    public static GenericResolver getDefault() {
+        return _default;
+    }
+
     private final Map<Type, Map<String, Type>> genericInfoCached = new ConcurrentHashMap<>();
 
     /**
