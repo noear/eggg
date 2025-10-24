@@ -82,7 +82,7 @@ class ClassEgggTest {
     @Test
     void testConstructorEggg() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         assertTrue(constrEggg.isSecurity());

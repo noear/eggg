@@ -46,7 +46,7 @@ class ClassEgggAdditionalTest {
     @Test
     void testClassWithMultipleConstructors() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         // Should select the constructor with least parameters (no-arg constructor)
@@ -59,7 +59,7 @@ class ClassEgggAdditionalTest {
         Eggg customEggg = new Eggg().withCreatorClass(java.lang.Deprecated.class);
 
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(TestClassWithStaticMethods.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
     }

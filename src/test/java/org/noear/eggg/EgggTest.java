@@ -22,7 +22,7 @@ public class EgggTest {
 
         ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         Assertions.assertNull(constrEggg);
 
@@ -37,7 +37,7 @@ public class EgggTest {
 
         ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         Assertions.assertNotNull(constrEggg);
         Assertions.assertEquals(0, constrEggg.getParamCount());

@@ -62,7 +62,7 @@ class ConstrEgggAdditionalTest {
     void testAnnotatedConstructorSecurity() {
         Eggg customEggg = new Eggg().withCreatorClass(TestCreator.class);
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(ClassWithAnnotatedConstructor.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         assertTrue(constrEggg.isSecurity()); // Should be secure because it has annotation
@@ -72,7 +72,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testNoArgConstructorSecurity() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithAnnotatedConstructor.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         assertTrue(constrEggg.isSecurity()); // Should be secure because it has no parameters
@@ -82,7 +82,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testMultipleParameterConstructor() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         assertEquals(2, constrEggg.getParamCount());
@@ -101,7 +101,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testParameterAliasAccess() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
 
@@ -121,7 +121,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testConstructorInvocation() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
 
@@ -138,7 +138,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testPrivateConstructor() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithPrivateConstructor.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         // Should still find private constructor
         assertNotNull(constrEggg);
@@ -147,7 +147,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testConstructorDigest() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         Object digest = constrEggg.getDigest();
@@ -157,7 +157,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testConstructorToString() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         String toString = constrEggg.toString();
@@ -168,7 +168,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testConstructorExecutableAccess() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         Executable executable = constrEggg.getConstr();
@@ -179,7 +179,7 @@ class ConstrEgggAdditionalTest {
     @Test
     void testParameterListAccess() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithMultipleParams.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
 

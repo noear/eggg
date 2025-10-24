@@ -29,10 +29,9 @@ public class ClassEggg {
     private final TypeEggg typeEggg;
 
     private final Object digest;
+    private ConstrEggg creator;
 
-    private Executable constr;
-    private Annotation constrAnno;
-    private ConstrEggg constrEggg;
+    private final List<ConstrEggg> constrEgggs = new ArrayList<>();
 
     private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
     private final Map<String, FieldEggg> fieldEgggsForAlias = new LinkedHashMap<>();
@@ -71,10 +70,6 @@ public class ClassEggg {
             propertyEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
-        if (constr != null) {
-            constrEggg = eggg.newConstrEggg(this, constr, constrAnno);
-        }
-
         this.digest = eggg.findDigest(this, this, typeEggg.getType(), null);
     }
 
@@ -96,19 +91,65 @@ public class ClassEggg {
         return typeEggg;
     }
 
+    /**
+     * 获取提炼物
+     */
     public <T extends Object> T getDigest() {
         return (T) digest;
     }
 
-    public ConstrEggg getConstrEggg() {
-        return constrEggg;
+    /**
+     * 获取创造器
+     */
+    public ConstrEggg getCreator() {
+        return creator;
+    }
+
+    public ConstrEggg findConstrEggg(Class<?>... parameterTypes) throws NoSuchMethodException {
+        ConstrEggg c1 = findConstrEgggOrNull(parameterTypes);
+
+        if (c1 == null) {
+            throw new NoSuchMethodException(typeEggg.getType().getName() + ".()" + argumentTypesToString(parameterTypes));
+        } else {
+            return c1;
+        }
+    }
+
+    public ConstrEggg findConstrEgggOrNull(Class<?>... parameterTypes) throws NoSuchMethodException {
+        for (ConstrEggg c1 : constrEgggs) {
+            if (c1.getParamCount() == parameterTypes.length) {
+                if (parameterTypes.length == 0) {
+                    return c1;
+                } else {
+                    if (Arrays.equals(c1.getConstr().getParameterTypes(), parameterTypes)) {
+                        return c1;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     public Collection<MethodEggg> getPublicMethodEgggs() {
         return publicMethodEgggs;
     }
 
+    public Collection<MethodEggg> getDeclaredMethodEgggs() {
+        return declaredMethodEgggs;
+    }
+
     public MethodEggg findMethodEggg(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
+        MethodEggg m1 = findMethodEgggOrNull(name, parameterTypes);
+
+        if (m1 == null) {
+            throw new NoSuchMethodException(typeEggg.getType().getName() + "." + name + argumentTypesToString(parameterTypes));
+        } else {
+            return m1;
+        }
+    }
+
+    public MethodEggg findMethodEgggOrNull(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         for (MethodEggg m1 : declaredMethodEgggs) {
             if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
                 if (parameterTypes.length == 0) {
@@ -133,11 +174,7 @@ public class ClassEggg {
             }
         }
 
-        throw new NoSuchMethodException(typeEggg.getType().getName() + "." + name + argumentTypesToString(parameterTypes));
-    }
-
-    public Collection<MethodEggg> getDeclaredMethodEgggs() {
-        return declaredMethodEgggs;
+        return null;
     }
 
     public Collection<FieldEggg> getFieldEgggs() {
@@ -168,34 +205,33 @@ public class ClassEggg {
 
     protected void loadConstr() {
         if (typeEggg.getType() != Object.class) {
+            //加载构造器
+            for (Constructor c1 : typeEggg.getType().getDeclaredConstructors()) {
+                constrEgggs.add(new ConstrEggg(eggg, this, c1, eggg.findCreator(c1)));
+            }
+
             //先从静态方法找
             for (MethodEggg mw : declaredMethodEgggs) {
                 if (mw.isStatic()) {
-                    constrAnno = eggg.findCreator(mw.getMethod());
+                    Annotation constrAnno = eggg.findCreator(mw.getMethod());
                     if (constrAnno != null) {
-                        constr = mw.getMethod();
-                        break;
+                        creator = eggg.newConstrEggg(this, mw.getMethod(), constrAnno);
+                        return;
                     }
                 }
             }
 
             //再从构造方法找
-            if (constr == null) {
-                for (Constructor c1 : typeEggg.getType().getDeclaredConstructors()) {
-                    if (constr == null) {
-                        //初始化
-                        constr = c1;
-                    } else if (constr.getParameterCount() > c1.getParameterCount()) {
-                        //谁参数少，用谁
-                        constr = c1;
-                    }
-
-                    constrAnno = eggg.findCreator(c1);
-                    if (constrAnno != null) {
-                        //用注解，优先用
-                        constr = c1;
-                        break;
-                    }
+            for (ConstrEggg c1 : constrEgggs) {
+                if (c1.getConstrAnno() != null) {
+                    creator = c1;
+                    return;
+                } else if (creator == null) {
+                    //初始化
+                    creator = c1;
+                } else if (creator.getParamCount() > c1.getParamCount()) {
+                    //谁参数少，用谁
+                    creator = c1;
                 }
             }
         }

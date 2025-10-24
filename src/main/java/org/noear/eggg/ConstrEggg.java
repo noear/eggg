@@ -27,6 +27,7 @@ import java.util.*;
  */
 public class ConstrEggg {
     private final Executable constr;
+    private final Annotation constrAnno;
 
     private final Object digest;
 
@@ -37,6 +38,7 @@ public class ConstrEggg {
 
     public ConstrEggg(Eggg eggg, ClassEggg classEggg, Executable constr, Annotation constrAnno) {
         this.constr = constr;
+        this.constrAnno = constrAnno;
 
         paramAliasMap = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
@@ -55,6 +57,10 @@ public class ConstrEggg {
 
     public Executable getConstr() {
         return constr;
+    }
+
+    public Annotation getConstrAnno() {
+        return constrAnno;
     }
 
     public <T extends Object> T getDigest() {

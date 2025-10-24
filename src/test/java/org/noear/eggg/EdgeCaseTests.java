@@ -31,7 +31,7 @@ class EdgeCaseTests {
         assertTrue(classEggg.getPropertyEgggs().isEmpty());
 
         // Should have constructor
-        assertNotNull(classEggg.getConstrEggg());
+        assertNotNull(classEggg.getCreator());
     }
 
     @Test
@@ -51,7 +51,7 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithOnlyPrivateConstructor.class));
 
         assertNotNull(classEggg);
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
         assertNotNull(constrEggg);
 
         // Should be able to access private constructor

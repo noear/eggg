@@ -139,7 +139,7 @@ class ParamEgggAdditionalTest {
     @Test
     void testParameterInConstructor() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithParameterizedConstructor.class));
-        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        ConstrEggg constrEggg = classEggg.getCreator();
 
         assertNotNull(constrEggg);
         assertEquals(1, constrEggg.getParamCount());
