@@ -27,6 +27,8 @@ import java.util.Objects;
  * @since 1.0
  */
 public class PropertyMethodEggg implements Property {
+    private final ClassEggg ownerEggg;
+
     private final Method method;
     private MethodHandle methodHandle;
 
@@ -38,11 +40,12 @@ public class PropertyMethodEggg implements Property {
     private final String alias;
     private final Object digest;
 
-    public PropertyMethodEggg(Eggg eggg, ClassEggg classEggg, Method method) {
+    public PropertyMethodEggg(Eggg eggg, ClassEggg ownerEggg, Method method) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(classEggg, "classEggg");
-        Objects.requireNonNull(method, "property");
+        Objects.requireNonNull(ownerEggg, "ownerEggg");
+        Objects.requireNonNull(method, "method");
 
+        this.ownerEggg = ownerEggg;
         this.method = method;
 
         try {
@@ -53,22 +56,30 @@ public class PropertyMethodEggg implements Property {
 
         if (method.getReturnType() != void.class) {
             //getter
-            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
+            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
         } else {
             //setter
-            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
+            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());
-        this.fieldEggg = classEggg.getFieldEgggByName(this.name);
+        this.fieldEggg = ownerEggg.getFieldEgggByName(this.name);
 
         if (fieldEggg == null) {
-            this.digest = eggg.findDigest(classEggg, this, method, null);
+            this.digest = eggg.findDigest(ownerEggg, this, method, null);
         } else {
-            this.digest = eggg.findDigest(classEggg, this, method, fieldEggg.getDigest());
+            this.digest = eggg.findDigest(ownerEggg, this, method, fieldEggg.getDigest());
         }
 
-        this.alias = eggg.findAlias(classEggg, this, digest, name);
+        this.alias = eggg.findAlias(ownerEggg, this, digest, name);
+    }
+
+    public ClassEggg getOwnerEggg() {
+        return ownerEggg;
+    }
+
+    public Method getMethod() {
+        return method;
     }
 
     @Override
@@ -81,16 +92,22 @@ public class PropertyMethodEggg implements Property {
     }
 
     @Override
-    public Object getValue(Object target) throws Throwable {
+    public Object getValue(Object target) {
         if (isReadMode()) {
-            if (methodHandle == null) {
-                if (method.isAccessible() == false) {
-                    method.setAccessible(true);
-                }
+            try {
+                if (methodHandle == null) {
+                    if (method.isAccessible() == false) {
+                        method.setAccessible(true);
+                    }
 
-                return method.invoke(target);
-            } else {
-                return methodHandle.bindTo(target).invokeWithArguments();
+                    return method.invoke(target);
+                } else {
+                    return methodHandle.bindTo(target).invokeWithArguments();
+                }
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
             }
         } else {
             return null;
@@ -98,22 +115,24 @@ public class PropertyMethodEggg implements Property {
     }
 
     @Override
-    public void setValue(Object target, Object value) throws Throwable {
+    public void setValue(Object target, Object value) {
         if (isReadMode() == false) {
-            if (methodHandle == null) {
-                if (method.isAccessible() == false) {
-                    method.setAccessible(true);
-                }
+            try {
+                if (methodHandle == null) {
+                    if (method.isAccessible() == false) {
+                        method.setAccessible(true);
+                    }
 
-                method.invoke(target, value);
-            } else {
-                methodHandle.bindTo(target).invokeWithArguments(value);
+                    method.invoke(target, value);
+                } else {
+                    methodHandle.bindTo(target).invokeWithArguments(value);
+                }
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex) {
+                throw new RuntimeException(ex);
             }
         }
-    }
-
-    public Method getMethod() {
-        return method;
     }
 
     @Override

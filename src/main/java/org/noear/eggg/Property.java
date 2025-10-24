@@ -41,12 +41,12 @@ public interface Property {
     /**
      * 获取值
      */
-    Object getValue(Object target) throws Throwable;
+    Object getValue(Object target);
 
     /**
      * 设置值
      */
-    void setValue(Object target, Object value) throws Throwable;
+    void setValue(Object target, Object value);
 
     /**
      * 类型包装

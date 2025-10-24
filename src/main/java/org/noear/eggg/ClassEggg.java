@@ -36,6 +36,7 @@ public class ClassEggg {
     private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
     private final Map<String, FieldEggg> fieldEgggsForAlias = new LinkedHashMap<>();
 
+    private final List<MethodEggg> methodEgggs = new ArrayList<>();
     private final List<MethodEggg> publicMethodEgggs = new ArrayList<>();
     private final List<MethodEggg> declaredMethodEgggs = new ArrayList<>();
 
@@ -89,6 +90,18 @@ public class ClassEggg {
 
     public TypeEggg getTypeEggg() {
         return typeEggg;
+    }
+
+    public Class<?> getType() {
+        return typeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return typeEggg.getGenericType();
+    }
+
+    public Map<String, Type> getGenericInfo() {
+        return typeEggg.getGenericInfo();
     }
 
     /**
@@ -149,7 +162,7 @@ public class ClassEggg {
         }
     }
 
-    public MethodEggg findMethodEgggOrNull(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
+    public MethodEggg findMethodEgggOrNull(String name, Class<?>... parameterTypes) {
         for (MethodEggg m1 : declaredMethodEgggs) {
             if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
                 if (parameterTypes.length == 0) {
@@ -175,6 +188,10 @@ public class ClassEggg {
         }
 
         return null;
+    }
+
+    public List<MethodEggg> getMethodEgggs() {
+        return methodEgggs;
     }
 
     public Collection<FieldEggg> getFieldEgggs() {
@@ -271,6 +288,7 @@ public class ClassEggg {
             if (m.isBridge() == false) {
                 MethodEggg methodEggg = eggg.newMethodEggg(this, m);
                 declaredMethodEgggs.add(methodEggg);
+                methodEgggs.add(methodEggg);
             }
         }
 
@@ -289,6 +307,7 @@ public class ClassEggg {
 
             MethodEggg methodEggg = eggg.newMethodEggg(this, m);
             publicMethodEgggs.add(methodEggg);
+            methodEgggs.add(methodEggg);
 
             if (methodEggg.isStatic() == false) {
                 if (m.getName().length() > 3) {

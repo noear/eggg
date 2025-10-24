@@ -26,6 +26,8 @@ import java.util.*;
  * @since 1.0
  */
 public class ConstrEggg {
+    private final ClassEggg ownerEggg;
+
     private final Executable constr;
     private final Annotation constrAnno;
 
@@ -36,7 +38,12 @@ public class ConstrEggg {
 
     private final boolean security;
 
-    public ConstrEggg(Eggg eggg, ClassEggg classEggg, Executable constr, Annotation constrAnno) {
+    public ConstrEggg(Eggg eggg, ClassEggg ownerEggg, Executable constr, Annotation constrAnno) {
+        Objects.requireNonNull(eggg, "eggg");
+        Objects.requireNonNull(ownerEggg, "ownerEggg");
+        Objects.requireNonNull(constr, "constr");
+
+        this.ownerEggg = ownerEggg;
         this.constr = constr;
         this.constrAnno = constrAnno;
 
@@ -44,15 +51,19 @@ public class ConstrEggg {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamEggg paramEggg = eggg.newParamEggg(classEggg, p1);
+            ParamEggg paramEggg = eggg.newParamEggg(ownerEggg, p1);
 
             paramAliasMap.put(paramEggg.getAlias(), paramEggg);
             paramAry.add(paramEggg);
         }
 
-        security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(classEggg.getTypeEggg().getType()));
+        security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(ownerEggg.getTypeEggg().getType()));
 
-        digest = eggg.findDigest(classEggg, this, constr, null);
+        digest = eggg.findDigest(ownerEggg, this, constr, null);
+    }
+
+    public ClassEggg getOwnerEggg() {
+        return ownerEggg;
     }
 
     public Executable getConstr() {

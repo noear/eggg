@@ -15,8 +15,12 @@
  */
 package org.noear.eggg;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 字段包装器
@@ -25,6 +29,8 @@ import java.lang.reflect.Modifier;
  * @since 1.0
  */
 public class FieldEggg implements Property {
+    private final ClassEggg ownerEggg;
+
     private final Field field;
     private final TypeEggg fieldTypeEggg;
 
@@ -32,13 +38,23 @@ public class FieldEggg implements Property {
     private final String alias;
     private final Object digest;
 
-    public FieldEggg(Eggg eggg, ClassEggg classEggg, Field field) {
+    public FieldEggg(Eggg eggg, ClassEggg ownerEggg, Field field) {
+        Objects.requireNonNull(eggg, "eggg");
+        Objects.requireNonNull(ownerEggg, "ownerEggg");
+        Objects.requireNonNull(field, "field");
+
+        this.ownerEggg = ownerEggg;
+
         this.field = field;
-        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classEggg.getTypeEggg(), field)));
+        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(ownerEggg.getTypeEggg(), field)));
 
         this.name = field.getName();
-        this.digest = eggg.findDigest(classEggg, this, field, null);
-        this.alias = eggg.findAlias(classEggg, this, digest, name);
+        this.digest = eggg.findDigest(ownerEggg, this, field, null);
+        this.alias = eggg.findAlias(ownerEggg, this, digest, name);
+    }
+
+    public ClassEggg getOwnerEggg() {
+        return ownerEggg;
     }
 
     public Field getField() {
@@ -87,28 +103,52 @@ public class FieldEggg implements Property {
     }
 
     @Override
-    public Object getValue(Object target) throws Exception {
-        if (field.isAccessible() == false) {
-            field.setAccessible(true);
-        }
-
-        return field.get(target);
-    }
-
-    @Override
-    public void setValue(Object target, Object value) throws Exception {
-        if (isFinal() == false) {
+    public Object getValue(Object target) {
+        try {
             if (field.isAccessible() == false) {
                 field.setAccessible(true);
             }
 
-            field.set(target, value);
+            return field.get(target);
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public void setValue(Object target, Object value) {
+        if (isFinal() == false) {
+            try {
+                if (field.isAccessible() == false) {
+                    field.setAccessible(true);
+                }
+
+                field.set(target, value);
+            } catch (RuntimeException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     @Override
     public TypeEggg getTypeEggg() {
         return fieldTypeEggg;
+    }
+
+    public Class<?> getType() {
+        return fieldTypeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return fieldTypeEggg.getGenericType();
+    }
+
+    public Map<String, Type> getGenericInfo() {
+        return fieldTypeEggg.getGenericInfo();
     }
 
     @Override
@@ -119,6 +159,14 @@ public class FieldEggg implements Property {
     @Override
     public String getAlias() {
         return alias;
+    }
+
+    private Annotation[] annotations;
+    public Annotation[] getAnnotations() {
+        if (annotations == null) {
+            annotations = field.getAnnotations();
+        }
+        return annotations;
     }
 
     @Override

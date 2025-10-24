@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.*;
@@ -27,6 +28,8 @@ import java.util.*;
  * @since 1.0
  */
 public class MethodEggg {
+    private final ClassEggg ownerEggg;
+
     private final Method method;
     private MethodHandle methodHandle;
 
@@ -37,11 +40,12 @@ public class MethodEggg {
     private final Map<String, ParamEggg> paramEgggsForAlias;
     private final List<ParamEggg> paramAry;
 
-    public MethodEggg(Eggg eggg, ClassEggg classEggg, Method method) {
+    public MethodEggg(Eggg eggg, ClassEggg ownerEggg, Method method) {
         Objects.requireNonNull(eggg, "eggg");
-        Objects.requireNonNull(classEggg, "classEggg");
-        Objects.requireNonNull(method, "property");
+        Objects.requireNonNull(ownerEggg, "ownerEggg");
+        Objects.requireNonNull(method, "method");
 
+        this.ownerEggg = ownerEggg;
         this.method = method;
 
         try {
@@ -51,22 +55,26 @@ public class MethodEggg {
         }
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classEggg.getTypeEggg(), method)));
+            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
         } else {
             this.returnTypeEggg = null;
         }
 
-        this.digest = eggg.findDigest(classEggg, this, method, null);
+        this.digest = eggg.findDigest(ownerEggg, this, method, null);
 
         paramEgggsForAlias = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
-            ParamEggg paramEggg = eggg.newParamEggg(classEggg, p1);
+            ParamEggg paramEggg = eggg.newParamEggg(ownerEggg, p1);
 
             paramEgggsForAlias.put(paramEggg.getAlias(), paramEggg);
             paramAry.add(paramEggg);
         }
+    }
+
+    public ClassEggg getOwnerEggg() {
+        return ownerEggg;
     }
 
     public Method getMethod() {
@@ -104,6 +112,14 @@ public class MethodEggg {
 
     public String getName() {
         return method.getName();
+    }
+
+    private Annotation[] annotations;
+    public Annotation[] getAnnotations() {
+        if (annotations == null) {
+            annotations = method.getAnnotations();
+        }
+        return annotations;
     }
 
     public int getParamCount() {
