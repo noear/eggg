@@ -43,20 +43,20 @@ class GenericTypeTest {
     @Test
     void testGenericFieldType() throws NoSuchFieldException {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringGenericClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("value");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("value");
 
-        assertNotNull(fieldWrap);
-        TypeEggg fieldTypeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg fieldTypeEggg = fieldEggg.getTypeEggg();
         assertEquals(String.class, fieldTypeEggg.getType());
     }
 
     @Test
     void testGenericListFieldType() throws NoSuchFieldException {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringGenericClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("list");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("list");
 
-        assertNotNull(fieldWrap);
-        TypeEggg fieldTypeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg fieldTypeEggg = fieldEggg.getTypeEggg();
         assertTrue(fieldTypeEggg.isList());
         assertTrue(fieldTypeEggg.isParameterizedType());
     }
@@ -64,10 +64,10 @@ class GenericTypeTest {
     @Test
     void testNestedGenericType() throws NoSuchFieldException {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(NestedGenericClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("complexMap");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("complexMap");
 
-        assertNotNull(fieldWrap);
-        TypeEggg fieldTypeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg fieldTypeEggg = fieldEggg.getTypeEggg();
         assertTrue(fieldTypeEggg.isMap());
         assertTrue(fieldTypeEggg.isParameterizedType());
     }
@@ -79,12 +79,12 @@ class GenericTypeTest {
         }
 
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        Optional<MethodEggg> methodWrap = classEggg.getPublicMethodWraps().stream()
+        Optional<MethodEggg> methodEggg = classEggg.getPublicMethodEgggs().stream()
                 .filter(m -> m.getName().equals("getList"))
                 .findFirst();
 
-        assertTrue(methodWrap.isPresent());
-        TypeEggg returnType = methodWrap.get().getReturnTypeEggg();
+        assertTrue(methodEggg.isPresent());
+        TypeEggg returnType = methodEggg.get().getReturnTypeEggg();
         assertNotNull(returnType);
         assertTrue(returnType.isList());
     }

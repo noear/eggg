@@ -26,9 +26,9 @@ public class PropertyEggg {
     private String alias;
 
 
-    private FieldEggg fieldWrap;
-    private PropertyMethodEggg getterWrap;
-    private PropertyMethodEggg setterWrap;
+    private FieldEggg fieldEggg;
+    private PropertyMethodEggg getterEggg;
+    private PropertyMethodEggg setterEggg;
 
     public PropertyEggg(String name) {
         this.name = name;
@@ -42,43 +42,43 @@ public class PropertyEggg {
         return alias;
     }
 
-    public FieldEggg getFieldWrap() {
-        return fieldWrap;
+    public FieldEggg getFieldEggg() {
+        return fieldEggg;
     }
 
-    public PropertyMethodEggg getGetterWrap() {
-        return getterWrap;
+    public PropertyMethodEggg getGetterEggg() {
+        return getterEggg;
     }
 
-    public PropertyMethodEggg getSetterWrap() {
-        return setterWrap;
+    public PropertyMethodEggg getSetterEggg() {
+        return setterEggg;
     }
 
     /// //////////
 
-    protected void setFieldWrap(FieldEggg f) {
-        this.fieldWrap = f;
+    protected void setFieldEggg(FieldEggg f) {
+        this.fieldEggg = f;
         this.alias = f.getAlias();
     }
 
-    protected void setGetterWrap(PropertyMethodEggg g) {
-        this.getterWrap = g;
+    protected void setGetterEggg(PropertyMethodEggg g) {
+        this.getterEggg = g;
         this.alias = g.getAlias();
     }
 
-    protected void setSetterWrap(PropertyMethodEggg s) {
-        this.setterWrap = s;
+    protected void setSetterEggg(PropertyMethodEggg s) {
+        this.setterEggg = s;
         this.alias = s.getAlias();
     }
 
     @Override
     public String toString() {
-        return "PropertyWrap{" +
+        return "PropertyEggg{" +
                 "name='" + name + '\'' +
                 ", alias='" + alias + '\'' +
-                ", fieldWrap=" + fieldWrap +
-                ", getterWrap=" + getterWrap +
-                ", setterWrap=" + setterWrap +
+                ", fieldEggg=" + fieldEggg +
+                ", getterEggg=" + getterEggg +
+                ", setterEggg=" + setterEggg +
                 '}';
     }
 }

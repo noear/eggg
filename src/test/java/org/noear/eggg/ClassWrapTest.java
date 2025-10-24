@@ -35,24 +35,24 @@ class ClassEgggTest {
     }
 
     @Test
-    void testFieldWraps() {
+    void testFieldEgggs() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        Collection<FieldEggg> fields = classEggg.getFieldWraps();
+        Collection<FieldEggg> fields = classEggg.getFieldEgggs();
 
         assertNotNull(fields);
         assertTrue(fields.size() >= 3);
 
-        FieldEggg field1 = classEggg.getFieldWrapByName("field1");
+        FieldEggg field1 = classEggg.getFieldEgggByName("field1");
         assertNotNull(field1);
         assertEquals("field1", field1.getName());
         assertEquals(String.class, field1.getTypeEggg().getType());
     }
 
     @Test
-    void testMethodWraps() {
+    void testMethodEgggs() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        Collection<MethodEggg> publicMethods = classEggg.getPublicMethodWraps();
-        Collection<MethodEggg> declaredMethods = classEggg.getDeclaredMethodWraps();
+        Collection<MethodEggg> publicMethods = classEggg.getPublicMethodEgggs();
+        Collection<MethodEggg> declaredMethods = classEggg.getDeclaredMethodEgggs();
 
         assertNotNull(publicMethods);
         assertNotNull(declaredMethods);
@@ -66,26 +66,26 @@ class ClassEgggTest {
     }
 
     @Test
-    void testPropertyWraps() {
+    void testPropertyEgggs() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        Collection<PropertyEggg> properties = classEggg.getPropertyWraps();
+        Collection<PropertyEggg> properties = classEggg.getPropertyEgggs();
 
         assertNotNull(properties);
         assertTrue(properties.size() >= 2);
 
-        PropertyEggg property1 = classEggg.getPropertyWrapByName("field1");
+        PropertyEggg property1 = classEggg.getPropertyEgggByName("field1");
         assertNotNull(property1);
-        assertNotNull(property1.getGetterWrap());
-        assertNotNull(property1.getSetterWrap());
+        assertNotNull(property1.getGetterEggg());
+        assertNotNull(property1.getSetterEggg());
     }
 
     @Test
-    void testConstructorWrap() {
+    void testConstructorEggg() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
 
-        assertNotNull(constrWrap);
-        assertTrue(constrWrap.isSecurity());
+        assertNotNull(constrEggg);
+        assertTrue(constrEggg.isSecurity());
     }
 
     @Test

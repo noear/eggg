@@ -46,11 +46,11 @@ class ClassEgggAdditionalTest {
     @Test
     void testClassWithMultipleConstructors() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
 
-        assertNotNull(constrWrap);
+        assertNotNull(constrEggg);
         // Should select the constructor with least parameters (no-arg constructor)
-        assertEquals(0, constrWrap.getParamCount());
+        assertEquals(0, constrEggg.getParamCount());
     }
 
     @Test
@@ -59,16 +59,16 @@ class ClassEgggAdditionalTest {
         Eggg customEggg = new Eggg().withCreatorClass(java.lang.Deprecated.class);
 
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(TestClassWithStaticMethods.class));
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
 
-        assertNotNull(constrWrap);
+        assertNotNull(constrEggg);
     }
 
     @Test
     void testBridgeMethodHandling() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithBridgeMethods.class));
-        Collection<MethodEggg> declaredMethods = classEggg.getDeclaredMethodWraps();
-        Collection<MethodEggg> publicMethods = classEggg.getPublicMethodWraps();
+        Collection<MethodEggg> declaredMethods = classEggg.getDeclaredMethodEgggs();
+        Collection<MethodEggg> publicMethods = classEggg.getPublicMethodEgggs();
 
         // Bridge methods should be handled properly
         assertNotNull(declaredMethods);
@@ -89,7 +89,7 @@ class ClassEgggAdditionalTest {
         assertNotNull(classEggg);
         assertTrue(classEggg.getTypeEggg().isAbstract());
 
-        Collection<MethodEggg> methods = classEggg.getPublicMethodWraps();
+        Collection<MethodEggg> methods = classEggg.getPublicMethodEgggs();
         assertTrue(methods.size() >= 2); // abstractMethod and concreteMethod
 
         Optional<MethodEggg> abstractMethod = methods.stream()
@@ -103,12 +103,12 @@ class ClassEgggAdditionalTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
 
         // Test field access by alias (when alias handler is not set, alias should be null)
-        FieldEggg fieldWrap = classEggg.getFieldWrapByAlias("value");
-        assertNotNull(fieldWrap); // No alias handler set
+        FieldEggg fieldEggg = classEggg.getFieldEgggByAlias("value");
+        assertNotNull(fieldEggg); // No alias handler set
 
         // But should be accessible by name
-        fieldWrap = classEggg.getFieldWrapByName("value");
-        assertNotNull(fieldWrap);
+        fieldEggg = classEggg.getFieldEgggByName("value");
+        assertNotNull(fieldEggg);
     }
 
     @Test
@@ -116,12 +116,12 @@ class ClassEgggAdditionalTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClassWithMultipleConstructors.class));
 
         // Test property access by alias
-        PropertyEggg propertyWrap = classEggg.getPropertyWrapByAlias("value");
-        assertNotNull(propertyWrap); // No alias handler set
+        PropertyEggg propertyEggg = classEggg.getPropertyEgggByAlias("value");
+        assertNotNull(propertyEggg); // No alias handler set
 
         // But should be accessible by name
-        propertyWrap = classEggg.getPropertyWrapByName("value");
-        assertNotNull(propertyWrap);
+        propertyEggg = classEggg.getPropertyEgggByName("value");
+        assertNotNull(propertyEggg);
     }
 
     @Test
@@ -194,14 +194,14 @@ class ClassEgggAdditionalTest {
 //        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ChildClass.class));
 //
 //        // Test declared methods
-//        Optional<MethodWrap> childMethod = classEggg.getDeclaredMethodWraps().stream()
+//        Optional<MethodEggg> childMethod = classEggg.getDeclaredMethodEgggs().stream()
 //                .filter(m -> m.getName().equals("childMethod"))
 //                .findFirst();
 //        assertTrue(childMethod.isPresent());
 //        assertTrue(childMethod.get().isDeclared());
 //
 //        // Test public methods (including inherited)
-//        Optional<MethodWrap> parentMethod = classEggg.getPublicMethodWraps().stream()
+//        Optional<MethodEggg> parentMethod = classEggg.getPublicMethodEgggs().stream()
 //                .filter(m -> m.getName().equals("parentMethod"))
 //                .findFirst();
 //        assertTrue(parentMethod.isPresent());

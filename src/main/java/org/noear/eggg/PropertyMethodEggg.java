@@ -32,7 +32,7 @@ public class PropertyMethodEggg implements Property {
 
     private final TypeEggg propertyTypeEggg;
 
-    private final FieldEggg fieldWrap;
+    private final FieldEggg fieldEggg;
 
     private final String name;
     private final String alias;
@@ -60,12 +60,12 @@ public class PropertyMethodEggg implements Property {
         }
 
         this.name = Property.resolvePropertyName(method.getName());
-        this.fieldWrap = classEggg.getFieldWrapByName(this.name);
+        this.fieldEggg = classEggg.getFieldEgggByName(this.name);
 
-        if (fieldWrap == null) {
+        if (fieldEggg == null) {
             this.digest = eggg.findDigest(classEggg, this, method, null);
         } else {
-            this.digest = eggg.findDigest(classEggg, this, method, fieldWrap.getDigest());
+            this.digest = eggg.findDigest(classEggg, this, method, fieldEggg.getDigest());
         }
 
         this.alias = eggg.findAlias(classEggg, this, digest, name);
@@ -73,7 +73,7 @@ public class PropertyMethodEggg implements Property {
 
     @Override
     public boolean isTransient() {
-        return fieldWrap != null && fieldWrap.isTransient();
+        return fieldEggg != null && fieldEggg.isTransient();
     }
 
     public boolean isReadMode() {
@@ -126,8 +126,8 @@ public class PropertyMethodEggg implements Property {
         return propertyTypeEggg;
     }
 
-    public FieldEggg getFieldWrap() {
-        return fieldWrap;
+    public FieldEggg getFieldEggg() {
+        return fieldEggg;
     }
 
     @Override

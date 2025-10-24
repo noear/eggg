@@ -22,11 +22,11 @@ public class EgggTest {
 
         ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
 
-        Assertions.assertNull(constrWrap);
+        Assertions.assertNull(constrEggg);
 
-        for (PropertyEggg p1 : classEggg.getPropertyWraps()) {
+        for (PropertyEggg p1 : classEggg.getPropertyEgggs()) {
             System.out.println(p1);
         }
     }
@@ -37,16 +37,16 @@ public class EgggTest {
 
         ClassEggg classEggg = typeEggg.getClassEggg();
 
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
 
-        Assertions.assertNotNull(constrWrap);
-        Assertions.assertEquals(0, constrWrap.getParamCount());
+        Assertions.assertNotNull(constrEggg);
+        Assertions.assertEquals(0, constrEggg.getParamCount());
 
-        for (PropertyEggg p1 : classEggg.getPropertyWraps()) {
+        for (PropertyEggg p1 : classEggg.getPropertyEgggs()) {
             System.out.println(p1);
         }
 
-        Assertions.assertEquals(1, classEggg.getPropertyWraps().size());
+        Assertions.assertEquals(1, classEggg.getPropertyEgggs().size());
     }
 
     @Test
@@ -54,7 +54,7 @@ public class EgggTest {
         TypeEggg typeEggg = eggg.getTypeEggg(new MyList<UserModel>() {
         }.getClass());
 
-        for (MethodEggg mw : typeEggg.getClassEggg().getPublicMethodWraps()) {
+        for (MethodEggg mw : typeEggg.getClassEggg().getPublicMethodEgggs()) {
             System.out.println(mw);
         }
     }

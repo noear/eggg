@@ -47,11 +47,11 @@ import java.util.concurrent.ConcurrentHashMap;
  *             return ref;
  *         }
  *
- *         if (h instanceof FieldWrap) {
+ *         if (h instanceof FieldEggg) {
  *             return new ONodeAttrHolder(attr, ((Field) e).getName());
- *         } else if (h instanceof PropertyMethodWrap) {
+ *         } else if (h instanceof PropertyMethodEggg) {
  *             return new ONodeAttrHolder(attr, Property.resolvePropertyName(((Method) e).getName()));
- *         } else if (h instanceof ParamWrap) {
+ *         } else if (h instanceof ParamEggg) {
  *             return new ONodeAttrHolder(attr, ((Parameter) e).getName());
  *         } else {
  *             return null;
@@ -154,23 +154,23 @@ public class Eggg {
         return new ClassEggg(this, typeEggg);
     }
 
-    protected FieldEggg newFieldWrap(ClassEggg classEggg, Field field) {
+    protected FieldEggg newFieldEggg(ClassEggg classEggg, Field field) {
         return new FieldEggg(this, classEggg, field);
     }
 
-    protected MethodEggg newMethodWrap(ClassEggg classEggg, Method method) {
+    protected MethodEggg newMethodEggg(ClassEggg classEggg, Method method) {
         return new MethodEggg(this, classEggg, method);
     }
 
-    protected ConstrEggg newConstrWrap(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
+    protected ConstrEggg newConstrEggg(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
         return new ConstrEggg(this, classEggg, constr, constrAnno);
     }
 
-    protected PropertyMethodEggg newPropertyMethodWrap(ClassEggg classEggg, Method property) {
+    protected PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, Method property) {
         return new PropertyMethodEggg(this, classEggg, property);
     }
 
-    protected ParamEggg newParamWrap(ClassEggg classEggg, Parameter param) {
+    protected ParamEggg newParamEggg(ClassEggg classEggg, Parameter param) {
         return new ParamEggg(this, classEggg, param);
     }
 

@@ -34,7 +34,7 @@ public class MethodEggg {
 
     private final Object digest;
 
-    private final Map<String, ParamEggg> paramWrapsForAlias;
+    private final Map<String, ParamEggg> paramEgggsForAlias;
     private final List<ParamEggg> paramAry;
 
     public MethodEggg(Eggg eggg, ClassEggg classEggg, Method method) {
@@ -58,14 +58,14 @@ public class MethodEggg {
 
         this.digest = eggg.findDigest(classEggg, this, method, null);
 
-        paramWrapsForAlias = new LinkedHashMap<>();
+        paramEgggsForAlias = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
-            ParamEggg paramWrap = eggg.newParamWrap(classEggg, p1);
+            ParamEggg paramEggg = eggg.newParamEggg(classEggg, p1);
 
-            paramWrapsForAlias.put(paramWrap.getAlias(), paramWrap);
-            paramAry.add(paramWrap);
+            paramEgggsForAlias.put(paramEggg.getAlias(), paramEggg);
+            paramAry.add(paramEggg);
         }
     }
 
@@ -110,16 +110,16 @@ public class MethodEggg {
         return paramAry.size();
     }
 
-    public List<ParamEggg> getParamWrapAry() {
+    public List<ParamEggg> getParamEgggAry() {
         return paramAry;
     }
 
-    public ParamEggg getParamWrapByAlias(String alias) {
-        return paramWrapsForAlias.get(alias);
+    public ParamEggg getParamEgggByAlias(String alias) {
+        return paramEgggsForAlias.get(alias);
     }
 
-    public boolean hasParamWrapByAlias(String alias) {
-        return paramWrapsForAlias.containsKey(alias);
+    public boolean hasParamEgggByAlias(String alias) {
+        return paramEgggsForAlias.containsKey(alias);
     }
 
     public <T> T newInstance(Object target, Object... args)

@@ -87,9 +87,9 @@ class UtilAndConfigTest {
                 .withAliasHandler(aliasHandler);
 
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(AnnotatedClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("annotatedField");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("annotatedField");
 
-        assertEquals("field_digest", fieldWrap.getDigest());
-        assertEquals("custom_field_digest", fieldWrap.getAlias());
+        assertEquals("field_digest", fieldEggg.getDigest());
+        assertEquals("custom_field_digest", fieldEggg.getAlias());
     }
 }

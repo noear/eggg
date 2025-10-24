@@ -27,11 +27,11 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(EmptyClass.class));
 
         assertNotNull(classEggg);
-        assertTrue(classEggg.getFieldWraps().isEmpty());
-        assertTrue(classEggg.getPropertyWraps().isEmpty());
+        assertTrue(classEggg.getFieldEgggs().isEmpty());
+        assertTrue(classEggg.getPropertyEgggs().isEmpty());
 
         // Should have constructor
-        assertNotNull(classEggg.getConstrWrap());
+        assertNotNull(classEggg.getConstrEggg());
     }
 
     @Test
@@ -39,11 +39,11 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithOnlyStaticMethods.class));
 
         assertNotNull(classEggg);
-        assertTrue(classEggg.getFieldWraps().isEmpty());
-        assertTrue(classEggg.getPropertyWraps().isEmpty());
+        assertTrue(classEggg.getFieldEgggs().isEmpty());
+        assertTrue(classEggg.getPropertyEgggs().isEmpty());
 
         // Should have public methods (including static ones)
-        assertFalse(classEggg.getPublicMethodWraps().isEmpty());
+        assertFalse(classEggg.getPublicMethodEgggs().isEmpty());
     }
 
     @Test
@@ -51,11 +51,11 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithOnlyPrivateConstructor.class));
 
         assertNotNull(classEggg);
-        ConstrEggg constrWrap = classEggg.getConstrWrap();
-        assertNotNull(constrWrap);
+        ConstrEggg constrEggg = classEggg.getConstrEggg();
+        assertNotNull(constrEggg);
 
         // Should be able to access private constructor
-        Executable executable = constrWrap.getConstr();
+        Executable executable = constrEggg.getConstr();
         assertNotNull(executable);
         assertTrue(executable instanceof Constructor);
     }
@@ -66,7 +66,7 @@ class EdgeCaseTests {
 
         assertNotNull(classEggg);
         // Object class should have methods but no fields (in our context)
-        assertTrue(classEggg.getPublicMethodWraps().isEmpty());
+        assertTrue(classEggg.getPublicMethodEgggs().isEmpty());
     }
 
     @Test
@@ -75,7 +75,7 @@ class EdgeCaseTests {
 
         assertNotNull(classEggg);
         assertTrue(classEggg.getTypeEggg().isInterface());
-        assertTrue(classEggg.getFieldWraps().isEmpty()); // Interfaces can't have instance fields
+        assertTrue(classEggg.getFieldEgggs().isEmpty()); // Interfaces can't have instance fields
     }
 
     @Test

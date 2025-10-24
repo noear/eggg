@@ -32,16 +32,16 @@ public class ClassEggg {
 
     private Executable constr;
     private Annotation constrAnno;
-    private ConstrEggg constrWrap;
+    private ConstrEggg constrEggg;
 
-    private final Map<String, FieldEggg> fieldWrapsForName = new LinkedHashMap<>();
-    private final Map<String, FieldEggg> fieldWrapsForAlias = new LinkedHashMap<>();
+    private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
+    private final Map<String, FieldEggg> fieldEgggsForAlias = new LinkedHashMap<>();
 
-    private final List<MethodEggg> publicMethodWraps = new ArrayList<>();
-    private final List<MethodEggg> declaredMethodWraps = new ArrayList<>();
+    private final List<MethodEggg> publicMethodEgggs = new ArrayList<>();
+    private final List<MethodEggg> declaredMethodEgggs = new ArrayList<>();
 
-    private final Map<String, PropertyEggg> propertyWrapsForName = new LinkedHashMap<>();
-    private final Map<String, PropertyEggg> propertyWrapsForAlias = new LinkedHashMap<>();
+    private final Map<String, PropertyEggg> propertyEgggsForName = new LinkedHashMap<>();
+    private final Map<String, PropertyEggg> propertyEgggsForAlias = new LinkedHashMap<>();
 
     private boolean likeRecordClass = true;
     private boolean realRecordClass;
@@ -61,18 +61,18 @@ public class ClassEggg {
         loadConstr();
 
         this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType());
-        this.likeRecordClass = likeRecordClass && fieldWrapsForName.size() > 0;
+        this.likeRecordClass = likeRecordClass && fieldEgggsForName.size() > 0;
 
-        for (Map.Entry<String, FieldEggg> entry : fieldWrapsForName.entrySet()) {
-            fieldWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
+        for (Map.Entry<String, FieldEggg> entry : fieldEgggsForName.entrySet()) {
+            fieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
-        for (Map.Entry<String, PropertyEggg> entry : propertyWrapsForName.entrySet()) {
-            propertyWrapsForAlias.put(entry.getValue().getAlias(), entry.getValue());
+        for (Map.Entry<String, PropertyEggg> entry : propertyEgggsForName.entrySet()) {
+            propertyEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
         if (constr != null) {
-            constrWrap = eggg.newConstrWrap(this, constr, constrAnno);
+            constrEggg = eggg.newConstrEggg(this, constr, constrAnno);
         }
 
         this.digest = eggg.findDigest(this, this, typeEggg.getType(), null);
@@ -100,40 +100,40 @@ public class ClassEggg {
         return (T) digest;
     }
 
-    public ConstrEggg getConstrWrap() {
-        return constrWrap;
+    public ConstrEggg getConstrEggg() {
+        return constrEggg;
     }
 
-    public Collection<MethodEggg> getPublicMethodWraps() {
-        return publicMethodWraps;
+    public Collection<MethodEggg> getPublicMethodEgggs() {
+        return publicMethodEgggs;
     }
 
-    public Collection<MethodEggg> getDeclaredMethodWraps() {
-        return declaredMethodWraps;
+    public Collection<MethodEggg> getDeclaredMethodEgggs() {
+        return declaredMethodEgggs;
     }
 
-    public Collection<FieldEggg> getFieldWraps() {
-        return fieldWrapsForName.values();
+    public Collection<FieldEggg> getFieldEgggs() {
+        return fieldEgggsForName.values();
     }
 
-    public FieldEggg getFieldWrapByName(String name) {
-        return fieldWrapsForName.get(name);
+    public FieldEggg getFieldEgggByName(String name) {
+        return fieldEgggsForName.get(name);
     }
 
-    public FieldEggg getFieldWrapByAlias(String alias) {
-        return fieldWrapsForAlias.get(alias);
+    public FieldEggg getFieldEgggByAlias(String alias) {
+        return fieldEgggsForAlias.get(alias);
     }
 
-    public Collection<PropertyEggg> getPropertyWraps() {
-        return propertyWrapsForName.values();
+    public Collection<PropertyEggg> getPropertyEgggs() {
+        return propertyEgggsForName.values();
     }
 
-    public PropertyEggg getPropertyWrapByName(String name) {
-        return propertyWrapsForName.get(name);
+    public PropertyEggg getPropertyEgggByName(String name) {
+        return propertyEgggsForName.get(name);
     }
 
-    public PropertyEggg getPropertyWrapByAlias(String alias) {
-        return propertyWrapsForAlias.get(alias);
+    public PropertyEggg getPropertyEgggByAlias(String alias) {
+        return propertyEgggsForAlias.get(alias);
     }
 
     /// /////////////////
@@ -141,7 +141,7 @@ public class ClassEggg {
     protected void loadConstr() {
         if (typeEggg.getType() != Object.class) {
             //先从静态方法找
-            for (MethodEggg mw : declaredMethodWraps) {
+            for (MethodEggg mw : declaredMethodEgggs) {
                 if (mw.isStatic()) {
                     constrAnno = eggg.findCreator(mw.getMethod());
                     if (constrAnno != null) {
@@ -182,15 +182,15 @@ public class ClassEggg {
                     continue;
                 }
 
-                FieldEggg fieldWrap = eggg.newFieldWrap(this, f);
+                FieldEggg fieldEggg = eggg.newFieldEggg(this, f);
 
-                fieldWrapsForName.put(fieldWrap.getName(), fieldWrap);
+                fieldEgggsForName.put(fieldEggg.getName(), fieldEggg);
 
-                if (fieldWrap.isStatic() == false) {
+                if (fieldEggg.isStatic() == false) {
                     //如果全是只读，则
-                    likeRecordClass = likeRecordClass && fieldWrap.isFinal();
-                    propertyWrapsForName.computeIfAbsent(fieldWrap.getName(), k -> new PropertyEggg(k))
-                            .setFieldWrap(fieldWrap);
+                    likeRecordClass = likeRecordClass && fieldEggg.isFinal();
+                    propertyEgggsForName.computeIfAbsent(fieldEggg.getName(), k -> new PropertyEggg(k))
+                            .setFieldEggg(fieldEggg);
                 }
 
             }
@@ -205,8 +205,8 @@ public class ClassEggg {
             }
 
             if (m.isBridge() == false) {
-                MethodEggg methodWrap = eggg.newMethodWrap(this, m);
-                declaredMethodWraps.add(methodWrap);
+                MethodEggg methodEggg = eggg.newMethodEggg(this, m);
+                declaredMethodEgggs.add(methodEggg);
             }
         }
 
@@ -223,26 +223,26 @@ public class ClassEggg {
                 continue;
             }
 
-            MethodEggg methodWrap = eggg.newMethodWrap(this, m);
-            publicMethodWraps.add(methodWrap);
+            MethodEggg methodEggg = eggg.newMethodEggg(this, m);
+            publicMethodEgggs.add(methodEggg);
 
-            if (methodWrap.isStatic() == false) {
+            if (methodEggg.isStatic() == false) {
                 if (m.getName().length() > 3) {
                     if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
                         //setter
                         if (m.getName().startsWith("set") || m.getName().startsWith("is")) {
-                            PropertyMethodEggg sw = eggg.newPropertyMethodWrap(this, m);
+                            PropertyMethodEggg sw = eggg.newPropertyMethodEggg(this, m);
 
-                            propertyWrapsForName.computeIfAbsent(sw.getName(), k -> new PropertyEggg(k))
-                                    .setSetterWrap(sw);
+                            propertyEgggsForName.computeIfAbsent(sw.getName(), k -> new PropertyEggg(k))
+                                    .setSetterEggg(sw);
                         }
                     } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
                         //getter
                         if (m.getName().startsWith("get")) {
-                            PropertyMethodEggg gw = eggg.newPropertyMethodWrap(this, m);
+                            PropertyMethodEggg gw = eggg.newPropertyMethodEggg(this, m);
 
-                            propertyWrapsForName.computeIfAbsent(gw.getName(), k -> new PropertyEggg(k))
-                                    .setGetterWrap(gw);
+                            propertyEgggsForName.computeIfAbsent(gw.getName(), k -> new PropertyEggg(k))
+                                    .setGetterEggg(gw);
                         }
                     }
                 }

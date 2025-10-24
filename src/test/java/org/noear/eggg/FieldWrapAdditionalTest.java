@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FieldWrapAdditionalTest {
+class FieldEgggAdditionalTest {
 
     private final Eggg eggg = new Eggg();
 
@@ -35,15 +35,15 @@ class FieldWrapAdditionalTest {
     }
 
     @Test
-    void testFieldWrapCreation() throws Exception {
+    void testFieldEgggCreation() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("publicField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        assertEquals("publicField", fieldWrap.getName());
-        assertEquals(String.class, fieldWrap.getTypeEggg().getType());
-        assertSame(field, fieldWrap.getField());
+        assertNotNull(fieldEggg);
+        assertEquals("publicField", fieldEggg.getName());
+        assertEquals(String.class, fieldEggg.getTypeEggg().getType());
+        assertSame(field, fieldEggg.getField());
     }
 
     @Test
@@ -52,32 +52,32 @@ class FieldWrapAdditionalTest {
 
         // Test public field
         Field publicField = FieldTestClass.class.getField("publicField");
-        FieldEggg publicFieldWrap = eggg.newFieldWrap(classEggg, publicField);
-        assertTrue(publicFieldWrap.isPublic());
-        assertFalse(publicFieldWrap.isPrivate());
+        FieldEggg publicFieldEggg = eggg.newFieldEggg(classEggg, publicField);
+        assertTrue(publicFieldEggg.isPublic());
+        assertFalse(publicFieldEggg.isPrivate());
 
         // Test private field
         Field privateField = FieldTestClass.class.getDeclaredField("privateField");
-        FieldEggg privateFieldWrap = eggg.newFieldWrap(classEggg, privateField);
-        assertTrue(privateFieldWrap.isPrivate());
-        assertFalse(privateFieldWrap.isPublic());
+        FieldEggg privateFieldEggg = eggg.newFieldEggg(classEggg, privateField);
+        assertTrue(privateFieldEggg.isPrivate());
+        assertFalse(privateFieldEggg.isPublic());
     }
 
     @Test
     void testFinalField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("finalField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        assertTrue(fieldWrap.isFinal());
+        assertNotNull(fieldEggg);
+        assertTrue(fieldEggg.isFinal());
 
         // Test that setting value on final field doesn't throw but doesn't change value
         FieldTestClass instance = new FieldTestClass();
         try {
-            fieldWrap.setValue(instance, "newValue");
+            fieldEggg.setValue(instance, "newValue");
             // Should not change due to final modifier
-            assertEquals("constant", fieldWrap.getValue(instance));
+            assertEquals("constant", fieldEggg.getValue(instance));
         } catch (Exception e) {
             // Some JVMs might throw exception for final field modification
             assertTrue(e instanceof IllegalAccessException);
@@ -88,30 +88,30 @@ class FieldWrapAdditionalTest {
     void testStaticField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("staticField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        assertTrue(fieldWrap.isStatic());
+        assertNotNull(fieldEggg);
+        assertTrue(fieldEggg.isStatic());
     }
 
     @Test
     void testTransientField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("transientField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        assertTrue(fieldWrap.isTransient());
+        assertNotNull(fieldEggg);
+        assertTrue(fieldEggg.isTransient());
     }
 
     @Test
     void testVolatileField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("volatileField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        // Note: Your FieldWrap doesn't currently track volatile modifier
+        assertNotNull(fieldEggg);
+        // Note: Your FieldEggg doesn't currently track volatile modifier
         // This test verifies it doesn't break on volatile fields
     }
 
@@ -119,10 +119,10 @@ class FieldWrapAdditionalTest {
     void testGenericField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringFieldClass.class));
         Field field = GenericFieldClass.class.getDeclaredField("genericField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        TypeEggg typeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg typeEggg = fieldEggg.getTypeEggg();
         assertNotNull(typeEggg);
         // Generic should be resolved to String due to inheritance
         assertEquals(String.class, typeEggg.getType());
@@ -132,10 +132,10 @@ class FieldWrapAdditionalTest {
     void testListField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("stringList");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        TypeEggg typeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg typeEggg = fieldEggg.getTypeEggg();
         assertNotNull(typeEggg);
         assertTrue(typeEggg.isList());
     }
@@ -144,10 +144,10 @@ class FieldWrapAdditionalTest {
     void testMapField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("stringIntMap");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        TypeEggg typeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg typeEggg = fieldEggg.getTypeEggg();
         assertNotNull(typeEggg);
         assertTrue(typeEggg.isMap());
     }
@@ -156,10 +156,10 @@ class FieldWrapAdditionalTest {
     void testArrayField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("stringArray");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        assertNotNull(fieldWrap);
-        TypeEggg typeEggg = fieldWrap.getTypeEggg();
+        assertNotNull(fieldEggg);
+        TypeEggg typeEggg = fieldEggg.getTypeEggg();
         assertNotNull(typeEggg);
         assertTrue(typeEggg.isArray());
     }
@@ -168,12 +168,12 @@ class FieldWrapAdditionalTest {
     void testFieldValueAccess() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getField("publicField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
         FieldTestClass instance = new FieldTestClass();
         instance.publicField = "testValue";
 
-        Object value = fieldWrap.getValue(instance);
+        Object value = fieldEggg.getValue(instance);
         assertEquals("testValue", value);
     }
 
@@ -181,10 +181,10 @@ class FieldWrapAdditionalTest {
     void testFieldValueSetting() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getField("publicField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
         FieldTestClass instance = new FieldTestClass();
-        fieldWrap.setValue(instance, "newValue");
+        fieldEggg.setValue(instance, "newValue");
 
         assertEquals("newValue", instance.publicField);
     }
@@ -193,13 +193,13 @@ class FieldWrapAdditionalTest {
     void testPrivateFieldAccess() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getDeclaredField("privateField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
         FieldTestClass instance = new FieldTestClass();
 
         // Should be able to access private field through reflection
-        fieldWrap.setValue(instance, "privateValue");
-        Object value = fieldWrap.getValue(instance);
+        fieldEggg.setValue(instance, "privateValue");
+        Object value = fieldEggg.getValue(instance);
         assertEquals("privateValue", value);
     }
 
@@ -207,9 +207,9 @@ class FieldWrapAdditionalTest {
     void testFieldToString() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getField("publicField");
-        FieldEggg fieldWrap = eggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = eggg.newFieldEggg(classEggg, field);
 
-        String toString = fieldWrap.toString();
+        String toString = fieldEggg.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("publicField"));
     }
@@ -225,10 +225,10 @@ class FieldWrapAdditionalTest {
 
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(FieldTestClass.class));
         Field field = FieldTestClass.class.getField("publicField");
-        FieldEggg fieldWrap = customEggg.newFieldWrap(classEggg, field);
+        FieldEggg fieldEggg = customEggg.newFieldEggg(classEggg, field);
 
-        assertEquals("field_digest", fieldWrap.getDigest());
-        assertEquals("alias_field_digest", fieldWrap.getAlias());
+        assertEquals("field_digest", fieldEggg.getDigest());
+        assertEquals("alias_field_digest", fieldEggg.getAlias());
     }
 
 //    @Test
@@ -244,12 +244,12 @@ class FieldWrapAdditionalTest {
 //        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ChildClass.class));
 //
 //        // Child field should be declared
-//        FieldWrap childField = classEggg.getFieldWrapByName("childField");
+//        FieldEggg childField = classEggg.getFieldEgggByName("childField");
 //        assertNotNull(childField);
 //        assertTrue(childField.isDeclared());
 //
 //        // Parent field should not be declared in child
-//        FieldWrap parentField = classEggg.getFieldWrapByName("parentField");
+//        FieldEggg parentField = classEggg.getFieldEgggByName("parentField");
 //        assertNotNull(parentField);
 //        assertFalse(parentField.isDeclared());
 //    }

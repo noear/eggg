@@ -40,34 +40,34 @@ class ComprehensiveTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ConcreteClass.class));
 
         // Test fields
-        FieldEggg genericField = classEggg.getFieldWrapByName("genericField");
+        FieldEggg genericField = classEggg.getFieldEgggByName("genericField");
         assertNotNull(genericField);
         assertEquals(String.class, genericField.getTypeEggg().getType());
 
-        FieldEggg numberListField = classEggg.getFieldWrapByName("numberList");
+        FieldEggg numberListField = classEggg.getFieldEgggByName("numberList");
         assertNotNull(numberListField);
         assertTrue(numberListField.getTypeEggg().isList());
 
         // Test properties
-        PropertyEggg genericProperty = classEggg.getPropertyWrapByName("genericField");
+        PropertyEggg genericProperty = classEggg.getPropertyEgggByName("genericField");
         assertNotNull(genericProperty);
-        assertNotNull(genericProperty.getGetterWrap());
-        assertNotNull(genericProperty.getSetterWrap());
+        assertNotNull(genericProperty.getGetterEggg());
+        assertNotNull(genericProperty.getSetterEggg());
     }
 
     @Test
     void testGenericMethodInComplexClass() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexGenericClass.class));
 
-        Optional<MethodEggg> processMethod = classEggg.getPublicMethodWraps().stream()
+        Optional<MethodEggg> processMethod = classEggg.getPublicMethodEgggs().stream()
                 .filter(m -> m.getName().equals("processData"))
                 .findFirst();
 
         assertTrue(processMethod.isPresent());
-        MethodEggg methodWrap = processMethod.get();
-        assertEquals(3, methodWrap.getParamCount());
+        MethodEggg methodEggg = processMethod.get();
+        assertEquals(3, methodEggg.getParamCount());
 
-        List<ParamEggg> params = methodWrap.getParamWrapAry();
+        List<ParamEggg> params = methodEggg.getParamEgggAry();
         assertNotNull(params);
         assertEquals(3, params.size());
     }

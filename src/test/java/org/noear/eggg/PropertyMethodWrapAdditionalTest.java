@@ -7,7 +7,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PropertyMethodWrapAdditionalTest {
+class PropertyMethodEgggAdditionalTest {
 
     private final Eggg eggg = new Eggg();
 
@@ -65,40 +65,40 @@ class PropertyMethodWrapAdditionalTest {
     }
 
     @Test
-    void testPropertyMethodWrapCreation() throws Exception {
+    void testPropertyMethodEgggCreation() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        assertEquals("getSimpleField", propertyWrap.getMethod().getName());
-        assertEquals("simpleField", propertyWrap.getName());
-        assertTrue(propertyWrap.isReadMode());
-        assertFalse(propertyWrap.isTransient());
+        assertNotNull(propertyEggg);
+        assertEquals("getSimpleField", propertyEggg.getMethod().getName());
+        assertEquals("simpleField", propertyEggg.getName());
+        assertTrue(propertyEggg.isReadMode());
+        assertFalse(propertyEggg.isTransient());
     }
 
     @Test
-    void testSetterPropertyMethodWrap() throws Exception {
+    void testSetterPropertyMethodEggg() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, setter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
-        assertNotNull(propertyWrap);
-        assertEquals("setSimpleField", propertyWrap.getMethod().getName());
-        assertEquals("simpleField", propertyWrap.getName());
-        assertFalse(propertyWrap.isReadMode());
-        assertEquals(String.class, propertyWrap.getTypeEggg().getType());
+        assertNotNull(propertyEggg);
+        assertEquals("setSimpleField", propertyEggg.getMethod().getName());
+        assertEquals("simpleField", propertyEggg.getName());
+        assertFalse(propertyEggg.isReadMode());
+        assertEquals(String.class, propertyEggg.getTypeEggg().getType());
     }
 
     @Test
     void testCollectionProperty() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getListField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        assertTrue(propertyWrap.isReadMode());
-        TypeEggg typeEggg = propertyWrap.getTypeEggg();
+        assertNotNull(propertyEggg);
+        assertTrue(propertyEggg.isReadMode());
+        TypeEggg typeEggg = propertyEggg.getTypeEggg();
         assertNotNull(typeEggg);
         assertTrue(typeEggg.isList());
     }
@@ -107,10 +107,10 @@ class PropertyMethodWrapAdditionalTest {
     void testMapProperty() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getMapField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        TypeEggg typeEggg = propertyWrap.getTypeEggg();
+        assertNotNull(propertyEggg);
+        TypeEggg typeEggg = propertyEggg.getTypeEggg();
         assertNotNull(typeEggg);
         assertTrue(typeEggg.isMap());
     }
@@ -119,48 +119,48 @@ class PropertyMethodWrapAdditionalTest {
     void testTransientProperty() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getTransientField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        assertTrue(propertyWrap.isTransient());
-        assertNotNull(propertyWrap.getFieldWrap());
-        assertTrue(propertyWrap.getFieldWrap().isTransient());
+        assertNotNull(propertyEggg);
+        assertTrue(propertyEggg.isTransient());
+        assertNotNull(propertyEggg.getFieldEggg());
+        assertTrue(propertyEggg.getFieldEggg().isTransient());
     }
 
     @Test
     void testBooleanProperty() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("isActive");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        assertEquals("active", propertyWrap.getName());
-        assertTrue(propertyWrap.isReadMode());
-        assertEquals(boolean.class, propertyWrap.getTypeEggg().getType());
+        assertNotNull(propertyEggg);
+        assertEquals("active", propertyEggg.getName());
+        assertTrue(propertyEggg.isReadMode());
+        assertEquals(boolean.class, propertyEggg.getTypeEggg().getType());
     }
 
     @Test
     void testPropertyWithoutField() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("retrieveData");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        assertEquals("retrieveData", propertyWrap.getMethod().getName());
+        assertNotNull(propertyEggg);
+        assertEquals("retrieveData", propertyEggg.getMethod().getName());
         // Should not be recognized as property method (name doesn't start with get/set)
-        assertEquals("rieveData", propertyWrap.getName()); // This might need adjustment in your logic
-        assertNull(propertyWrap.getFieldWrap());
-        assertFalse(propertyWrap.isTransient());
+        assertEquals("rieveData", propertyEggg.getName()); // This might need adjustment in your logic
+        assertNull(propertyEggg.getFieldEggg());
+        assertFalse(propertyEggg.isTransient());
     }
 
     @Test
     void testGenericProperty() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringPropertyClass.class));
         Method getter = GenericPropertyClass.class.getMethod("getGenericField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertNotNull(propertyWrap);
-        TypeEggg typeEggg = propertyWrap.getTypeEggg();
+        assertNotNull(propertyEggg);
+        TypeEggg typeEggg = propertyEggg.getTypeEggg();
         assertNotNull(typeEggg);
         // Generic should be resolved to String due to inheritance
         assertEquals(String.class, typeEggg.getType());
@@ -170,12 +170,12 @@ class PropertyMethodWrapAdditionalTest {
     void testPropertyValueAccess() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
         instance.setSimpleField("testValue");
 
-        Object value = propertyWrap.getValue(instance);
+        Object value = propertyEggg.getValue(instance);
         assertEquals("testValue", value);
     }
 
@@ -183,10 +183,10 @@ class PropertyMethodWrapAdditionalTest {
     void testPropertyValueSetting() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, setter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
-        propertyWrap.setValue(instance, "newValue");
+        propertyEggg.setValue(instance, "newValue");
 
         assertEquals("newValue", instance.getSimpleField());
     }
@@ -195,11 +195,11 @@ class PropertyMethodWrapAdditionalTest {
     void testGetterOnSetterMethod() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, setter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
         // Calling getValue on setter should return null
-        Object value = propertyWrap.getValue(instance);
+        Object value = propertyEggg.getValue(instance);
         assertNull(value);
     }
 
@@ -207,11 +207,11 @@ class PropertyMethodWrapAdditionalTest {
     void testSetterOnGetterMethod() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
         // Calling setValue on getter should do nothing
-        propertyWrap.setValue(instance, "ignored");
+        propertyEggg.setValue(instance, "ignored");
 
         // Value should remain unchanged (or null if not set)
         assertNull(instance.getSimpleField());
@@ -221,9 +221,9 @@ class PropertyMethodWrapAdditionalTest {
     void testPropertyToString() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
-        String toString = propertyWrap.toString();
+        String toString = propertyEggg.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("getSimpleField"));
     }
@@ -239,23 +239,23 @@ class PropertyMethodWrapAdditionalTest {
 
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = customEggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = customEggg.newPropertyMethodEggg(classEggg, getter);
 
-        assertEquals("property_digest", propertyWrap.getDigest());
-        assertEquals("alias_property_digest", propertyWrap.getAlias());
+        assertEquals("property_digest", propertyEggg.getDigest());
+        assertEquals("alias_property_digest", propertyEggg.getAlias());
     }
 
     @Test
     void testPropertyWithMethodHandle() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
         Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
-        PropertyMethodEggg propertyWrap = eggg.newPropertyMethodWrap(classEggg, getter);
+        PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
         instance.setSimpleField("methodHandleTest");
 
         // Test that method handle works
-        Object value = propertyWrap.getValue(instance);
+        Object value = propertyEggg.getValue(instance);
         assertEquals("methodHandleTest", value);
     }
 }

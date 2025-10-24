@@ -138,9 +138,9 @@ public class EgggUtil {
 ```java
 public class Demo {
     public void case1(){
-        ypeWrap typeEggg =  EgggUtil.getTypeEggg(clazz);
+        ypeEggg typeEggg =  EgggUtil.getTypeEggg(clazz);
 
-        for (FieldWrap fw : typeEggg.getClassEggg().getFieldWraps()) {
+        for (FieldEggg fw : typeEggg.getClassEggg().getFieldEgggs()) {
             if (fw.isStatic()) {
                 continue;
             }

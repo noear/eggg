@@ -42,10 +42,10 @@ public class ConstrEggg {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamEggg paramWrap = eggg.newParamWrap(classEggg, p1);
+            ParamEggg paramEggg = eggg.newParamEggg(classEggg, p1);
 
-            paramAliasMap.put(paramWrap.getAlias(), paramWrap);
-            paramAry.add(paramWrap);
+            paramAliasMap.put(paramEggg.getAlias(), paramEggg);
+            paramAry.add(paramEggg);
         }
 
         security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(classEggg.getTypeEggg().getType()));
@@ -72,15 +72,15 @@ public class ConstrEggg {
         return paramAry.size();
     }
 
-    public List<ParamEggg> getParamWrapAry() {
+    public List<ParamEggg> getParamEgggAry() {
         return paramAry;
     }
 
-    public ParamEggg getParamWrapByAlias(String alias) {
+    public ParamEggg getParamEgggByAlias(String alias) {
         return paramAliasMap.get(alias);
     }
 
-    public boolean hasParamWrapByAlias(String alias) {
+    public boolean hasParamEgggByAlias(String alias) {
         return paramAliasMap.containsKey(alias);
     }
 

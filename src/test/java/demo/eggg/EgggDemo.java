@@ -17,6 +17,6 @@ public class EgggDemo {
 
         ClassEggg classEggg = typeEggg.getClassEggg();
 
-        classEggg.getFieldWraps();
+        classEggg.getFieldEgggs();
     }
 }

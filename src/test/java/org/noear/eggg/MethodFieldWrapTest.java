@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MethodFieldWrapTest {
+class MethodFieldEgggTest {
 
     private final Eggg eggg = new Eggg();
 
@@ -25,98 +25,98 @@ class MethodFieldWrapTest {
     }
 
     @Test
-    void testMethodWrapProperties() throws Exception {
+    void testMethodEgggProperties() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
         Method method = TestClass.class.getMethod("getValue");
-        MethodEggg methodWrap = eggg.newMethodWrap(classEggg, method);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
-        assertNotNull(methodWrap);
-        assertEquals("getValue", methodWrap.getName());
-        assertFalse(methodWrap.isStatic());
-        assertFalse(methodWrap.isFinal());
-        assertTrue(methodWrap.isPublic());
-        assertEquals(0, methodWrap.getParamCount());
+        assertNotNull(methodEggg);
+        assertEquals("getValue", methodEggg.getName());
+        assertFalse(methodEggg.isStatic());
+        assertFalse(methodEggg.isFinal());
+        assertTrue(methodEggg.isPublic());
+        assertEquals(0, methodEggg.getParamCount());
     }
 
     @Test
-    void testStaticMethodWrap() throws Exception {
+    void testStaticMethodEggg() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
         Method method = TestClass.class.getMethod("staticMethod");
-        MethodEggg methodWrap = eggg.newMethodWrap(classEggg, method);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
-        assertNotNull(methodWrap);
-        assertTrue(methodWrap.isStatic());
+        assertNotNull(methodEggg);
+        assertTrue(methodEggg.isStatic());
     }
 
     @Test
-    void testFinalMethodWrap() throws Exception {
+    void testFinalMethodEggg() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
         Method method = TestClass.class.getMethod("finalMethod");
-        MethodEggg methodWrap = eggg.newMethodWrap(classEggg, method);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
-        assertNotNull(methodWrap);
-        assertTrue(methodWrap.isFinal());
+        assertNotNull(methodEggg);
+        assertTrue(methodEggg.isFinal());
     }
 
     @Test
     void testMethodWithParameters() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
         Method method = TestClass.class.getMethod("methodWithParams", String.class, int.class);
-        MethodEggg methodWrap = eggg.newMethodWrap(classEggg, method);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
-        assertNotNull(methodWrap);
-        assertEquals(2, methodWrap.getParamCount());
+        assertNotNull(methodEggg);
+        assertEquals(2, methodEggg.getParamCount());
 
-        List<ParamEggg> params = methodWrap.getParamWrapAry();
+        List<ParamEggg> params = methodEggg.getParamEgggAry();
         assertEquals(2, params.size());
         assertEquals("param1", params.get(0).getName());
         assertEquals("param2", params.get(1).getName());
     }
 
     @Test
-    void testFieldWrapProperties() throws Exception {
+    void testFieldEgggProperties() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("value");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("value");
 
-        assertNotNull(fieldWrap);
-        assertEquals("value", fieldWrap.getName());
-        assertEquals(String.class, fieldWrap.getTypeEggg().getType());
-        assertFalse(fieldWrap.isFinal());
-        assertFalse(fieldWrap.isStatic());
-        assertTrue(fieldWrap.isPrivate());
+        assertNotNull(fieldEggg);
+        assertEquals("value", fieldEggg.getName());
+        assertEquals(String.class, fieldEggg.getTypeEggg().getType());
+        assertFalse(fieldEggg.isFinal());
+        assertFalse(fieldEggg.isStatic());
+        assertTrue(fieldEggg.isPrivate());
     }
 
     @Test
-    void testFinalFieldWrap() throws Exception {
+    void testFinalFieldEggg() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("finalField");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("finalField");
 
-        assertNotNull(fieldWrap);
-        assertTrue(fieldWrap.isFinal());
+        assertNotNull(fieldEggg);
+        assertTrue(fieldEggg.isFinal());
     }
 
     @Test
     void testMethodInvocation() throws Throwable {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
         Method method = TestClass.class.getMethod("getValue");
-        MethodEggg methodWrap = eggg.newMethodWrap(classEggg, method);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
         TestClass instance = new TestClass();
         instance.setValue("test");
 
-        Object result = methodWrap.newInstance(instance);
+        Object result = methodEggg.newInstance(instance);
         assertEquals("test", result);
     }
 
     @Test
     void testFieldAccess() throws Exception {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        FieldEggg fieldWrap = classEggg.getFieldWrapByName("value");
+        FieldEggg fieldEggg = classEggg.getFieldEgggByName("value");
 
         TestClass instance = new TestClass();
-        fieldWrap.setValue(instance, "testValue");
+        fieldEggg.setValue(instance, "testValue");
 
-        Object value = fieldWrap.getValue(instance);
+        Object value = fieldEggg.getValue(instance);
         assertEquals("testValue", value);
     }
 }
