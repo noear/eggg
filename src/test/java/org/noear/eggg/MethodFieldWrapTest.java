@@ -104,7 +104,7 @@ class MethodFieldEgggTest {
         TestClass instance = new TestClass();
         instance.setValue("test");
 
-        Object result = methodEggg.newInstance(instance);
+        Object result = methodEggg.invoke(instance);
         assertEquals("test", result);
     }
 

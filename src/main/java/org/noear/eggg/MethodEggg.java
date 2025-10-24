@@ -138,7 +138,7 @@ public class MethodEggg {
         return paramEgggsForAlias.containsKey(alias);
     }
 
-    public <T> T newInstance(Object target, Object... args)
+    public <T> T invoke(Object target, Object... args)
             throws Throwable {
 
         if (methodHandle == null) {

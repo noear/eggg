@@ -150,7 +150,7 @@ class MethodEgggAdditionalTest {
         MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
         MethodTestClass instance = new MethodTestClass();
-        Object result = methodEggg.newInstance(instance, "testInput");
+        Object result = methodEggg.invoke(instance, "testInput");
 
         assertEquals("testInput", result);
     }
@@ -162,7 +162,7 @@ class MethodEgggAdditionalTest {
         MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
         // Static method can be invoked with null instance
-        methodEggg.newInstance(null);
+        methodEggg.invoke(null);
         // No assertion - just testing that it doesn't throw
     }
 
@@ -242,7 +242,7 @@ class MethodEgggAdditionalTest {
         MethodTestClass instance = new MethodTestClass();
 
         // Test that method handle works (if available)
-        Object result = methodEggg.newInstance(instance, "methodHandleTest");
+        Object result = methodEggg.invoke(instance, "methodHandleTest");
         assertEquals("methodHandleTest", result);
     }
 

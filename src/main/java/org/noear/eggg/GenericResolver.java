@@ -16,8 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -27,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public class GenericResolver {
-    private static GenericResolver _default = new  GenericResolver();
+    private static GenericResolver _default = new GenericResolver();
 
     public static GenericResolver getDefault() {
         return _default;
@@ -176,70 +175,96 @@ public class GenericResolver {
      *
      */
     public Type reviewType(Type type, Map<String, Type> genericInfo) {
+        return reviewType(type, genericInfo, new HashSet<>());
+    }
+
+    /**
+     * 审查类型
+     *
+     * @param type        原始类型
+     * @param genericInfo 泛型信息
+     * @param visited     已访问的类型集合，防止循环引用
+     */
+    private Type reviewType(Type type, Map<String, Type> genericInfo, Set<Type> visited) {
         if (genericInfo == null || genericInfo.isEmpty() || type instanceof Class) {
             return type;
         }
 
-        if (type instanceof TypeVariable) {
-            //如果是类型变量，则重新构建类型
-            Type typeTmp = genericInfo.get(type.getTypeName());
+        // 防止循环引用
+        if (!visited.add(type)) {
+            return type;
+        }
 
-            if (typeTmp == null) {
-                return type;
-            } else {
-                return reviewType(typeTmp, genericInfo);
-            }
-        } else if (type instanceof WildcardType) {
-            WildcardType typeTmp = (WildcardType) type;
+        try {
+            if (type instanceof TypeVariable) {
+                Type resolved = genericInfo.get(type.getTypeName());
+                return resolved != null ? reviewType(resolved, genericInfo, visited) : type;
 
-            if (typeTmp.getUpperBounds().length > 0) {
-                //? ext T
-                Type type1 = typeTmp.getUpperBounds()[0];
+            } else if (type instanceof WildcardType) {
+                return reviewWildcardType((WildcardType) type, genericInfo, visited);
 
-                if (type1 instanceof TypeVariable) {
-                    return reviewType(type1, genericInfo);
-                }
-            }
+            } else if (type instanceof ParameterizedType) {
+                return reviewParameterizedType((ParameterizedType) type, genericInfo, visited);
 
-            if (typeTmp.getLowerBounds().length > 0) {
-                //? sup T
-                Type type1 = typeTmp.getLowerBounds()[0];
-
-                if (type1 instanceof TypeVariable) {
-                    return reviewType(type1, genericInfo);
-                }
+            } else if (type instanceof GenericArrayType) {
+                return reviewGenericArrayType((GenericArrayType) type, genericInfo, visited);
             }
 
             return type;
-        } else if (type instanceof ParameterizedType) {
-            ParameterizedType typeTmp = (ParameterizedType) type;
-            Type[] typeArgs = typeTmp.getActualTypeArguments();
-            boolean typeChanged = false;
+        } finally {
+            visited.remove(type);
+        }
+    }
 
-            for (int i = 0; i < typeArgs.length; i++) {
-                Type t1 = typeArgs[i];
-                typeArgs[i] = reviewType(t1, genericInfo);
-                if (typeArgs[i] != t1) {
-                    typeChanged = true;
-                }
-            }
+    private Type reviewWildcardType(WildcardType wildcardType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type[] upperBounds = reviewTypes(wildcardType.getUpperBounds(), genericInfo, visited);
+        Type[] lowerBounds = reviewTypes(wildcardType.getLowerBounds(), genericInfo, visited);
 
-            if (typeChanged) {
-                return new ParameterizedTypeImpl((Class<?>) typeTmp.getRawType(), typeArgs, typeTmp.getOwnerType());
-            } else {
-                return type;
-            }
-        } else if (type instanceof GenericArrayType) {
-            GenericArrayType typeTmp = (GenericArrayType) type;
+        // 如果边界没有变化，返回原类型
+        if (Arrays.equals(upperBounds, wildcardType.getUpperBounds()) &&
+                Arrays.equals(lowerBounds, wildcardType.getLowerBounds())) {
+            return wildcardType;
+        }
 
-            if (typeTmp.getGenericComponentType() instanceof Class == false) {
-                Type typCom = reviewType(typeTmp.getGenericComponentType(), genericInfo);
-                return new GenericArrayTypeImpl(typCom);
-            } else {
-                return typeTmp;
+        return new WildcardTypeImpl(upperBounds, lowerBounds);
+    }
+
+    private Type reviewParameterizedType(ParameterizedType parameterizedType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type[] typeArgs = reviewTypes(parameterizedType.getActualTypeArguments(), genericInfo, visited);
+
+        // 如果类型参数没有变化，返回原类型
+        if (Arrays.equals(typeArgs, parameterizedType.getActualTypeArguments())) {
+            return parameterizedType;
+        }
+
+        return new ParameterizedTypeImpl(
+                (Class<?>) parameterizedType.getRawType(),
+                typeArgs,
+                parameterizedType.getOwnerType()
+        );
+    }
+
+    private Type reviewGenericArrayType(GenericArrayType genericArrayType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type componentType = reviewType(genericArrayType.getGenericComponentType(), genericInfo, visited);
+
+        if (componentType == genericArrayType.getGenericComponentType()) {
+            return genericArrayType;
+        }
+
+        return new GenericArrayTypeImpl(componentType);
+    }
+
+    private Type[] reviewTypes(Type[] types, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type[] result = new Type[types.length];
+        boolean changed = false;
+
+        for (int i = 0; i < types.length; i++) {
+            result[i] = reviewType(types[i], genericInfo, visited);
+            if (result[i] != types[i]) {
+                changed = true;
             }
         }
 
-        return type;
+        return changed ? result : types;
     }
 }
