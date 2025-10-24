@@ -38,17 +38,11 @@ public class PropertyMethodWrap implements Property {
     private final String alias;
     private final Object digest;
 
-    private final boolean isTransient;
-    private final boolean isReadMode;
-
-    private final Eggg eggg;
-
     public PropertyMethodWrap(Eggg eggg, ClassWrap classWrap, Method method) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(classWrap, "classWrap");
         Objects.requireNonNull(method, "property");
 
-        this.eggg = eggg;
         this.method = method;
 
         try {
@@ -59,11 +53,9 @@ public class PropertyMethodWrap implements Property {
 
         if (method.getReturnType() != void.class) {
             //getter
-            this.isReadMode = true;
             this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             //setter
-            this.isReadMode = false;
             this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         }
 
@@ -71,10 +63,8 @@ public class PropertyMethodWrap implements Property {
         this.fieldWrap = classWrap.getFieldWrapByName(this.name);
 
         if (fieldWrap == null) {
-            this.isTransient = false;
             this.digest = eggg.findDigest(classWrap, this, method, null);
         } else {
-            this.isTransient = fieldWrap.isTransient();
             this.digest = eggg.findDigest(classWrap, this, method, fieldWrap.getDigest());
         }
 
@@ -83,16 +73,16 @@ public class PropertyMethodWrap implements Property {
 
     @Override
     public boolean isTransient() {
-        return isTransient;
+        return fieldWrap != null && fieldWrap.isTransient();
     }
 
     public boolean isReadMode() {
-        return isReadMode;
+        return method.getReturnType() != void.class;
     }
 
     @Override
     public Object getValue(Object target) throws Throwable {
-        if (isReadMode) {
+        if (isReadMode()) {
             if (methodHandle == null) {
                 if (method.isAccessible() == false) {
                     method.setAccessible(true);
@@ -109,7 +99,7 @@ public class PropertyMethodWrap implements Property {
 
     @Override
     public void setValue(Object target, Object value) throws Throwable {
-        if (isReadMode == false) {
+        if (isReadMode() == false) {
             if (methodHandle == null) {
                 if (method.isAccessible() == false) {
                     method.setAccessible(true);

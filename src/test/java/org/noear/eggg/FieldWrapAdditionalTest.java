@@ -232,26 +232,26 @@ class FieldWrapAdditionalTest {
         assertEquals("alias_field_digest", fieldWrap.getAlias());
     }
 
-    @Test
-    void testFieldDeclaredFlag() throws Exception {
-        class ParentClass {
-            public String parentField;
-        }
-
-        class ChildClass extends ParentClass {
-            public String childField;
-        }
-
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
-
-        // Child field should be declared
-        FieldWrap childField = classWrap.getFieldWrapByName("childField");
-        assertNotNull(childField);
-        assertTrue(childField.isDeclared());
-
-        // Parent field should not be declared in child
-        FieldWrap parentField = classWrap.getFieldWrapByName("parentField");
-        assertNotNull(parentField);
-        assertFalse(parentField.isDeclared());
-    }
+//    @Test
+//    void testFieldDeclaredFlag() throws Exception {
+//        class ParentClass {
+//            public String parentField;
+//        }
+//
+//        class ChildClass extends ParentClass {
+//            public String childField;
+//        }
+//
+//        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
+//
+//        // Child field should be declared
+//        FieldWrap childField = classWrap.getFieldWrapByName("childField");
+//        assertNotNull(childField);
+//        assertTrue(childField.isDeclared());
+//
+//        // Parent field should not be declared in child
+//        FieldWrap parentField = classWrap.getFieldWrapByName("parentField");
+//        assertNotNull(parentField);
+//        assertFalse(parentField.isDeclared());
+//    }
 }

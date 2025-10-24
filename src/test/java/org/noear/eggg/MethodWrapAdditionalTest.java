@@ -246,32 +246,32 @@ class MethodWrapAdditionalTest {
         assertEquals("methodHandleTest", result);
     }
 
-    @Test
-    void testMethodDeclaredFlag() throws Exception {
-        class ParentClass {
-            public void parentMethod() {}
-        }
-
-        class ChildClass extends ParentClass {
-            public void childMethod() {}
-        }
-
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
-
-        // Child method should be declared
-        MethodWrap childMethod = classWrap.getPublicMethodWraps().stream()
-                .filter(m -> m.getName().equals("childMethod"))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(childMethod);
-        assertTrue(childMethod.isDeclared());
-
-        // Parent method should not be declared in child
-        MethodWrap parentMethod = classWrap.getPublicMethodWraps().stream()
-                .filter(m -> m.getName().equals("parentMethod"))
-                .findFirst()
-                .orElse(null);
-        assertNotNull(parentMethod);
-        assertFalse(parentMethod.isDeclared());
-    }
+//    @Test
+//    void testMethodDeclaredFlag() throws Exception {
+//        class ParentClass {
+//            public void parentMethod() {}
+//        }
+//
+//        class ChildClass extends ParentClass {
+//            public void childMethod() {}
+//        }
+//
+//        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
+//
+//        // Child method should be declared
+//        MethodWrap childMethod = classWrap.getPublicMethodWraps().stream()
+//                .filter(m -> m.getName().equals("childMethod"))
+//                .findFirst()
+//                .orElse(null);
+//        assertNotNull(childMethod);
+//        assertTrue(childMethod.isDeclared());
+//
+//        // Parent method should not be declared in child
+//        MethodWrap parentMethod = classWrap.getPublicMethodWraps().stream()
+//                .filter(m -> m.getName().equals("parentMethod"))
+//                .findFirst()
+//                .orElse(null);
+//        assertNotNull(parentMethod);
+//        assertFalse(parentMethod.isDeclared());
+//    }
 }

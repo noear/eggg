@@ -217,4 +217,13 @@ public class Eggg {
             }
         }
     }
+
+    protected Map<String, Type> getFieldGenericInfo(TypeWrap owner, Field field) {
+        if (field.getDeclaringClass() == owner.getType()) {
+            return owner.getGenericInfo();
+        } else {
+            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            return getFieldGenericInfo(getTypeWrap(superType), field);
+        }
+    }
 }

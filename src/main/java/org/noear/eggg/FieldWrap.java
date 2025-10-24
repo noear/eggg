@@ -17,8 +17,6 @@ package org.noear.eggg;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * 字段包装器
@@ -30,19 +28,13 @@ public class FieldWrap implements Property {
     private final Field field;
     private final TypeWrap fieldTypeWrap;
 
-    private ClassWrap classWrap;
-
     private final String name;
     private final String alias;
     private final Object digest;
 
-    private Eggg eggg;
-
     public FieldWrap(Eggg eggg, ClassWrap classWrap, Field field) {
-        this.eggg = eggg;
         this.field = field;
-        this.fieldTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(field.getGenericType(), getGenericInfo(classWrap.getTypeWrap(), field)));
-        this.classWrap = classWrap;
+        this.fieldTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classWrap.getTypeWrap(), field)));
 
         this.name = field.getName();
         this.digest = eggg.findDigest(classWrap, this, field, null);
@@ -94,13 +86,6 @@ public class FieldWrap implements Property {
         return Modifier.isTransient(field.getModifiers());
     }
 
-    /**
-     * 声明的
-     */
-    public boolean isDeclared() {
-        return field.getDeclaringClass() == classWrap.getTypeWrap().getType();
-    }
-
     @Override
     public Object getValue(Object target) throws Exception {
         if (field.isAccessible() == false) {
@@ -139,14 +124,5 @@ public class FieldWrap implements Property {
     @Override
     public String toString() {
         return field.toString();
-    }
-
-    private Map<String, Type> getGenericInfo(TypeWrap owner, Field field) {
-        if (field.getDeclaringClass() == owner.getType()) {
-            return owner.getGenericInfo();
-        } else {
-            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            return getGenericInfo(eggg.getTypeWrap(superType), field);
-        }
     }
 }

@@ -34,22 +34,14 @@ public class MethodWrap {
 
     private final Object digest;
 
-    private boolean isFinal;
-    private boolean isStatic;
-    private boolean isPublic;
-    private boolean isDeclared;
-
     private final Map<String, ParamWrap> paramWrapsForAlias;
     private final List<ParamWrap> paramAry;
-
-    private final Eggg eggg;
 
     public MethodWrap(Eggg eggg, ClassWrap classWrap, Method method) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(classWrap, "classWrap");
         Objects.requireNonNull(method, "property");
 
-        this.eggg = eggg;
         this.method = method;
 
         try {
@@ -65,11 +57,6 @@ public class MethodWrap {
         }
 
         this.digest = eggg.findDigest(classWrap, this, method, null);
-
-        this.isFinal = Modifier.isFinal(method.getModifiers());
-        this.isStatic = Modifier.isStatic(method.getModifiers());
-        this.isPublic = Modifier.isPublic(method.getModifiers());
-        this.isDeclared = method.getDeclaringClass() == classWrap.getTypeWrap().getType();
 
         paramWrapsForAlias = new LinkedHashMap<>();
         paramAry = new ArrayList<>();
@@ -98,28 +85,21 @@ public class MethodWrap {
      * 只读的
      */
     public boolean isFinal() {
-        return isFinal;
+        return Modifier.isFinal(method.getModifiers());
     }
 
     /**
      * 静态的
      */
     public boolean isStatic() {
-        return isStatic;
+        return Modifier.isStatic(method.getModifiers());
     }
 
     /**
      * 公有的
      */
     public boolean isPublic() {
-        return isPublic;
-    }
-
-    /**
-     * 声明的
-     */
-    public boolean isDeclared() {
-        return isDeclared;
+        return Modifier.isPublic(method.getModifiers());
     }
 
     public String getName() {

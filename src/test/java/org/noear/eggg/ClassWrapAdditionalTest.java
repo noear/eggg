@@ -182,30 +182,30 @@ class ClassWrapAdditionalTest {
         assertFalse(classWrap.isLikeRecordClass());
     }
 
-    @Test
-    void testMethodDeclarationDetection() throws Exception {
-        class ParentClass {
-            public void parentMethod() {}
-        }
-
-        class ChildClass extends ParentClass {
-            public void childMethod() {}
-        }
-
-        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
-
-        // Test declared methods
-        Optional<MethodWrap> childMethod = classWrap.getDeclaredMethodWraps().stream()
-                .filter(m -> m.getName().equals("childMethod"))
-                .findFirst();
-        assertTrue(childMethod.isPresent());
-        assertTrue(childMethod.get().isDeclared());
-
-        // Test public methods (including inherited)
-        Optional<MethodWrap> parentMethod = classWrap.getPublicMethodWraps().stream()
-                .filter(m -> m.getName().equals("parentMethod"))
-                .findFirst();
-        assertTrue(parentMethod.isPresent());
-        assertFalse(parentMethod.get().isDeclared()); // Not declared in child class
-    }
+//    @Test
+//    void testMethodDeclarationDetection() throws Exception {
+//        class ParentClass {
+//            public void parentMethod() {}
+//        }
+//
+//        class ChildClass extends ParentClass {
+//            public void childMethod() {}
+//        }
+//
+//        ClassWrap classWrap = eggg.getClassWrap(eggg.getTypeWrap(ChildClass.class));
+//
+//        // Test declared methods
+//        Optional<MethodWrap> childMethod = classWrap.getDeclaredMethodWraps().stream()
+//                .filter(m -> m.getName().equals("childMethod"))
+//                .findFirst();
+//        assertTrue(childMethod.isPresent());
+//        assertTrue(childMethod.get().isDeclared());
+//
+//        // Test public methods (including inherited)
+//        Optional<MethodWrap> parentMethod = classWrap.getPublicMethodWraps().stream()
+//                .filter(m -> m.getName().equals("parentMethod"))
+//                .findFirst();
+//        assertTrue(parentMethod.isPresent());
+//        assertFalse(parentMethod.get().isDeclared()); // Not declared in child class
+//    }
 }
