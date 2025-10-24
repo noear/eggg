@@ -17,9 +17,9 @@ package org.noear.eggg;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 /**
  *
@@ -27,14 +27,22 @@ import java.util.StringJoiner;
  * @since 1.0
  * */
 public class ParameterizedTypeImpl implements ParameterizedType {
-    private final Type[] actualTypeArguments;
     private final Class<?> rawType;
+    private final Type[] actualTypeArguments;
     private final Type ownerType;
 
     public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
-        this.actualTypeArguments = actualTypeArguments;
-        this.rawType = rawType;
-        this.ownerType = (ownerType != null) ? ownerType : rawType.getDeclaringClass();
+        this.rawType = Objects.requireNonNull(rawType, "Raw type cannot be null");
+        this.actualTypeArguments = actualTypeArguments != null ? actualTypeArguments : new Type[0];
+        this.ownerType = ownerType;
+
+        // 验证类型参数数量匹配
+        TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+        if (typeParameters.length != this.actualTypeArguments.length) {
+            throw new IllegalArgumentException("Type argument count mismatch: " +
+                    rawType.getName() + " expects " + typeParameters.length +
+                    " but got " + this.actualTypeArguments.length);
+        }
     }
 
     @Override
@@ -54,55 +62,37 @@ public class ParameterizedTypeImpl implements ParameterizedType {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof ParameterizedType) {
-            ParameterizedType that = (ParameterizedType) o;
+        if (this == o) return true;
+        if (!(o instanceof ParameterizedType)) return false;
 
-            if (this == that)
-                return true;
-
-            Type to = that.getOwnerType();
-            Type rt = that.getRawType();
-
-            return Objects.equals(ownerType, to) &&
-                    Objects.equals(rawType, rt) &&
-                    Arrays.equals(actualTypeArguments, // avoid clone
-                            that.getActualTypeArguments());
-        } else
-            return false;
+        ParameterizedType that = (ParameterizedType) o;
+        return Objects.equals(rawType, that.getRawType()) &&
+                Arrays.equals(actualTypeArguments, that.getActualTypeArguments()) &&
+                Objects.equals(ownerType, that.getOwnerType());
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(actualTypeArguments) ^
-                Objects.hashCode(ownerType) ^
-                Objects.hashCode(rawType);
+        return Objects.hash(rawType, Arrays.hashCode(actualTypeArguments), ownerType);
     }
 
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
         if (ownerType != null) {
-            sb.append(ownerType.getTypeName());
+            sb.append(ownerType.getTypeName()).append(".");
+        }
 
-            sb.append("$");
+        sb.append(rawType.getTypeName());
 
-            if (ownerType instanceof ParameterizedTypeImpl) {
-                // Find simple name of nested type by removing the
-                // shared prefix with owner.
-                sb.append(rawType.getName().replace(((ParameterizedTypeImpl) ownerType).rawType.getName() + "$",
-                        ""));
-            } else
-                sb.append(rawType.getSimpleName());
-        } else
-            sb.append(rawType.getName());
-
-        if (actualTypeArguments != null) {
-            StringJoiner sj = new StringJoiner(", ", "<", ">");
-            sj.setEmptyValue("");
-            for (Type t : actualTypeArguments) {
-                sj.add(t.getTypeName());
+        if (actualTypeArguments.length > 0) {
+            sb.append("<");
+            for (int i = 0; i < actualTypeArguments.length; i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(actualTypeArguments[i].getTypeName());
             }
-            sb.append(sj);
+            sb.append(">");
         }
 
         return sb.toString();

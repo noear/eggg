@@ -26,41 +26,32 @@ import java.util.Objects;
 public class GenericArrayTypeImpl implements GenericArrayType {
     private final Type genericComponentType;
 
-    public GenericArrayTypeImpl(Type componentType) {
-        this.genericComponentType = componentType;
+    public GenericArrayTypeImpl(Type genericComponentType) {
+        this.genericComponentType = Objects.requireNonNull(genericComponentType,
+                "Generic component type cannot be null");
     }
 
     @Override
     public Type getGenericComponentType() {
-        return this.genericComponentType;
+        return genericComponentType;
     }
 
     @Override
-    public String toString() {
-        Type tt = this.getGenericComponentType();
-        StringBuilder sb = new StringBuilder();
-        if (tt instanceof Class) {
-            sb.append(((Class) tt).getName());
-        } else {
-            sb.append(tt);
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GenericArrayType)) return false;
 
-        sb.append("[]");
-        return sb.toString();
-    }
-
-    @Override
-    public boolean equals(Object var1) {
-        if (var1 instanceof GenericArrayType) {
-            GenericArrayType var2 = (GenericArrayType) var1;
-            return Objects.equals(this.genericComponentType, var2.getGenericComponentType());
-        } else {
-            return false;
-        }
+        GenericArrayType that = (GenericArrayType) o;
+        return Objects.equals(genericComponentType, that.getGenericComponentType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.genericComponentType);
+        return Objects.hash(genericComponentType);
+    }
+
+    @Override
+    public String toString() {
+        return genericComponentType.getTypeName() + "[]";
     }
 }
