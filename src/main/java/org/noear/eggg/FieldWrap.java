@@ -34,7 +34,7 @@ public class FieldWrap implements Property {
 
     public FieldWrap(Eggg eggg, ClassWrap classWrap, Field field) {
         this.field = field;
-        this.fieldTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classWrap.getTypeWrap(), field)));
+        this.fieldTypeWrap = eggg.getTypeWrap(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(classWrap.getTypeWrap(), field)));
 
         this.name = field.getName();
         this.digest = eggg.findDigest(classWrap, this, field, null);

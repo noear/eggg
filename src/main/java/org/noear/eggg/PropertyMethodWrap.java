@@ -53,10 +53,10 @@ public class PropertyMethodWrap implements Property {
 
         if (method.getReturnType() != void.class) {
             //getter
-            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             //setter
-            this.propertyTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.propertyTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         }
 
         this.name = Property.resolvePropertyName(method.getName());

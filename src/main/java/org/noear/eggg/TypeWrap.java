@@ -42,8 +42,8 @@ public class TypeWrap {
 
     public TypeWrap(Eggg eggg, Type genericType) {
         this.eggg = eggg;
-        this.genericInfo = GenericUtil.getGenericInfo(genericType);
-        this.genericType = GenericUtil.reviewType(genericType, this.genericInfo);
+        this.genericInfo = eggg.getGenericInfo(genericType);
+        this.genericType = eggg.reviewType(genericType, this.genericInfo);
 
         if (genericType instanceof Class<?>) {
             type = (Class<?>) genericType;

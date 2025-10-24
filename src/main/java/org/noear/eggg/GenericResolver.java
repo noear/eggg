@@ -15,28 +15,34 @@
  */
 package org.noear.eggg;
 
-import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 泛型工具
+ * 泛型分析器
  *
  * @author noear
  * @since 1.0
  */
-public class GenericUtil {
-    private static final Map<Type, SoftReference<Map<String, Type>>> genericInfoCached = new ConcurrentHashMap<>();
+public class GenericResolver {
+    private final Map<Type, Map<String, Type>> genericInfoCached = new ConcurrentHashMap<>();
+
+    /**
+     * 清空
+     *
+     */
+    public void clear() {
+        genericInfoCached.clear();
+    }
 
     /**
      * 转换为参数化类型
      *
      * @param genericInfo 泛型信息
-     * @since 3.0
      */
-    public static ParameterizedType toParameterizedType(Type type, Map<String, Type> genericInfo) throws RuntimeException {
+    public ParameterizedType toParameterizedType(Type type, Map<String, Type> genericInfo) throws RuntimeException {
         if (type == null) {
             return null;
         }
@@ -89,13 +95,8 @@ public class GenericUtil {
      * @param type 被解析的包含泛型参数的类
      * @return 泛型对应关系Map
      */
-    public static Map<String, Type> getGenericInfo(Type type) {
-        return genericInfoCached.compute(type, (k, v) -> {
-            if (v != null && v.get() != null) {
-                return v;
-            }
-            return new SoftReference<>(createTypeGenericMap(type));
-        }).get();
+    public Map<String, Type> getGenericInfo(Type type) {
+        return genericInfoCached.computeIfAbsent(type, k -> createTypeGenericMap(k));
     }
 
 
@@ -105,7 +106,7 @@ public class GenericUtil {
      * @param type 被解析的包含泛型参数的类
      * @return 泛型对应关系Map
      */
-    private static Map<String, Type> createTypeGenericMap(Type type) {
+    private Map<String, Type> createTypeGenericMap(Type type) {
         try {
             final Map<String, Type> typeMap = new HashMap<>();
 
@@ -145,7 +146,7 @@ public class GenericUtil {
         }
     }
 
-    private static boolean checkNoTypeVariable(Type type) {
+    private boolean checkNoTypeVariable(Type type) {
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             for (Type rawType : parameterizedType.getActualTypeArguments()) {
@@ -168,7 +169,7 @@ public class GenericUtil {
      * @since 3.0
      *
      */
-    public static Type reviewType(Type type, Map<String, Type> genericInfo) {
+    public Type reviewType(Type type, Map<String, Type> genericInfo) {
         if (genericInfo == null || genericInfo.isEmpty() || type instanceof Class) {
             return type;
         }

@@ -51,7 +51,7 @@ public class MethodWrap {
         }
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
+            this.returnTypeWrap = eggg.getTypeWrap(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(classWrap.getTypeWrap(), method)));
         } else {
             this.returnTypeWrap = null;
         }

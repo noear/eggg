@@ -33,7 +33,7 @@ public class ParamWrap {
 
     public ParamWrap(Eggg eggg, ClassWrap classWrap, Parameter param) {
         this.param = param;
-        this.paramTypeWrap = eggg.getTypeWrap(GenericUtil.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
+        this.paramTypeWrap = eggg.getTypeWrap(eggg.reviewType(param.getParameterizedType(), classWrap.getTypeWrap().getGenericInfo()));
 
         this.name = param.getName();
         this.digest = eggg.findDigest(classWrap, this, param, null);

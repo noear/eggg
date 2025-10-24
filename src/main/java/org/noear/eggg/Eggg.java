@@ -70,6 +70,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Eggg {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
+    private final GenericResolver genericResolver = new GenericResolver();
 
     private AliasHandler aliasHandler;
     private DigestHandler digestHandler;
@@ -109,6 +110,7 @@ public class Eggg {
     public void clear() {
         typeWrapLib.clear();
         classWrapLib.clear();
+        genericResolver.clear();
     }
 
     ///
@@ -193,23 +195,37 @@ public class Eggg {
 
     ///
 
+    /**
+     * 获取声明的字段
+     */
     protected Field[] getDeclaredFields(Class<?> clazz) {
         return reflectHandler.getDeclaredFields(clazz);
     }
 
+    /**
+     * 获取声明的方法
+     */
     protected Method[] getDeclaredMethods(Class<?> clazz) {
         return reflectHandler.getDeclaredMethods(clazz);
     }
 
+    /**
+     * 获取公有的字段
+     */
     protected Method[] getMethods(Class<?> clazz) {
         return reflectHandler.getMethods(clazz);
     }
 
+    ///
+
+    /**
+     * 获取方法的泛型信息
+     */
     protected Map<String, Type> getMethodGenericInfo(TypeWrap owner, Method method) {
         if (method.getDeclaringClass() == owner.getType()) {
             return owner.getGenericInfo();
         } else {
-            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
             if (superType == null || superType == Object.class) {
                 return owner.getGenericInfo();
             } else {
@@ -218,12 +234,29 @@ public class Eggg {
         }
     }
 
+    /**
+     * 获取字段的泛型信息
+     */
     protected Map<String, Type> getFieldGenericInfo(TypeWrap owner, Field field) {
         if (field.getDeclaringClass() == owner.getType()) {
             return owner.getGenericInfo();
         } else {
-            Type superType = GenericUtil.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
             return getFieldGenericInfo(getTypeWrap(superType), field);
         }
+    }
+
+    /**
+     * 获取泛型信息
+     */
+    protected Map<String, Type> getGenericInfo(Type type) {
+        return genericResolver.getGenericInfo(type);
+    }
+
+    /**
+     * 检查类型
+     */
+    protected Type reviewType(Type type, Map<String, Type> genericInfo) {
+        return genericResolver.reviewType(type, genericInfo);
     }
 }
