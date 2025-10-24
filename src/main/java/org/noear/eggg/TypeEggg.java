@@ -108,6 +108,10 @@ public class TypeEggg {
         return genericInfo;
     }
 
+    public boolean isClass(){
+        return genericType instanceof Class;
+    }
+
     public boolean isInterface() {
         return type.isInterface();
     }

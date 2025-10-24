@@ -259,10 +259,6 @@ public class ClassEggg {
 
         while (c != null) {
             for (Field f : eggg.getDeclaredFields(c)) {
-                if (Modifier.isStatic(f.getModifiers())) {
-                    continue;
-                }
-
                 FieldEggg fieldEggg = eggg.newFieldEggg(this, f);
 
                 fieldEgggsForName.put(fieldEggg.getName(), fieldEggg);
@@ -287,8 +283,13 @@ public class ClassEggg {
 
             if (m.isBridge() == false) {
                 MethodEggg methodEggg = eggg.newMethodEggg(this, m);
+
                 declaredMethodEgggs.add(methodEggg);
-                methodEgggs.add(methodEggg);
+
+                if (methodEggg.isPublic() == false) {
+                    //发果是公有，由公有处添加
+                    methodEgggs.add(methodEggg);
+                }
             }
         }
 
