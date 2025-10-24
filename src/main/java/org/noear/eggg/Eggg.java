@@ -67,7 +67,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author noear
  * @since 1.0
  */
-public class Eggg {
+public class Eggg implements AutoCloseable {
     private final Map<Type, TypeWrap> typeWrapLib = new ConcurrentHashMap<>();
     private final Map<TypeWrap, ClassWrap> classWrapLib = new ConcurrentHashMap<>();
     private final GenericResolver genericResolver = new GenericResolver();
@@ -107,7 +107,8 @@ public class Eggg {
 
     ///
 
-    public void clear() {
+    @Override
+    public void close() {
         typeWrapLib.clear();
         classWrapLib.clear();
         genericResolver.clear();

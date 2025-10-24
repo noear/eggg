@@ -50,7 +50,7 @@ class UtilAndConfigTest {
     void testEgggClearCache() {
         Eggg eggg = new Eggg();
         TypeWrap type1 = eggg.getTypeWrap(String.class);
-        eggg.clear();
+        eggg.close();
         TypeWrap type2 = eggg.getTypeWrap(String.class);
 
         // After clear, should create new instance (not guaranteed but likely)
