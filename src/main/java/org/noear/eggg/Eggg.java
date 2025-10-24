@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 泛型蛋
+ * 泛型蛋（泛型包装工具）
  *
  * <pre>{@code
  * // for snack4 demo
