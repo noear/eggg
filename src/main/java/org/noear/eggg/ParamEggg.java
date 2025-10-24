@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -72,5 +73,19 @@ public class ParamEggg {
 
     public String getAlias() {
         return alias;
+    }
+
+    private Annotation[] annotations;
+
+    public Annotation[] getAnnotations() {
+        if (annotations == null) {
+            annotations = param.getAnnotations();
+        }
+        return annotations;
+    }
+
+    @Override
+    public String toString() {
+        return param.toString();
     }
 }

@@ -31,6 +31,10 @@ public class ParameterizedTypeImpl implements ParameterizedType {
     private final Type[] actualTypeArguments;
     private final Type ownerType;
 
+    public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments) {
+        this(rawType, actualTypeArguments, null);
+    }
+
     public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
         this.rawType = Objects.requireNonNull(rawType, "Raw type cannot be null");
         this.actualTypeArguments = actualTypeArguments != null ? actualTypeArguments : new Type[0];

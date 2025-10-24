@@ -194,6 +194,10 @@ public class ClassEggg {
         return methodEgggs;
     }
 
+    public MethodEggg newMethodEggg(Method method) {
+        return eggg.newMethodEggg(this, method);
+    }
+
     public Collection<FieldEggg> getFieldEgggs() {
         return fieldEgggsForName.values();
     }
