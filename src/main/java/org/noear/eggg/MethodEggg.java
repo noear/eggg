@@ -66,10 +66,10 @@ public class MethodEggg {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : method.getParameters()) {
-            ParamEggg paramEggg = eggg.newParamEggg(ownerEggg, p1);
+            ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
 
-            paramEgggsForAlias.put(paramEggg.getAlias(), paramEggg);
-            paramAry.add(paramEggg);
+            paramEgggsForAlias.put(pe.getAlias(), pe);
+            paramAry.add(pe);
         }
     }
 
@@ -148,7 +148,6 @@ public class MethodEggg {
     public boolean hasParamEgggByAlias(String alias) {
         return paramEgggsForAlias.containsKey(alias);
     }
-
 
 
     public <T> T invoke(Object target, Object... args)

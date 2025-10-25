@@ -192,8 +192,8 @@ public class ClassEggg {
 
 
     public MethodEggg findMethodEgggOrNew(Method method) {
-        for(MethodEggg m1 : methodEgggs) {
-            if(m1.getMethod().equals(method)) {
+        for (MethodEggg m1 : methodEgggs) {
+            if (m1.getMethod().equals(method)) {
                 return m1;
             }
         }
@@ -239,11 +239,11 @@ public class ClassEggg {
             }
 
             //先从静态方法找
-            for (MethodEggg mw : declaredMethodEgggs) {
-                if (mw.isStatic()) {
-                    Annotation constrAnno = eggg.findCreator(mw.getMethod());
+            for (MethodEggg me : declaredMethodEgggs) {
+                if (me.isStatic()) {
+                    Annotation constrAnno = eggg.findCreator(me.getMethod());
                     if (constrAnno != null) {
-                        creator = eggg.newConstrEggg(this, mw.getMethod(), constrAnno);
+                        creator = eggg.newConstrEggg(this, me.getMethod(), constrAnno);
                         return;
                     }
                 }
@@ -266,34 +266,34 @@ public class ClassEggg {
     }
 
     protected void loadDeclaredFields() {
-        Class<?> c = typeEggg.getType();
+        Class<?> clz = typeEggg.getType();
 
-        while (c != null) {
-            for (Field f : eggg.getDeclaredFields(c)) {
-                FieldEggg fieldEggg = eggg.newFieldEggg(this, f);
+        while (clz != null) {
+            for (Field f1 : eggg.getDeclaredFields(clz)) {
+                FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                fieldEgggsForName.put(fieldEggg.getName(), fieldEggg);
+                fieldEgggsForName.put(fe.getName(), fe);
 
-                if (fieldEggg.isStatic() == false) {
+                if (fe.isStatic() == false) {
                     //如果全是只读，则
-                    likeRecordClass = likeRecordClass && fieldEggg.isFinal();
-                    propertyEgggsForName.computeIfAbsent(fieldEggg.getName(), k -> new PropertyEggg(k))
-                            .setFieldEggg(fieldEggg);
+                    likeRecordClass = likeRecordClass && fe.isFinal();
+                    propertyEgggsForName.computeIfAbsent(fe.getName(), k -> new PropertyEggg(k))
+                            .setFieldEggg(fe);
                 }
 
             }
-            c = c.getSuperclass();
+            clz = clz.getSuperclass();
         }
     }
 
     protected void loadDeclaredMethods() {
-        for (Method m : eggg.getDeclaredMethods(typeEggg.getType())) {
-            if (m.getDeclaringClass() == Object.class) {
+        for (Method m1 : eggg.getDeclaredMethods(typeEggg.getType())) {
+            if (m1.getDeclaringClass() == Object.class) {
                 continue;
             }
 
-            if (m.isBridge() == false) {
-                MethodEggg methodEggg = eggg.newMethodEggg(this, m);
+            if (m1.isBridge() == false) {
+                MethodEggg methodEggg = eggg.newMethodEggg(this, m1);
 
                 declaredMethodEgggs.add(methodEggg);
 
@@ -304,38 +304,40 @@ public class ClassEggg {
             }
         }
 
-        for (Method m : eggg.getMethods(typeEggg.getType())) {
-            if (m.getDeclaringClass() == Object.class) {
+        for (Method m1 : eggg.getMethods(typeEggg.getType())) {
+            if (m1.getDeclaringClass() == Object.class) {
                 continue;
             }
 
-            if (m.isBridge()) {
-                m = findActualMethod(typeEggg.getType().getSuperclass(), m);
+            if (m1.isBridge()) {
+                m1 = findActualMethod(typeEggg.getType().getSuperclass(), m1);
             }
 
-            if (m == null) {
+            if (m1 == null) {
                 continue;
             }
 
-            MethodEggg methodEggg = eggg.newMethodEggg(this, m);
-            publicMethodEgggs.add(methodEggg);
-            methodEgggs.add(methodEggg);
+            MethodEggg me = eggg.newMethodEggg(this, m1);
+            publicMethodEgggs.add(me);
+            methodEgggs.add(me);
 
-            if (methodEggg.isStatic() == false) {
+            if (me.isStatic() == false) {
                 //属性不能是静态的
-                if (m.getName().length() > 2) {
-                    if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
+                String m1N = m1.getName();
+                if (m1N.length() > 2) {
+                    if (m1.getReturnType() == void.class && m1.getParameterCount() == 1) {
                         //setter
-                        if (m.getName().startsWith("set") || m.getName().startsWith("is")) {
-                            PropertyMethodEggg sw = eggg.newPropertyMethodEggg(this, m);
+                        if (m1N.length() > 3 && m1N.startsWith("set")) {
+                            PropertyMethodEggg sw = eggg.newPropertyMethodEggg(this, m1);
 
                             propertyEgggsForName.computeIfAbsent(sw.getName(), k -> new PropertyEggg(k))
                                     .setSetterEggg(sw);
                         }
-                    } else if (m.getReturnType() != void.class && m.getParameterCount() == 0) {
+                    } else if (m1.getReturnType() != void.class && m1.getParameterCount() == 0) {
                         //getter
-                        if (m.getName().startsWith("get")) {
-                            PropertyMethodEggg gw = eggg.newPropertyMethodEggg(this, m);
+                        if ((m1N.length() > 3 && m1N.startsWith("get")) ||
+                                (m1N.length() > 2 && m1N.startsWith("is"))) {
+                            PropertyMethodEggg gw = eggg.newPropertyMethodEggg(this, m1);
 
                             propertyEgggsForName.computeIfAbsent(gw.getName(), k -> new PropertyEggg(k))
                                     .setGetterEggg(gw);

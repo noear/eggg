@@ -51,10 +51,10 @@ public class ConstrEggg {
         paramAry = new ArrayList<>();
 
         for (Parameter p1 : constr.getParameters()) {
-            ParamEggg paramEggg = eggg.newParamEggg(ownerEggg, p1);
+            ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
 
-            paramAliasMap.put(paramEggg.getAlias(), paramEggg);
-            paramAry.add(paramEggg);
+            paramAliasMap.put(pe.getAlias(), pe);
+            paramAry.add(pe);
         }
 
         security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(ownerEggg.getTypeEggg().getType()));
