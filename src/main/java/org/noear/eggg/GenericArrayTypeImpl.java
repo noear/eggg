@@ -27,8 +27,7 @@ public class GenericArrayTypeImpl implements GenericArrayType {
     private final Type genericComponentType;
 
     public GenericArrayTypeImpl(Type genericComponentType) {
-        this.genericComponentType = Objects.requireNonNull(genericComponentType,
-                "Generic component type cannot be null");
+        this.genericComponentType = Objects.requireNonNull(genericComponentType, "genericComponentType");
     }
 
     @Override

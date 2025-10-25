@@ -36,16 +36,14 @@ public class ParameterizedTypeImpl implements ParameterizedType {
     }
 
     public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
-        this.rawType = Objects.requireNonNull(rawType, "Raw type cannot be null");
+        this.rawType = Objects.requireNonNull(rawType, "rawType");
         this.actualTypeArguments = actualTypeArguments != null ? actualTypeArguments : new Type[0];
         this.ownerType = ownerType;
 
         // 验证类型参数数量匹配
         TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
         if (typeParameters.length != this.actualTypeArguments.length) {
-            throw new IllegalArgumentException("Type argument count mismatch: " +
-                    rawType.getName() + " expects " + typeParameters.length +
-                    " but got " + this.actualTypeArguments.length);
+            throw new IllegalArgumentException("Argument length mismatch");
         }
     }
 
@@ -77,7 +75,10 @@ public class ParameterizedTypeImpl implements ParameterizedType {
 
     @Override
     public int hashCode() {
-        return Objects.hash(rawType, Arrays.hashCode(actualTypeArguments), ownerType);
+        int result = Objects.hashCode(rawType);
+        result = 31 * result + Arrays.hashCode(actualTypeArguments);
+        result = 31 * result + Objects.hashCode(ownerType);
+        return result;
     }
 
     @Override
@@ -85,7 +86,7 @@ public class ParameterizedTypeImpl implements ParameterizedType {
         StringBuilder sb = new StringBuilder();
 
         if (ownerType != null) {
-            sb.append(ownerType.getTypeName()).append(".");
+            sb.append(ownerType.getTypeName()).append("$");
         }
 
         sb.append(rawType.getTypeName());
@@ -94,7 +95,8 @@ public class ParameterizedTypeImpl implements ParameterizedType {
             sb.append("<");
             for (int i = 0; i < actualTypeArguments.length; i++) {
                 if (i > 0) sb.append(", ");
-                sb.append(actualTypeArguments[i].getTypeName());
+                Type arg = actualTypeArguments[i];
+                sb.append(arg.getTypeName());
             }
             sb.append(">");
         }
