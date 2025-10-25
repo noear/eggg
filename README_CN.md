@@ -78,7 +78,47 @@ public class EgggDemo {
 ```
 
 
-### 示例2 (for snack4)
+### 示例2（嵌套传递）
+
+```java
+public class EgggDemo {
+    //一般，应用内全局单例
+    private static Eggg eggg = new Eggg();
+
+    @Test
+    public void case2() {
+        ClassEggg classEggg = eggg.getTypeEggg(C.class).getClassEggg();
+
+        assert classEggg.getFieldEgggByName("x").getType() == List.class;
+        assert classEggg.getFieldEgggByName("x").getTypeEggg().isParameterizedType();
+        assert classEggg.getFieldEgggByName("x").getTypeEggg().getActualTypeArguments()[0] == String.class;
+
+        assert classEggg.getFieldEgggByName("y").getType() == Map.class;
+        assert classEggg.getFieldEgggByName("y").getTypeEggg().isParameterizedType();
+        assert classEggg.getFieldEgggByName("y").getTypeEggg().getActualTypeArguments()[0] == String.class;
+        assert classEggg.getFieldEgggByName("y").getTypeEggg().getActualTypeArguments()[1] == Integer.class;
+
+        assert classEggg.getFieldEgggByName("m").getType() == String.class;
+        assert classEggg.getFieldEgggByName("n").getType() == Integer.class;
+    }
+
+    public static class A<X, Y> {
+        public X x;
+        public Y y;
+    }
+
+    public static class B<M, N> extends A<List<M>, Map<String, N>> {
+        public M m;
+        public N n;
+    }
+
+    public static class C extends B<String, Integer> {
+
+    }
+}
+```
+
+### 示例3 (for snack4)
 
 这个示例需要根据 "注解" 生成提炼物、别名，以及指定构造器。需要添加定制内容。
 
