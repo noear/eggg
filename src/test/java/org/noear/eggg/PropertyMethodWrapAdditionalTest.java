@@ -19,46 +19,90 @@ class PropertyMethodEgggAdditionalTest {
         private final String finalField = "constant";
 
         // Standard getter/setter
-        public String getSimpleField() { return simpleField; }
-        public void setSimpleField(String simpleField) { this.simpleField = simpleField; }
+        public String getSimpleField() {
+            return simpleField;
+        }
+
+        public void setSimpleField(String simpleField) {
+            this.simpleField = simpleField;
+        }
 
         // Collection getter/setter
-        public List<String> getListField() { return listField; }
-        public void setListField(List<String> listField) { this.listField = listField; }
+        public List<String> getListField() {
+            return listField;
+        }
+
+        public void setListField(List<String> listField) {
+            this.listField = listField;
+        }
 
         // Map getter/setter
-        public Map<String, Integer> getMapField() { return mapField; }
-        public void setMapField(Map<String, Integer> mapField) { this.mapField = mapField; }
+        public Map<String, Integer> getMapField() {
+            return mapField;
+        }
+
+        public void setMapField(Map<String, Integer> mapField) {
+            this.mapField = mapField;
+        }
 
         // Transient field getter/setter
-        public String getTransientField() { return transientField; }
-        public void setTransientField(String transientField) { this.transientField = transientField; }
+        public String getTransientField() {
+            return transientField;
+        }
+
+        public void setTransientField(String transientField) {
+            this.transientField = transientField;
+        }
 
         // Final field getter (no setter)
-        public String getFinalField() { return finalField; }
+        public String getFinalField() {
+            return finalField;
+        }
 
         // Boolean getter (is-prefix)
-        public boolean isActive() { return true; }
-        public void setActive(boolean active) { }
+        public boolean isActive() {
+            return true;
+        }
+
+        public void setActive(boolean active) {
+        }
 
         // Getter with different name pattern
-        public String retrieveData() { return "data"; }
-        public void storeData(String data) { }
+        public String retrieveData() {
+            return "data";
+        }
+
+        public void storeData(String data) {
+        }
 
         // Static getter (should be ignored)
-        public static String getStaticField() { return "static"; }
-        public static void setStaticField(String value) { }
+        public static String getStaticField() {
+            return "static";
+        }
+
+        public static void setStaticField(String value) {
+        }
     }
 
     static class GenericPropertyClass<T> {
         private T genericField;
         private List<T> genericList;
 
-        public T getGenericField() { return genericField; }
-        public void setGenericField(T genericField) { this.genericField = genericField; }
+        public T getGenericField() {
+            return genericField;
+        }
 
-        public List<T> getGenericList() { return genericList; }
-        public void setGenericList(List<T> genericList) { this.genericList = genericList; }
+        public void setGenericField(T genericField) {
+            this.genericField = genericField;
+        }
+
+        public List<T> getGenericList() {
+            return genericList;
+        }
+
+        public void setGenericList(List<T> genericList) {
+            this.genericList = genericList;
+        }
     }
 
     static class StringPropertyClass extends GenericPropertyClass<String> {
@@ -66,8 +110,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyMethodEgggCreation() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -79,8 +123,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testSetterPropertyMethodEggg() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg setter = classEggg.findMethodEggg("setSimpleField", String.class);
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
         assertNotNull(propertyEggg);
@@ -92,8 +136,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testCollectionProperty() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getListField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getListField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -105,8 +149,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testMapProperty() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getMapField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getMapField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -117,8 +161,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testTransientProperty() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getTransientField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getTransientField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -129,8 +173,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testBooleanProperty() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("isActive");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("isActive");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -141,8 +185,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyWithoutField() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("retrieveData");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("retrieveData");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -155,8 +199,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testGenericProperty() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringPropertyClass.class));
-        Method getter = GenericPropertyClass.class.getMethod("getGenericField");
+        ClassEggg classEggg = eggg.getClassEggg(StringPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getGenericField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         assertNotNull(propertyEggg);
@@ -168,8 +212,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyValueAccess() throws Throwable {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
@@ -181,8 +225,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyValueSetting() throws Throwable {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg setter = classEggg.findMethodEggg("setSimpleField", String.class);
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
@@ -193,8 +237,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testGetterOnSetterMethod() throws Throwable {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method setter = ComplexPropertyClass.class.getMethod("setSimpleField", String.class);
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg setter = classEggg.findMethodEggg("setSimpleField", String.class);
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, setter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
@@ -205,8 +249,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testSetterOnGetterMethod() throws Throwable {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();
@@ -219,8 +263,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyToString() throws Exception {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         String toString = propertyEggg.toString();
@@ -237,8 +281,8 @@ class PropertyMethodEgggAdditionalTest {
                 .withDigestHandler(digestHandler)
                 .withAliasHandler(aliasHandler);
 
-        ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = customEggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = customEggg.newPropertyMethodEggg(classEggg, getter);
 
         assertEquals("property_digest", propertyEggg.getDigest());
@@ -247,8 +291,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyWithMethodHandle() throws Throwable {
-        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ComplexPropertyClass.class));
-        Method getter = ComplexPropertyClass.class.getMethod("getSimpleField");
+        ClassEggg classEggg = eggg.getClassEggg(ComplexPropertyClass.class);
+        MethodEggg getter = classEggg.findMethodEggg("getSimpleField");
         PropertyMethodEggg propertyEggg = eggg.newPropertyMethodEggg(classEggg, getter);
 
         ComplexPropertyClass instance = new ComplexPropertyClass();

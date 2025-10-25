@@ -328,7 +328,7 @@ public class ClassEggg {
                     if (m1.getReturnType() == void.class && m1.getParameterCount() == 1) {
                         //setter
                         if (m1N.length() > 3 && m1N.startsWith("set")) {
-                            PropertyMethodEggg sw = eggg.newPropertyMethodEggg(this, m1);
+                            PropertyMethodEggg sw = eggg.newPropertyMethodEggg(this, me);
 
                             propertyEgggsForName.computeIfAbsent(sw.getName(), k -> new PropertyEggg(k))
                                     .setSetterEggg(sw);
@@ -337,7 +337,7 @@ public class ClassEggg {
                         //getter
                         if ((m1N.length() > 3 && m1N.startsWith("get")) ||
                                 (m1N.length() > 2 && m1N.startsWith("is"))) {
-                            PropertyMethodEggg gw = eggg.newPropertyMethodEggg(this, m1);
+                            PropertyMethodEggg gw = eggg.newPropertyMethodEggg(this, me);
 
                             propertyEgggsForName.computeIfAbsent(gw.getName(), k -> new PropertyEggg(k))
                                     .setGetterEggg(gw);

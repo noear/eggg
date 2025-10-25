@@ -143,6 +143,9 @@ public class Eggg {
         return classEgggLib.computeIfAbsent(typeEggg, t -> newClassEggg(t));
     }
 
+    public ClassEggg getClassEggg(Type type) {
+        return getTypeEggg(type).getClassEggg();
+    }
 
     ///
 
@@ -166,8 +169,8 @@ public class Eggg {
         return new ConstrEggg(this, classEggg, constr, constrAnno);
     }
 
-    protected PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, Method property) {
-        return new PropertyMethodEggg(this, classEggg, property);
+    protected PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, MethodEggg methodEggg) {
+        return new PropertyMethodEggg(this, classEggg, methodEggg);
     }
 
     protected ParamEggg newParamEggg(ClassEggg classEggg, Parameter param) {

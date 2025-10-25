@@ -15,8 +15,6 @@
  */
 package org.noear.eggg;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -29,8 +27,7 @@ import java.util.Objects;
 public class PropertyMethodEggg implements Property {
     private final ClassEggg ownerEggg;
 
-    private final Method method;
-    private MethodHandle methodHandle;
+    private final MethodEggg methodEggg;
 
     private final TypeEggg propertyTypeEggg;
 
@@ -40,35 +37,29 @@ public class PropertyMethodEggg implements Property {
     private final String alias;
     private final Object digest;
 
-    public PropertyMethodEggg(Eggg eggg, ClassEggg ownerEggg, Method method) {
+    public PropertyMethodEggg(Eggg eggg, ClassEggg ownerEggg, MethodEggg methodEggg) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(ownerEggg, "ownerEggg");
-        Objects.requireNonNull(method, "method");
+        Objects.requireNonNull(methodEggg, "methodEggg");
 
         this.ownerEggg = ownerEggg;
-        this.method = method;
+        this.methodEggg = methodEggg;
 
-        try {
-            this.methodHandle = MethodHandles.lookup().unreflect(method);
-        } catch (Throwable e) {
-            this.methodHandle = null;
-        }
-
-        if (method.getReturnType() != void.class) {
+        if (methodEggg.getReturnTypeEggg().getType() != void.class) {
             //getter
-            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
+            this.propertyTypeEggg = methodEggg.getReturnTypeEggg();
         } else {
             //setter
-            this.propertyTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericParameterTypes()[0], eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
+            this.propertyTypeEggg = methodEggg.getParamEgggAry().get(0).getTypeEggg();
         }
 
-        this.name = Property.resolvePropertyName(method.getName());
+        this.name = Property.resolvePropertyName(methodEggg.getName());
         this.fieldEggg = ownerEggg.getFieldEgggByName(this.name);
 
         if (fieldEggg == null) {
-            this.digest = eggg.findDigest(ownerEggg, this, method, null);
+            this.digest = eggg.findDigest(ownerEggg, this, methodEggg.getMethod(), null);
         } else {
-            this.digest = eggg.findDigest(ownerEggg, this, method, fieldEggg.getDigest());
+            this.digest = eggg.findDigest(ownerEggg, this, methodEggg.getMethod(), fieldEggg.getDigest());
         }
 
         this.alias = eggg.findAlias(ownerEggg, this, digest, name);
@@ -79,7 +70,7 @@ public class PropertyMethodEggg implements Property {
     }
 
     public Method getMethod() {
-        return method;
+        return methodEggg.getMethod();
     }
 
     @Override
@@ -88,22 +79,15 @@ public class PropertyMethodEggg implements Property {
     }
 
     public boolean isReadMode() {
-        return method.getReturnType() != void.class;
+        return methodEggg.getReturnTypeEggg().getType() != void.class;
     }
 
     @Override
     public Object getValue(Object target) {
         if (isReadMode()) {
-            try {
-                if (methodHandle == null) {
-                    if (method.isAccessible() == false) {
-                        method.setAccessible(true);
-                    }
 
-                    return method.invoke(target);
-                } else {
-                    return methodHandle.bindTo(target).invokeWithArguments();
-                }
+            try {
+                return methodEggg.invoke(target);
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Throwable ex) {
@@ -118,15 +102,7 @@ public class PropertyMethodEggg implements Property {
     public void setValue(Object target, Object value) {
         if (isReadMode() == false) {
             try {
-                if (methodHandle == null) {
-                    if (method.isAccessible() == false) {
-                        method.setAccessible(true);
-                    }
-
-                    method.invoke(target, value);
-                } else {
-                    methodHandle.bindTo(target).invokeWithArguments(value);
-                }
+                methodEggg.invoke(target, value);
             } catch (RuntimeException ex) {
                 throw ex;
             } catch (Throwable ex) {
@@ -161,6 +137,6 @@ public class PropertyMethodEggg implements Property {
 
     @Override
     public String toString() {
-        return method.toString();
+        return methodEggg.toString();
     }
 }
