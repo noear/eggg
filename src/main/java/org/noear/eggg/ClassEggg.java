@@ -190,12 +190,19 @@ public class ClassEggg {
         return null;
     }
 
-    public List<MethodEggg> getMethodEgggs() {
-        return methodEgggs;
+
+    public MethodEggg findMethodEgggOrNew(Method method) {
+        for(MethodEggg m1 : methodEgggs) {
+            if(m1.getMethod().equals(method)) {
+                return m1;
+            }
+        }
+
+        return eggg.newMethodEggg(this, method);
     }
 
-    public MethodEggg newMethodEggg(Method method) {
-        return eggg.newMethodEggg(this, method);
+    public List<MethodEggg> getMethodEgggs() {
+        return methodEgggs;
     }
 
     public Collection<FieldEggg> getFieldEgggs() {

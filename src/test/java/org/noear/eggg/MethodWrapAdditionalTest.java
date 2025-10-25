@@ -61,7 +61,7 @@ class MethodEgggAdditionalTest {
         MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
 
         assertNotNull(methodEggg);
-        assertNull(methodEggg.getReturnTypeEggg()); // void return type should be null
+        assertEquals(void.class, methodEggg.getReturnTypeEggg().getType()); // void return type should be null
     }
 
     @Test

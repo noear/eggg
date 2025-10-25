@@ -54,6 +54,30 @@ public class PropertyEggg {
         return setterEggg;
     }
 
+
+    /**
+     * 获取值
+     */
+    public Object getValue(Object target,  boolean allowGetter) {
+        if(allowGetter &&  getterEggg != null) {
+            return getterEggg.getValue(target);
+        }
+
+        return fieldEggg.getValue(target);
+    }
+
+    /**
+     * 设置值
+     */
+    public void setValue(Object target, Object value, boolean allowSetter) {
+        if(allowSetter && setterEggg != null) {
+            setterEggg.setValue(target, value);
+        }
+
+        fieldEggg.setValue(target, value);
+    }
+
+
     /// //////////
 
     protected void setFieldEggg(FieldEggg f) {

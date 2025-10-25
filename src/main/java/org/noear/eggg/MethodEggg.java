@@ -57,7 +57,7 @@ public class MethodEggg {
         if (method.getReturnType() != void.class) {
             this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
         } else {
-            this.returnTypeEggg = null;
+            this.returnTypeEggg = eggg.getTypeEggg(method.getGenericReturnType());
         }
 
         this.digest = eggg.findDigest(ownerEggg, this, method, null);
@@ -115,11 +115,22 @@ public class MethodEggg {
     }
 
     private Annotation[] annotations;
+
     public Annotation[] getAnnotations() {
         if (annotations == null) {
             annotations = method.getAnnotations();
         }
         return annotations;
+    }
+
+
+    private Parameter[] parameters;
+
+    public Parameter[] getParameters() {
+        if (parameters == null) {
+            parameters = method.getParameters();
+        }
+        return parameters;
     }
 
     public int getParamCount() {
@@ -137,6 +148,8 @@ public class MethodEggg {
     public boolean hasParamEgggByAlias(String alias) {
         return paramEgggsForAlias.containsKey(alias);
     }
+
+
 
     public <T> T invoke(Object target, Object... args)
             throws Throwable {

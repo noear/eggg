@@ -16,6 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.reflect.*;
+import java.util.Collections;
 import java.util.Map;
 import java.util.List;
 
@@ -42,24 +43,29 @@ public class TypeEggg {
 
     public TypeEggg(Eggg eggg, Type genericType) {
         this.eggg = eggg;
-        this.genericInfo = eggg.getGenericInfo(genericType);
-        this.genericType = eggg.reviewType(genericType, this.genericInfo);
 
         if (genericType instanceof Class<?>) {
-            type = (Class<?>) genericType;
-        } else if (isParameterizedType()) {
-            Type tmp = getParameterizedType().getRawType();
+            this.genericInfo = eggg.getGenericInfo(genericType);
+            this.genericType = genericType;
+            this.type = (Class<?>) genericType;
+        } else {
+            this.genericInfo = eggg.getGenericInfo(genericType);
+            this.genericType = eggg.reviewType(genericType, this.genericInfo);
 
-            if (tmp instanceof Class) {
-                type = (Class<?>) tmp;
-            }
-        } else if (isGenericArrayType()) {
-            type = Object[].class;
-        } else if (isTypeVariable()) {
-            Type tmp = getTypeVariable().getBounds()[0];
+            if (isParameterizedType()) {
+                Type tmp = getParameterizedType().getRawType();
 
-            if (tmp instanceof Class) {
-                type = (Class<?>) tmp;
+                if (tmp instanceof Class) {
+                    type = (Class<?>) tmp;
+                }
+            } else if (isGenericArrayType()) {
+                type = Object[].class;
+            } else if (isTypeVariable()) {
+                Type tmp = getTypeVariable().getBounds()[0];
+
+                if (tmp instanceof Class) {
+                    type = (Class<?>) tmp;
+                }
             }
         }
 
