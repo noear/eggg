@@ -44,7 +44,7 @@ public class ClassEggg {
     private final Map<String, PropertyEggg> propertyEgggsForAlias;
 
     private boolean likeRecordClass = true;
-    private boolean realRecordClass;
+    private final boolean realRecordClass;
 
     private final Eggg eggg;
 

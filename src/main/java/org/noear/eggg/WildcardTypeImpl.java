@@ -43,10 +43,6 @@ public class WildcardTypeImpl implements WildcardType {
         }
     }
 
-    public static WildcardTypeImpl make(Type[] upperBounds, Type[] lowerBounds) {
-        return new WildcardTypeImpl(upperBounds, lowerBounds);
-    }
-
     @Override
     public Type[] getUpperBounds() {
         return upperBounds.clone(); // 防御性拷贝
