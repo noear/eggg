@@ -47,7 +47,7 @@ public class GenericResolver {
      *
      * @param genericInfo 泛型信息
      */
-    public ParameterizedType toParameterizedType(Type type, Map<String, Type> genericInfo) throws RuntimeException {
+    public ParameterizedType toParameterizedType(Type type, Map<String, Type> genericInfo) {
         if (type == null) {
             return null;
         }
@@ -131,40 +131,18 @@ public class GenericResolver {
                 final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
                 final TypeVariable[] typeParameters = rawType.getTypeParameters();
 
-                Type value;
                 for (int i = 0; i < typeParameters.length; i++) {
-                    value = typeArguments[i];
-                    // 跳过泛型变量对应泛型变量的情况
-                    if (false == value instanceof TypeVariable) {
-                        if (checkNoTypeVariable(value)) {
-                            typeMap.put(typeParameters[i].getTypeName(), value);
-                        }
-                    }
+                   typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
                 }
 
                 type = rawType;
             }
 
             return typeMap;
-        } catch (Throwable ex) {
+        } catch (Exception ex) { // 优化 5: 将 catch (Throwable ex) 缩小为 catch (Exception ex)
             throw new IllegalStateException("Can't create generic info: " + type, ex);
         }
     }
-
-    private boolean checkNoTypeVariable(Type type) {
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            for (Type rawType : parameterizedType.getActualTypeArguments()) {
-                if (rawType instanceof TypeVariable) {
-                    //说明没有真实的泛型传入
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
 
     /**
      * 审查类型

@@ -54,6 +54,7 @@ public class ClassEggg {
 
         this.eggg = eggg;
         this.typeEggg = typeEggg;
+        this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType()); //不能放下面(构造器要用到)
 
         //1.加载字段
         loadFields();
@@ -81,7 +82,6 @@ public class ClassEggg {
         constrEgggs = new ArrayList<>(declaredConstructors.length);
         loadConstr(declaredConstructors);
 
-        this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType());
         this.likeRecordClass = likeRecordClass && fieldEgggsForName.size() > 0;
 
         fieldEgggsForAlias = new LinkedHashMap<>(fieldEgggsForName.size());

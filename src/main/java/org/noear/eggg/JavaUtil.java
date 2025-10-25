@@ -63,11 +63,7 @@ public class JavaUtil {
      * 是否为 Record 类
      */
     public static boolean isRecordClass(Class<?> clazz) {
-        if (JavaUtil.JAVA_MAJOR_VERSION < 17) {
-            return false;
-        }
-
-        if (clazz == null) {
+        if (JavaUtil.JAVA_MAJOR_VERSION < 17 || clazz == null) {
             return false;
         }
 
