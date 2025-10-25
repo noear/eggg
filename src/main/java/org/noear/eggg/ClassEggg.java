@@ -31,17 +31,17 @@ public class ClassEggg {
     private final Object digest;
     private ConstrEggg creator;
 
-    private final List<ConstrEggg> constrEgggs = new ArrayList<>();
+    private final List<ConstrEggg> constrEgggs;
 
     private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
-    private final Map<String, FieldEggg> fieldEgggsForAlias = new LinkedHashMap<>();
+    private final Map<String, FieldEggg> fieldEgggsForAlias;
 
-    private final List<MethodEggg> methodEgggs = new ArrayList<>();
-    private final List<MethodEggg> publicMethodEgggs = new ArrayList<>();
-    private final List<MethodEggg> declaredMethodEgggs = new ArrayList<>();
+    private final List<MethodEggg> methodEgggs;
+    private final List<MethodEggg> publicMethodEgggs;
+    private final List<MethodEggg> declaredMethodEgggs;
 
     private final Map<String, PropertyEggg> propertyEgggsForName = new LinkedHashMap<>();
-    private final Map<String, PropertyEggg> propertyEgggsForAlias = new LinkedHashMap<>();
+    private final Map<String, PropertyEggg> propertyEgggsForAlias;
 
     private boolean likeRecordClass = true;
     private boolean realRecordClass;
@@ -55,18 +55,41 @@ public class ClassEggg {
         this.eggg = eggg;
         this.typeEggg = typeEggg;
 
-        //顺序不要变
-        loadDeclaredFields();
-        loadDeclaredMethods();
-        loadConstr();
+        //1.加载字段
+        loadFields();
+
+        Method[] declaredMethods = eggg.getDeclaredMethods(typeEggg.getType());
+        Method[] methods = eggg.getMethods(typeEggg.getType());
+
+        //2.加载方法
+        methodEgggs = new ArrayList<>(declaredMethods.length + methods.length);
+        if (methods.length == 0) {
+            publicMethodEgggs = Collections.emptyList();
+        } else {
+            publicMethodEgggs = new ArrayList<>(methods.length);
+        }
+        if (declaredMethods.length == 0) {
+            declaredMethodEgggs = Collections.emptyList();
+        } else {
+            declaredMethodEgggs = new ArrayList<>(declaredMethods.length);
+        }
+
+        loadMethods(declaredMethods, methods);
+
+        //3.加构造器（顺序不能乱）
+        Constructor[] declaredConstructors = typeEggg.getType().getDeclaredConstructors();
+        constrEgggs = new ArrayList<>(declaredConstructors.length);
+        loadConstr(declaredConstructors);
 
         this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType());
         this.likeRecordClass = likeRecordClass && fieldEgggsForName.size() > 0;
 
+        fieldEgggsForAlias = new LinkedHashMap<>(fieldEgggsForName.size());
         for (Map.Entry<String, FieldEggg> entry : fieldEgggsForName.entrySet()) {
             fieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
+        propertyEgggsForAlias = new LinkedHashMap<>(propertyEgggsForName.size());
         for (Map.Entry<String, PropertyEggg> entry : propertyEgggsForName.entrySet()) {
             propertyEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
@@ -231,14 +254,14 @@ public class ClassEggg {
 
     /// /////////////////
 
-    protected void loadConstr() {
-        if (typeEggg.getType() != Object.class) {
-            //加载构造器
-            for (Constructor c1 : typeEggg.getType().getDeclaredConstructors()) {
-                constrEgggs.add(new ConstrEggg(eggg, this, c1, eggg.findCreator(c1)));
-            }
+    protected void loadConstr(Constructor[] declaredConstructors) {
+        //加载构造器
+        for (Constructor c1 : declaredConstructors) {
+            constrEgggs.add(new ConstrEggg(eggg, this, c1, eggg.findCreator(c1)));
+        }
 
-            //先从静态方法找
+        //先从静态方法找
+        if (typeEggg.getType().isEnum()) {
             for (MethodEggg me : declaredMethodEgggs) {
                 if (me.isStatic()) {
                     Annotation constrAnno = eggg.findCreator(me.getMethod());
@@ -248,24 +271,24 @@ public class ClassEggg {
                     }
                 }
             }
+        }
 
-            //再从构造方法找
-            for (ConstrEggg c1 : constrEgggs) {
-                if (c1.getConstrAnno() != null) {
-                    creator = c1;
-                    return;
-                } else if (creator == null) {
-                    //初始化
-                    creator = c1;
-                } else if (creator.getParamCount() > c1.getParamCount()) {
-                    //谁参数少，用谁
-                    creator = c1;
-                }
+        //再从构造方法找
+        for (ConstrEggg c1 : constrEgggs) {
+            if (c1.getConstrAnno() != null) {
+                creator = c1;
+                return;
+            } else if (creator == null) {
+                //初始化
+                creator = c1;
+            } else if (creator.getParamCount() > c1.getParamCount()) {
+                //谁参数少，用谁
+                creator = c1;
             }
         }
     }
 
-    protected void loadDeclaredFields() {
+    protected void loadFields() {
         Class<?> clz = typeEggg.getType();
 
         while (clz != null) {
@@ -286,8 +309,8 @@ public class ClassEggg {
         }
     }
 
-    protected void loadDeclaredMethods() {
-        for (Method m1 : eggg.getDeclaredMethods(typeEggg.getType())) {
+    protected void loadMethods(Method[] declaredMethods, Method[] methods) {
+        for (Method m1 : declaredMethods) {
             if (m1.getDeclaringClass() == Object.class) {
                 continue;
             }
@@ -304,7 +327,7 @@ public class ClassEggg {
             }
         }
 
-        for (Method m1 : eggg.getMethods(typeEggg.getType())) {
+        for (Method m1 : methods) {
             if (m1.getDeclaringClass() == Object.class) {
                 continue;
             }

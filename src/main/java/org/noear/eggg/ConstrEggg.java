@@ -47,17 +47,22 @@ public class ConstrEggg {
         this.constr = constr;
         this.constrAnno = constrAnno;
 
-        paramAliasMap = new LinkedHashMap<>();
-        paramAry = new ArrayList<>();
+        if (constr.getParameterCount() == 0) {
+            paramAliasMap = Collections.emptyMap();
+            paramAry = Collections.emptyList();
+        } else {
+            paramAliasMap = new LinkedHashMap<>(constr.getParameterCount());
+            paramAry = new ArrayList<>(constr.getParameterCount());
 
-        for (Parameter p1 : constr.getParameters()) {
-            ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
+            for (Parameter p1 : constr.getParameters()) {
+                ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
 
-            paramAliasMap.put(pe.getAlias(), pe);
-            paramAry.add(pe);
+                paramAliasMap.put(pe.getAlias(), pe);
+                paramAry.add(pe);
+            }
         }
 
-        security = (constr.getParameterCount() == 0 || constrAnno != null || JavaUtil.isRecordClass(ownerEggg.getTypeEggg().getType()));
+        security = (constr.getParameterCount() == 0 || constrAnno != null || ownerEggg.isRealRecordClass());
 
         digest = eggg.findDigest(ownerEggg, this, constr, null);
     }
@@ -86,7 +91,7 @@ public class ConstrEggg {
     }
 
     public int getParamCount() {
-        return paramAry.size();
+        return constr.getParameterCount();
     }
 
     public List<ParamEggg> getParamEgggAry() {

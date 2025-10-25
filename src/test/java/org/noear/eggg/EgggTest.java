@@ -24,7 +24,11 @@ public class EgggTest {
 
         ConstrEggg constrEggg = classEggg.getCreator();
 
-        Assertions.assertNull(constrEggg);
+        Assertions.assertNotNull(constrEggg);
+
+        for (FieldEggg p1 : classEggg.getFieldEgggs()) {
+            System.out.println(p1);
+        }
 
         for (PropertyEggg p1 : classEggg.getPropertyEgggs()) {
             System.out.println(p1);

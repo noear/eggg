@@ -49,7 +49,9 @@ public class MethodEggg {
         this.method = method;
 
         try {
-            this.methodHandle = MethodHandles.lookup().unreflect(method);
+            if (isPublic()) {
+                this.methodHandle = MethodHandles.lookup().unreflect(method);
+            }
         } catch (Throwable e) {
             this.methodHandle = null;
         }
@@ -62,14 +64,19 @@ public class MethodEggg {
 
         this.digest = eggg.findDigest(ownerEggg, this, method, null);
 
-        paramEgggsForAlias = new LinkedHashMap<>();
-        paramAry = new ArrayList<>();
+        if (method.getParameterCount() == 0) {
+            paramEgggsForAlias = Collections.emptyMap();
+            paramAry = Collections.emptyList();
+        } else {
+            paramEgggsForAlias = new LinkedHashMap<>(method.getParameterCount());
+            paramAry = new ArrayList<>(method.getParameterCount());
 
-        for (Parameter p1 : method.getParameters()) {
-            ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
+            for (Parameter p1 : method.getParameters()) {
+                ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
 
-            paramEgggsForAlias.put(pe.getAlias(), pe);
-            paramAry.add(pe);
+                paramEgggsForAlias.put(pe.getAlias(), pe);
+                paramAry.add(pe);
+            }
         }
     }
 
@@ -134,7 +141,7 @@ public class MethodEggg {
     }
 
     public int getParamCount() {
-        return paramAry.size();
+        return method.getParameterCount();
     }
 
     public List<ParamEggg> getParamEgggAry() {
