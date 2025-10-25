@@ -322,7 +322,8 @@ public class ClassEggg {
             methodEgggs.add(methodEggg);
 
             if (methodEggg.isStatic() == false) {
-                if (m.getName().length() > 3) {
+                //属性不能是静态的
+                if (m.getName().length() > 2) {
                     if (m.getReturnType() == void.class && m.getParameterCount() == 1) {
                         //setter
                         if (m.getName().startsWith("set") || m.getName().startsWith("is")) {

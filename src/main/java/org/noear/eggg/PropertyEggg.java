@@ -26,7 +26,7 @@ public class PropertyEggg {
     private String alias;
 
 
-    private FieldEggg fieldEggg;
+    private FieldEggg fieldEggg; //属性，允许没有字段
     private PropertyMethodEggg getterEggg;
     private PropertyMethodEggg setterEggg;
 
@@ -58,8 +58,8 @@ public class PropertyEggg {
     /**
      * 获取值
      */
-    public Object getValue(Object target,  boolean allowGetter) {
-        if(allowGetter &&  getterEggg != null) {
+    public Object getValue(Object target, boolean allowGetter) {
+        if (allowGetter && getterEggg != null) {
             return getterEggg.getValue(target);
         }
 
@@ -70,11 +70,11 @@ public class PropertyEggg {
      * 设置值
      */
     public void setValue(Object target, Object value, boolean allowSetter) {
-        if(allowSetter && setterEggg != null) {
+        if (allowSetter && setterEggg != null) {
             setterEggg.setValue(target, value);
+        } else {
+            fieldEggg.setValue(target, value);
         }
-
-        fieldEggg.setValue(target, value);
     }
 
 
@@ -88,11 +88,19 @@ public class PropertyEggg {
     protected void setGetterEggg(PropertyMethodEggg g) {
         this.getterEggg = g;
         this.alias = g.getAlias();
+
+        if (fieldEggg != null) {
+            fieldEggg.getterEggg = g;
+        }
     }
 
     protected void setSetterEggg(PropertyMethodEggg s) {
         this.setterEggg = s;
         this.alias = s.getAlias();
+
+        if (fieldEggg != null) {
+            fieldEggg.setterEggg = s;
+        }
     }
 
     @Override

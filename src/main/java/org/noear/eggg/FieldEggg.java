@@ -34,6 +34,10 @@ public class FieldEggg implements Property {
     private final Field field;
     private final TypeEggg fieldTypeEggg;
 
+
+    protected PropertyMethodEggg getterEggg;
+    protected PropertyMethodEggg setterEggg;
+
     private final String name;
     private final String alias;
     private final Object digest;
@@ -117,6 +121,14 @@ public class FieldEggg implements Property {
         }
     }
 
+    public Object getValue(Object target, boolean allowGetter) {
+        if (allowGetter && getterEggg != null) {
+            return getterEggg.getValue(target);
+        } else {
+            return getValue(target);
+        }
+    }
+
     @Override
     public void setValue(Object target, Object value) {
         if (isFinal() == false) {
@@ -131,6 +143,14 @@ public class FieldEggg implements Property {
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
+        }
+    }
+
+    public void setValue(Object target, Object value, boolean allowSetter) {
+        if (allowSetter && setterEggg != null) {
+            setterEggg.setValue(target, value);
+        } else {
+            setValue(target, value);
         }
     }
 
@@ -162,6 +182,7 @@ public class FieldEggg implements Property {
     }
 
     private Annotation[] annotations;
+
     public Annotation[] getAnnotations() {
         if (annotations == null) {
             annotations = field.getAnnotations();
