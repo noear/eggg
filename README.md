@@ -134,17 +134,16 @@ import org.noear.snack4.annotation.ONodeCreator;
 import java.lang.reflect.*;
 
 public class EgggUtil {
-    //一般，应用内全局单例
     private static final Eggg eggg = new Eggg()
             .withCreatorClass(ONodeCreator.class)
             .withDigestHandler(EgggUtil::doDigestHandle)
             .withAliasHandler(EgggUtil::doAliasHandle);
 
-    private static String doAliasHandle(ClassEggg cw, Object h, Object digest) {
+    private static String doAliasHandle(ClassEggg cw, Object h, Object digest, String ref) {
         if (digest instanceof ONodeAttrHolder) {
             return ((ONodeAttrHolder) digest).getAlias();
         } else {
-            return null;
+            return ref;
         }
     }
 
@@ -189,6 +188,53 @@ public class Demo {
             //已经分析过的泛型
             fw.getTypeEggg();
         }
+    }
+}
+```
+
+
+### Example 4 (for solon)
+
+```java
+package org.noear.solon.core.util;
+
+import org.noear.eggg.*;
+import org.noear.solon.core.wrap.FieldSpec;
+import org.noear.solon.core.wrap.ParamSpec;
+import org.noear.solon.core.wrap.VarSpec;
+
+import java.lang.reflect.*;
+
+public class EgggUtil {
+    private static final Eggg eggg = new Eggg()
+            .withAliasHandler(EgggUtil::doAliasHandle)
+            .withDigestHandler(EgggUtil::doDigestHandle)
+            .withReflectHandler(new EgggReflectHandler());
+
+    private static String doAliasHandle(ClassEggg cw, Object h, Object digest, String ref) {
+        if (digest instanceof VarSpec) {
+            return ((VarSpec) digest).getName();
+        }
+
+        return ref;
+    }
+
+    private static VarSpec doDigestHandle(ClassEggg cw, Object h, AnnotatedElement e, VarSpec ref) {
+        if (h instanceof FieldEggg) {
+            return new FieldSpec((FieldEggg) h);
+        } else if (h instanceof ParamEggg) {
+            return new ParamSpec((ParamEggg) h);
+        }
+
+        return ref;
+    }
+
+    public static TypeEggg getTypeEggg(Type type) {
+        return eggg.getTypeEggg(type);
+    }
+
+    public static ClassEggg getClassEggg(Type type) {
+        return eggg.getClassEggg(type);
     }
 }
 ```
