@@ -2,7 +2,7 @@
   EggG
 </h1>
 <p align="center">
-	<strong>一个 Java 泛型分析工具（泛型蛋）</strong>
+	<strong>一个 Java 类型元数据分析与构建工具（泛型、注解、提炼、别名、缓存）</strong>
 </p>
 <p align="center">
     <a target="_blank" href="https://deepwiki.com/noear/eggg">
@@ -47,7 +47,7 @@
 
 ### 关于 EggG
 
-是一个 Java 泛型分析的小工具（大概 30k 左右）。分析会涉及：类型、类、构造器、方法、字段、属性、参数，扩展传导等细节。适合一些：涉及泛型的框架性项目采用。
+一个 Java 类型元数据分析与构建工具。分析会涉及：类型、类、构造器、方法、字段、属性、参数，泛型传导等细节。适合一些：涉及泛型和注解的框架性项目采用。
 
 ### 示例1
 
@@ -88,6 +88,10 @@ public class EgggDemo {
     @Test
     public void case2() {
         ClassEggg classEggg = eggg.getTypeEggg(C.class).getClassEggg();
+
+        for(FieldEggg fe : classEggg.getAllFieldEgggs()) {
+            fe.<Fastjson2Anno>getDigest();
+        }
 
         assert classEggg.getFieldEgggByName("x").getType() == List.class;
         assert classEggg.getFieldEgggByName("x").getTypeEggg().isParameterizedType();

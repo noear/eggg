@@ -2,7 +2,7 @@
   EggG
 </h1>
 <p align="center">
-	<strong>A Java Generic Analysis Tool (Generic Egg)</strong>
+	<strong>A Java type metadata analysis and building tool (generics, annotations, distill, aliasing, caching)</strong>
 </p>
 <p align="center">
     <a target="_blank" href="https://deepwiki.com/noear/eggg">
@@ -47,7 +47,8 @@
 
 ### About EggG
 
-Java Generic analysis is a small tool (about 30k). It covers types, classes, constructors, methods, fields, properties, parameters, extension propagation, and more. Suitable for: framework projects involving generics.
+A tool for analyzing and building Java type metadata. It covers details of types, classes, constructors, methods, fields, properties, parameters, generic propagation, and more. Suitable for: framework projects involving generics and annotations.
+
 
 ### Example 1
 
@@ -88,6 +89,10 @@ public class EgggDemo {
     @Test
     public void case2() {
         ClassEggg classEggg = eggg.getTypeEggg(C.class).getClassEggg();
+
+        for(FieldEggg fe : classEggg.getAllFieldEgggs()) {
+            fe.<Fastjson2Anno>getDigest();
+        }
 
         assert classEggg.getFieldEgggByName("x").getType() == List.class;
         assert classEggg.getFieldEgggByName("x").getTypeEggg().isParameterizedType();
