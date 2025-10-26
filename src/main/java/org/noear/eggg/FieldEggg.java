@@ -191,6 +191,11 @@ public class FieldEggg implements Property {
     }
 
     @Override
+    public int hashCode() {
+        return field.hashCode();
+    }
+
+    @Override
     public String toString() {
         return field.toString();
     }

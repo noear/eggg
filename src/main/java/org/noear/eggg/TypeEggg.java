@@ -102,6 +102,10 @@ public class TypeEggg {
         return classEggg;
     }
 
+    public ClassEggg newClassEggg() {
+        return eggg.newClassEggg(this);
+    }
+
     public Class<?> getType() {
         return type;
     }
@@ -182,6 +186,11 @@ public class TypeEggg {
 
     public TypeVariable getTypeVariable() {
         return (TypeVariable) genericType;
+    }
+
+    @Override
+    public int hashCode() {
+        return genericType.hashCode();
     }
 
     @Override

@@ -136,6 +136,11 @@ public class PropertyMethodEggg implements Property {
     }
 
     @Override
+    public int hashCode() {
+        return methodEggg.hashCode();
+    }
+
+    @Override
     public String toString() {
         return methodEggg.toString();
     }

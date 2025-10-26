@@ -85,6 +85,11 @@ public class ParamEggg {
     }
 
     @Override
+    public int hashCode() {
+        return param.hashCode();
+    }
+
+    @Override
     public String toString() {
         return param.toString();
     }

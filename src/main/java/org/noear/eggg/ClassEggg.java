@@ -36,6 +36,7 @@ public class ClassEggg {
     private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
     private final Map<String, FieldEggg> fieldEgggsForAlias;
 
+    private final Map<Method, MethodEggg> methodEgggsMap;
     private final List<MethodEggg> methodEgggs;
     private final List<MethodEggg> publicMethodEgggs;
     private final List<MethodEggg> declaredMethodEgggs;
@@ -64,6 +65,8 @@ public class ClassEggg {
 
         //2.加载方法
         methodEgggs = new ArrayList<>(declaredMethods.length + methods.length);
+        methodEgggsMap = new HashMap<>(declaredMethods.length + methods.length);
+
         if (methods.length == 0) {
             publicMethodEgggs = Collections.emptyList();
         } else {
@@ -215,13 +218,7 @@ public class ClassEggg {
 
 
     public MethodEggg findMethodEgggOrNew(Method method) {
-        for (MethodEggg m1 : methodEgggs) {
-            if (m1.getMethod().equals(method)) {
-                return m1;
-            }
-        }
-
-        return eggg.newMethodEggg(this, method);
+        return methodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
     }
 
     public List<MethodEggg> getMethodEgggs() {
@@ -316,13 +313,14 @@ public class ClassEggg {
             }
 
             if (m1.isBridge() == false) {
-                MethodEggg methodEggg = eggg.newMethodEggg(this, m1);
+                MethodEggg me = eggg.newMethodEggg(this, m1);
 
-                declaredMethodEgggs.add(methodEggg);
+                declaredMethodEgggs.add(me);
 
-                if (methodEggg.isPublic() == false) {
+                if (me.isPublic() == false) {
                     //发果是公有，由公有处添加
-                    methodEgggs.add(methodEggg);
+                    methodEgggs.add(me);
+                    methodEgggsMap.put(m1, me);
                 }
             }
         }
@@ -343,6 +341,7 @@ public class ClassEggg {
             MethodEggg me = eggg.newMethodEggg(this, m1);
             publicMethodEgggs.add(me);
             methodEgggs.add(me);
+            methodEgggsMap.put(m1, me);
 
             if (me.isStatic() == false) {
                 //属性不能是静态的
@@ -392,8 +391,13 @@ public class ClassEggg {
     }
 
     @Override
+    public int hashCode() {
+        return typeEggg.hashCode();
+    }
+
+    @Override
     public String toString() {
-        return typeEggg.getType().toString();
+        return typeEggg.toString();
     }
 
     private static String argumentTypesToString(Class<?>[] argTypes) {
