@@ -37,7 +37,7 @@ class ClassEgggTest {
     @Test
     void testFieldEgggs() {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(TestClass.class));
-        Collection<FieldEggg> fields = classEggg.getFieldEgggs();
+        Collection<FieldEggg> fields = classEggg.getAllFieldEgggs();
 
         assertNotNull(fields);
         assertTrue(fields.size() >= 3);

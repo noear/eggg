@@ -27,7 +27,7 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(EmptyClass.class));
 
         assertNotNull(classEggg);
-        assertTrue(classEggg.getFieldEgggs().isEmpty());
+        assertTrue(classEggg.getAllFieldEgggs().isEmpty());
         assertTrue(classEggg.getPropertyEgggs().isEmpty());
 
         // Should have constructor
@@ -39,7 +39,7 @@ class EdgeCaseTests {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithOnlyStaticMethods.class));
 
         assertNotNull(classEggg);
-        assertTrue(classEggg.getFieldEgggs().isEmpty());
+        assertTrue(classEggg.getAllFieldEgggs().isEmpty());
         assertTrue(classEggg.getPropertyEgggs().isEmpty());
 
         // Should have public methods (including static ones)
@@ -75,7 +75,7 @@ class EdgeCaseTests {
 
         assertNotNull(classEggg);
         assertTrue(classEggg.getTypeEggg().isInterface());
-        assertTrue(classEggg.getFieldEgggs().isEmpty()); // Interfaces can't have instance fields
+        assertTrue(classEggg.getAllFieldEgggs().isEmpty()); // Interfaces can't have instance fields
     }
 
     @Test

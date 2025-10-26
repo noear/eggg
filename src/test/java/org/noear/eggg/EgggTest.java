@@ -26,7 +26,7 @@ public class EgggTest {
 
         Assertions.assertNotNull(constrEggg);
 
-        for (FieldEggg p1 : classEggg.getFieldEgggs()) {
+        for (FieldEggg p1 : classEggg.getAllFieldEgggs()) {
             System.out.println(p1);
         }
 

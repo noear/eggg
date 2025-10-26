@@ -33,11 +33,11 @@ public class ClassEggg {
 
     private final List<ConstrEggg> constrEgggs;
 
-    private final Map<String, FieldEggg> fieldEgggsForName = new LinkedHashMap<>();
-    private final Map<String, FieldEggg> fieldEgggsForAlias;
+    private final Map<String, FieldEggg> allFieldEgggsForName = new LinkedHashMap<>();
+    private final Map<String, FieldEggg> allFieldEgggsForAlias;
 
-    private final Map<Method, MethodEggg> methodEgggsMap;
-    private final List<MethodEggg> methodEgggs;
+    private final Map<Method, MethodEggg> ownMethodEgggsMap; //own.public + own.declared
+    private final List<MethodEggg> ownMethodEgggs;
     private final List<MethodEggg> publicMethodEgggs;
     private final List<MethodEggg> declaredMethodEgggs;
 
@@ -64,8 +64,8 @@ public class ClassEggg {
         Method[] methods = eggg.getMethods(typeEggg.getType());
 
         //2.加载方法
-        methodEgggs = new ArrayList<>(declaredMethods.length + methods.length);
-        methodEgggsMap = new HashMap<>(declaredMethods.length + methods.length);
+        ownMethodEgggs = new ArrayList<>(declaredMethods.length + methods.length);
+        ownMethodEgggsMap = new HashMap<>(declaredMethods.length + methods.length);
 
         if (methods.length == 0) {
             publicMethodEgggs = Collections.emptyList();
@@ -85,11 +85,11 @@ public class ClassEggg {
         constrEgggs = new ArrayList<>(declaredConstructors.length);
         loadConstr(declaredConstructors);
 
-        this.likeRecordClass = likeRecordClass && fieldEgggsForName.size() > 0;
+        this.likeRecordClass = likeRecordClass && allFieldEgggsForName.size() > 0;
 
-        fieldEgggsForAlias = new LinkedHashMap<>(fieldEgggsForName.size());
-        for (Map.Entry<String, FieldEggg> entry : fieldEgggsForName.entrySet()) {
-            fieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
+        allFieldEgggsForAlias = new LinkedHashMap<>(allFieldEgggsForName.size());
+        for (Map.Entry<String, FieldEggg> entry : allFieldEgggsForName.entrySet()) {
+            allFieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
         propertyEgggsForAlias = new LinkedHashMap<>(propertyEgggsForName.size());
@@ -218,23 +218,23 @@ public class ClassEggg {
 
 
     public MethodEggg findMethodEgggOrNew(Method method) {
-        return methodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
+        return ownMethodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
     }
 
-    public List<MethodEggg> getMethodEgggs() {
-        return methodEgggs;
+    public List<MethodEggg> getOwnMethodEgggs() {
+        return ownMethodEgggs;
     }
 
-    public Collection<FieldEggg> getFieldEgggs() {
-        return fieldEgggsForName.values();
+    public Collection<FieldEggg> getAllFieldEgggs() {
+        return allFieldEgggsForName.values();
     }
 
     public FieldEggg getFieldEgggByName(String name) {
-        return fieldEgggsForName.get(name);
+        return allFieldEgggsForName.get(name);
     }
 
     public FieldEggg getFieldEgggByAlias(String alias) {
-        return fieldEgggsForAlias.get(alias);
+        return allFieldEgggsForAlias.get(alias);
     }
 
     public Collection<PropertyEggg> getPropertyEgggs() {
@@ -292,7 +292,7 @@ public class ClassEggg {
             for (Field f1 : eggg.getDeclaredFields(clz)) {
                 FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                fieldEgggsForName.put(fe.getName(), fe);
+                allFieldEgggsForName.put(fe.getName(), fe);
 
                 if (fe.isStatic() == false) {
                     //如果全是只读，则
@@ -319,8 +319,8 @@ public class ClassEggg {
 
                 if (me.isPublic() == false) {
                     //发果是公有，由公有处添加
-                    methodEgggs.add(me);
-                    methodEgggsMap.put(m1, me);
+                    ownMethodEgggs.add(me);
+                    ownMethodEgggsMap.put(m1, me);
                 }
             }
         }
@@ -340,11 +340,11 @@ public class ClassEggg {
 
             MethodEggg me = eggg.newMethodEggg(this, m1);
             publicMethodEgggs.add(me);
-            methodEgggs.add(me);
-            methodEgggsMap.put(m1, me);
+            ownMethodEgggs.add(me);
+            ownMethodEgggsMap.put(m1, me);
 
-            if (me.isStatic() == false) {
-                //属性不能是静态的
+            if (me.isStatic() == false && me.isPublic()) {
+                //非静态、公有的才可能是属性方法
                 String m1N = m1.getName();
                 if (m1N.length() > 2) {
                     if (m1.getReturnType() == void.class && m1.getParameterCount() == 1) {
