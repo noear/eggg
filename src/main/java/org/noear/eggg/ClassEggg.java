@@ -33,7 +33,8 @@ public class ClassEggg {
 
     private final List<ConstrEggg> constrEgggs;
 
-    private final Map<String, FieldEggg> allFieldEgggsForName = new LinkedHashMap<>();
+    private final List<FieldEggg> allFieldEgggs = new ArrayList<>();
+    private final Map<String, FieldEggg> allFieldEgggsForName;
     private final Map<String, FieldEggg> allFieldEgggsForAlias;
 
     private final Map<Method, MethodEggg> ownMethodEgggsMap; //own.public + own.declared
@@ -60,10 +61,19 @@ public class ClassEggg {
         //1.加载字段
         loadFields();
 
+        this.likeRecordClass = likeRecordClass && allFieldEgggs.size() > 0;
+        allFieldEgggsForName = new LinkedHashMap<>(allFieldEgggs.size());
+        allFieldEgggsForAlias = new LinkedHashMap<>(allFieldEgggs.size());
+        for (FieldEggg fe : allFieldEgggs) {
+            allFieldEgggsForName.put(fe.getName(), fe);
+            allFieldEgggsForAlias.put(fe.getAlias(), fe);
+        }
+
+
+        //2.加载方法
         Method[] declaredMethods = eggg.getDeclaredMethods(typeEggg.getType());
         Method[] methods = eggg.getMethods(typeEggg.getType());
 
-        //2.加载方法
         ownMethodEgggs = new ArrayList<>(declaredMethods.length + methods.length);
         ownMethodEgggsMap = new HashMap<>(declaredMethods.length + methods.length);
 
@@ -80,22 +90,16 @@ public class ClassEggg {
 
         loadMethods(declaredMethods, methods);
 
+        propertyEgggsForAlias = new LinkedHashMap<>(propertyEgggsForName.size());
+        for (Map.Entry<String, PropertyEggg> entry : propertyEgggsForName.entrySet()) {
+            propertyEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
+        }
+
         //3.加构造器（顺序不能乱）
         Constructor[] declaredConstructors = typeEggg.getType().getDeclaredConstructors();
         constrEgggs = new ArrayList<>(declaredConstructors.length);
         loadConstr(declaredConstructors);
 
-        this.likeRecordClass = likeRecordClass && allFieldEgggsForName.size() > 0;
-
-        allFieldEgggsForAlias = new LinkedHashMap<>(allFieldEgggsForName.size());
-        for (Map.Entry<String, FieldEggg> entry : allFieldEgggsForName.entrySet()) {
-            allFieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
-        }
-
-        propertyEgggsForAlias = new LinkedHashMap<>(propertyEgggsForName.size());
-        for (Map.Entry<String, PropertyEggg> entry : propertyEgggsForName.entrySet()) {
-            propertyEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
-        }
 
         this.digest = eggg.findDigest(this, this, typeEggg.getType(), null);
     }
@@ -226,7 +230,7 @@ public class ClassEggg {
     }
 
     public Collection<FieldEggg> getAllFieldEgggs() {
-        return allFieldEgggsForName.values();
+        return allFieldEgggs;
     }
 
     public FieldEggg getFieldEgggByName(String name) {
@@ -292,7 +296,7 @@ public class ClassEggg {
             for (Field f1 : eggg.getDeclaredFields(clz)) {
                 FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                allFieldEgggsForName.put(fe.getName(), fe);
+                allFieldEgggs.add(fe);
 
                 if (fe.isStatic() == false) {
                     //如果全是只读，则
