@@ -25,7 +25,7 @@ class TypeImplTest {
         ParameterizedType jdkParamType = (ParameterizedType) jdkType;
 
         // 创建自定义实现
-        ParameterizedTypeImpl customType = new ParameterizedTypeImpl(
+        GenericResolver.ParameterizedTypeImpl customType = new GenericResolver.ParameterizedTypeImpl(
                 (Class<?>) jdkParamType.getRawType(),
                 jdkParamType.getActualTypeArguments(),
                 jdkParamType.getOwnerType()
@@ -45,13 +45,13 @@ class TypeImplTest {
         ParameterizedType jdkType = (ParameterizedType) method.getGenericReturnType();
 
         // 创建两个相同的自定义实例
-        ParameterizedTypeImpl impl1 = new ParameterizedTypeImpl(
+        GenericResolver.ParameterizedTypeImpl impl1 = new GenericResolver.ParameterizedTypeImpl(
                 (Class<?>) jdkType.getRawType(),
                 jdkType.getActualTypeArguments(),
                 jdkType.getOwnerType()
         );
 
-        ParameterizedTypeImpl impl2 = new ParameterizedTypeImpl(
+        GenericResolver.ParameterizedTypeImpl impl2 = new GenericResolver.ParameterizedTypeImpl(
                 (Class<?>) jdkType.getRawType(),
                 jdkType.getActualTypeArguments(),
                 jdkType.getOwnerType()
@@ -83,7 +83,7 @@ class TypeImplTest {
     @Test
     @DisplayName("ParameterizedTypeImpl - toString 测试")
     void testParameterizedTypeImplToString() {
-        ParameterizedTypeImpl type = new ParameterizedTypeImpl(
+        GenericResolver.ParameterizedTypeImpl type = new GenericResolver.ParameterizedTypeImpl(
                 List.class,
                 new Type[]{String.class},
                 null
@@ -99,7 +99,7 @@ class TypeImplTest {
     @DisplayName("ParameterizedTypeImpl - 参数数量不匹配测试")
     void testParameterizedTypeImplArgumentMismatch() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new ParameterizedTypeImpl(
+            new GenericResolver.ParameterizedTypeImpl(
                     List.class, // 需要 1 个类型参数
                     new Type[]{String.class, Integer.class}, // 提供了 2 个
                     null
@@ -115,7 +115,7 @@ class TypeImplTest {
         Method method = TypeImplTest.class.getDeclaredMethod("getGenericArray");
         GenericArrayType jdkType = (GenericArrayType) method.getGenericReturnType();
 
-        GenericArrayTypeImpl customType = new GenericArrayTypeImpl(
+        GenericResolver.GenericArrayTypeImpl customType = new GenericResolver.GenericArrayTypeImpl(
                 jdkType.getGenericComponentType()
         );
 
@@ -130,11 +130,11 @@ class TypeImplTest {
         Method method = TypeImplTest.class.getDeclaredMethod("getGenericArray");
         GenericArrayType jdkType = (GenericArrayType) method.getGenericReturnType();
 
-        GenericArrayTypeImpl impl1 = new GenericArrayTypeImpl(
+        GenericResolver.GenericArrayTypeImpl impl1 = new GenericResolver.GenericArrayTypeImpl(
                 jdkType.getGenericComponentType()
         );
 
-        GenericArrayTypeImpl impl2 = new GenericArrayTypeImpl(
+        GenericResolver.GenericArrayTypeImpl impl2 = new GenericResolver.GenericArrayTypeImpl(
                 jdkType.getGenericComponentType()
         );
 
@@ -156,7 +156,7 @@ class TypeImplTest {
         Method method = TypeImplTest.class.getDeclaredMethod("getGenericArray");
         GenericArrayType jdkType = (GenericArrayType) method.getGenericReturnType();
 
-        GenericArrayTypeImpl impl = new GenericArrayTypeImpl(
+        GenericResolver.GenericArrayTypeImpl impl = new GenericResolver.GenericArrayTypeImpl(
                 jdkType.getGenericComponentType()
         );
 
@@ -171,7 +171,7 @@ class TypeImplTest {
     @DisplayName("WildcardTypeImpl - 上界通配符测试")
     void testWildcardTypeImplUpperBound() {
         // 直接创建 WildcardType，不通过反射获取
-        WildcardTypeImpl customType = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl customType = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Number.class}, // 上界
                 new Type[0]              // 下界为空
         );
@@ -184,7 +184,7 @@ class TypeImplTest {
     @Test
     @DisplayName("WildcardTypeImpl - 下界通配符测试")
     void testWildcardTypeImplLowerBound() {
-        WildcardTypeImpl customType = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl customType = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Object.class}, // 上界为 Object
                 new Type[]{String.class}  // 下界
         );
@@ -198,7 +198,7 @@ class TypeImplTest {
     @Test
     @DisplayName("WildcardTypeImpl - 无界通配符测试")
     void testWildcardTypeImplUnbounded() {
-        WildcardTypeImpl customType = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl customType = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Object.class}, // 上界
                 new Type[0]              // 下界为空
         );
@@ -213,12 +213,12 @@ class TypeImplTest {
     @DisplayName("WildcardTypeImpl - equals 和 hashCode 测试")
     void testWildcardTypeImplEqualsHashCode() {
         // 创建两个相同的 WildcardType 实例
-        WildcardTypeImpl impl1 = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl impl1 = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Number.class},
                 new Type[0]
         );
 
-        WildcardTypeImpl impl2 = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl impl2 = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Number.class},
                 new Type[0]
         );
@@ -234,7 +234,7 @@ class TypeImplTest {
         assertEquals(impl1.hashCode(), impl2.hashCode());
 
         // 测试不同内容的实例
-        WildcardTypeImpl different = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl different = new GenericResolver.WildcardTypeImpl(
                 new Type[]{String.class},
                 new Type[0]
         );
@@ -257,7 +257,7 @@ class TypeImplTest {
         WildcardType jdkWildcard = (WildcardType) typeArgs[0];
 
         // 创建对应的自定义实现
-        WildcardTypeImpl customWildcard = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl customWildcard = new GenericResolver.WildcardTypeImpl(
                 jdkWildcard.getUpperBounds(),
                 jdkWildcard.getLowerBounds()
         );
@@ -274,7 +274,7 @@ class TypeImplTest {
     @DisplayName("WildcardTypeImpl - 非法边界组合测试")
     void testWildcardTypeImplInvalidBounds() {
         assertThrows(IllegalArgumentException.class, () -> {
-            new WildcardTypeImpl(
+            new GenericResolver.WildcardTypeImpl(
                     new Type[]{Number.class}, // 上界
                     new Type[]{String.class}  // 下界 - 不应该同时存在非Object上界和下界
             );
@@ -284,15 +284,15 @@ class TypeImplTest {
     @Test
     @DisplayName("WildcardTypeImpl - toString 测试")
     void testWildcardTypeImplToString() {
-        WildcardTypeImpl upper = new WildcardTypeImpl(new Type[]{Number.class}, new Type[0]);
+        GenericResolver.WildcardTypeImpl upper = new GenericResolver.WildcardTypeImpl(new Type[]{Number.class}, new Type[0]);
         assertTrue(upper.toString().contains("extends"));
         assertTrue(upper.toString().contains("Number"));
 
-        WildcardTypeImpl lower = new WildcardTypeImpl(new Type[]{Object.class}, new Type[]{String.class});
+        GenericResolver.WildcardTypeImpl lower = new GenericResolver.WildcardTypeImpl(new Type[]{Object.class}, new Type[]{String.class});
         assertTrue(lower.toString().contains("super"));
         assertTrue(lower.toString().contains("String"));
 
-        WildcardTypeImpl unbounded = new WildcardTypeImpl(new Type[]{Object.class}, new Type[0]);
+        GenericResolver.WildcardTypeImpl unbounded = new GenericResolver.WildcardTypeImpl(new Type[]{Object.class}, new Type[0]);
         assertEquals("?", unbounded.toString());
     }
 
@@ -300,7 +300,7 @@ class TypeImplTest {
     @DisplayName("WildcardTypeImpl - 多上界测试")
     void testWildcardTypeImplMultipleUpperBounds() {
         // 测试多个上界的情况（如 <T extends Number & Comparable>）
-        WildcardTypeImpl multiUpper = new WildcardTypeImpl(
+        GenericResolver.WildcardTypeImpl multiUpper = new GenericResolver.WildcardTypeImpl(
                 new Type[]{Number.class, Comparable.class},
                 new Type[0]
         );
@@ -336,17 +336,17 @@ class TypeImplTest {
         assertTrue(customHash1 != 0 || customType instanceof WildcardType);
 
         // 测试相同内容的不同实例应该有相同的 hashCode
-        if (customType instanceof ParameterizedTypeImpl) {
-            ParameterizedTypeImpl pt1 = (ParameterizedTypeImpl) customType;
-            ParameterizedTypeImpl pt2 = new ParameterizedTypeImpl(
+        if (customType instanceof GenericResolver.ParameterizedTypeImpl) {
+            GenericResolver.ParameterizedTypeImpl pt1 = (GenericResolver.ParameterizedTypeImpl) customType;
+            GenericResolver.ParameterizedTypeImpl pt2 = new GenericResolver.ParameterizedTypeImpl(
                     (Class<?>) pt1.getRawType(),
                     pt1.getActualTypeArguments(),
                     pt1.getOwnerType()
             );
             assertEquals(pt1.hashCode(), pt2.hashCode());
-        } else if (customType instanceof WildcardTypeImpl) {
-            WildcardTypeImpl wt1 = (WildcardTypeImpl) customType;
-            WildcardTypeImpl wt2 = new WildcardTypeImpl(
+        } else if (customType instanceof GenericResolver.WildcardTypeImpl) {
+            GenericResolver.WildcardTypeImpl wt1 = (GenericResolver.WildcardTypeImpl) customType;
+            GenericResolver.WildcardTypeImpl wt2 = new GenericResolver.WildcardTypeImpl(
                     wt1.getUpperBounds(),
                     wt1.getLowerBounds()
             );
@@ -360,7 +360,7 @@ class TypeImplTest {
 
         if (jdkType instanceof ParameterizedType) {
             ParameterizedType jdkParamType = (ParameterizedType) jdkType;
-            ParameterizedTypeImpl customType = new ParameterizedTypeImpl(
+            GenericResolver.ParameterizedTypeImpl customType = new GenericResolver.ParameterizedTypeImpl(
                     (Class<?>) jdkParamType.getRawType(),
                     jdkParamType.getActualTypeArguments(),
                     jdkParamType.getOwnerType()

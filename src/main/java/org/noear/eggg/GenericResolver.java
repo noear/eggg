@@ -132,7 +132,7 @@ public class GenericResolver {
                 final TypeVariable[] typeParameters = rawType.getTypeParameters();
 
                 for (int i = 0; i < typeParameters.length; i++) {
-                   typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
+                    typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
                 }
 
                 type = rawType;
@@ -244,5 +244,220 @@ public class GenericResolver {
         }
 
         return changed ? result : types;
+    }
+
+
+    /**
+     * @author noear
+     * @since 1.0
+     */
+    public static class GenericArrayTypeImpl implements GenericArrayType {
+        private final Type genericComponentType;
+
+        public GenericArrayTypeImpl(Type genericComponentType) {
+            this.genericComponentType = Objects.requireNonNull(genericComponentType, "genericComponentType");
+        }
+
+        @Override
+        public Type getGenericComponentType() {
+            return genericComponentType;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof GenericArrayType)) return false;
+
+            GenericArrayType that = (GenericArrayType) o;
+            return Objects.equals(genericComponentType, that.getGenericComponentType());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(genericComponentType);
+        }
+
+        @Override
+        public String toString() {
+            return genericComponentType.getTypeName() + "[]";
+        }
+    }
+
+    public static class WildcardTypeImpl implements WildcardType {
+        private Type[] upperBounds;
+        private Type[] lowerBounds;
+
+        public WildcardTypeImpl(Type[] upperBounds, Type[] lowerBounds) {
+            this.upperBounds = upperBounds != null ? upperBounds : new Type[0];
+            this.lowerBounds = lowerBounds != null ? lowerBounds : new Type[0];
+
+            // 规范化边界
+            if (this.upperBounds.length == 0) {
+                this.upperBounds = new Type[]{Object.class};
+            }
+
+            // 根据 Java 语言规范，上下界不能同时存在
+            if (this.lowerBounds.length > 0 &&
+                    !(this.upperBounds.length > 0 && this.upperBounds[0] == Object.class)) {
+                throw new IllegalArgumentException("Wildcard cannot have both lower and upper bounds");
+            }
+        }
+
+        @Override
+        public Type[] getUpperBounds() {
+            return upperBounds.clone(); // 防御性拷贝
+        }
+
+        @Override
+        public Type[] getLowerBounds() {
+            return lowerBounds.clone(); // 防御性拷贝
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof WildcardType)) return false;
+
+            WildcardType that = (WildcardType) o;
+            return Arrays.equals(getUpperBounds(), that.getUpperBounds()) &&
+                    Arrays.equals(getLowerBounds(), that.getLowerBounds());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Arrays.hashCode(upperBounds);
+            result = 31 * result + Arrays.hashCode(lowerBounds);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            if (lowerBounds.length > 0) {
+                return "? super " + boundsToString(lowerBounds);
+            } else if (isUnbounded()) {
+                return "?";
+            } else {
+                return "? extends " + boundsToString(upperBounds);
+            }
+        }
+
+        /**
+         * 判断是否为无界通配符
+         */
+        private boolean isUnbounded() {
+            return upperBounds.length == 0 ||
+                    (upperBounds.length == 1 &&
+                            (upperBounds[0] == Object.class ||
+                                    upperBounds[0].getTypeName().equals("java.lang.Object")));
+        }
+
+        /**
+         * 将边界数组转换为字符串表示
+         */
+        private String boundsToString(Type[] bounds) {
+            if (bounds.length == 1) {
+                return getTypeName(bounds[0]);
+            } else {
+                // 多个边界用 & 连接
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < bounds.length; i++) {
+                    if (i > 0) {
+                        sb.append(" & ");
+                    }
+                    sb.append(getTypeName(bounds[i]));
+                }
+                return sb.toString();
+            }
+        }
+
+        /**
+         * 安全地获取类型名称
+         */
+        private String getTypeName(Type type) {
+            if (type instanceof Class) {
+                return ((Class<?>) type).getName();
+            } else {
+                return type.getTypeName();
+            }
+        }
+    }
+
+    public static class ParameterizedTypeImpl implements ParameterizedType {
+        private final Class<?> rawType;
+        private final Type[] actualTypeArguments;
+        private final Type ownerType;
+
+        public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments) {
+            this(rawType, actualTypeArguments, null);
+        }
+
+        public ParameterizedTypeImpl(Class<?> rawType, Type[] actualTypeArguments, Type ownerType) {
+            this.rawType = Objects.requireNonNull(rawType, "rawType");
+            this.actualTypeArguments = actualTypeArguments != null ? actualTypeArguments : new Type[0];
+            this.ownerType = ownerType;
+
+            // 验证类型参数数量匹配
+            TypeVariable<?>[] typeParameters = rawType.getTypeParameters();
+            if (typeParameters.length != this.actualTypeArguments.length) {
+                throw new IllegalArgumentException("Argument length mismatch");
+            }
+        }
+
+        @Override
+        public Type[] getActualTypeArguments() {
+            return actualTypeArguments;
+        }
+
+        @Override
+        public Type getRawType() {
+            return rawType;
+        }
+
+        @Override
+        public Type getOwnerType() {
+            return ownerType;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ParameterizedType)) return false;
+
+            ParameterizedType that = (ParameterizedType) o;
+            return Objects.equals(rawType, that.getRawType()) &&
+                    Arrays.equals(actualTypeArguments, that.getActualTypeArguments()) &&
+                    Objects.equals(ownerType, that.getOwnerType());
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hashCode(rawType);
+            result = 31 * result + Arrays.hashCode(actualTypeArguments);
+            result = 31 * result + Objects.hashCode(ownerType);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+
+            if (ownerType != null) {
+                sb.append(ownerType.getTypeName()).append("$");
+            }
+
+            sb.append(rawType.getTypeName());
+
+            if (actualTypeArguments.length > 0) {
+                sb.append("<");
+                for (int i = 0; i < actualTypeArguments.length; i++) {
+                    if (i > 0) sb.append(", ");
+                    Type arg = actualTypeArguments[i];
+                    sb.append(arg.getTypeName());
+                }
+                sb.append(">");
+            }
+
+            return sb.toString();
+        }
     }
 }
