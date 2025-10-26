@@ -296,7 +296,7 @@ public class ClassEggg {
             for (Field f1 : eggg.getDeclaredFields(clz)) {
                 FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                allFieldEgggs.add(fe);
+                allFieldEgggs.add(fe); //不能用 Map 接收（会有重名的私有字段）
 
                 if (fe.isStatic() == false) {
                     //如果全是只读，则
@@ -304,8 +304,8 @@ public class ClassEggg {
                     propertyEgggsForName.computeIfAbsent(fe.getName(), k -> new PropertyEggg(k))
                             .setFieldEggg(fe);
                 }
-
             }
+
             clz = clz.getSuperclass();
         }
     }
