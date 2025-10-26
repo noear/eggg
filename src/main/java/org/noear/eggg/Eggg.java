@@ -16,6 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
 import java.util.Map;
 import java.util.Objects;
@@ -68,8 +69,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 1.0
  */
 public class Eggg {
-    private final Map<Type, TypeEggg> typeEgggLib = new ConcurrentHashMap<>();
-    private final Map<TypeEggg, ClassEggg> classEgggLib = new ConcurrentHashMap<>();
+    private final Map<Type, SoftReference<TypeEggg>> typeEgggCached = new ConcurrentHashMap<>();
+    private final Map<TypeEggg, SoftReference<ClassEggg>> classEgggCached = new ConcurrentHashMap<>();
     private GenericResolver genericResolver = GenericResolver.getDefault();
 
     private AliasHandler aliasHandler;
@@ -115,8 +116,8 @@ public class Eggg {
     ///
 
     public void clear() {
-        typeEgggLib.clear();
-        classEgggLib.clear();
+        typeEgggCached.clear();
+        classEgggCached.clear();
         genericResolver.clear();
     }
 
@@ -134,13 +135,25 @@ public class Eggg {
             }
         }
 
-        return typeEgggLib.computeIfAbsent(type, t -> newTypeEggg(t));
+        return typeEgggCached.compute(type, (t, softRef) -> {
+            if (softRef != null && softRef.get() != null) {
+                return softRef;
+            }
+
+            return new SoftReference<>(newTypeEggg(t));
+        }).get();
     }
 
     public ClassEggg getClassEggg(TypeEggg typeEggg) {
         Objects.requireNonNull(typeEggg, "typeEggg");
 
-        return classEgggLib.computeIfAbsent(typeEggg, t -> newClassEggg(t));
+        return classEgggCached.compute(typeEggg, (t, softRef) -> {
+            if (softRef != null && softRef.get() != null) {
+                return softRef;
+            }
+
+            return new SoftReference<>(newClassEggg(t));
+        }).get();
     }
 
     public ClassEggg getClassEggg(Type type) {
