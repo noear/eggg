@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 /**
@@ -27,6 +28,11 @@ public interface AnnotatedEggg {
      * 获取注解元素
      */
     AnnotatedElement getElement();
+
+    /**
+     * 获取所有注解
+     */
+    Annotation[] getAnnotations();
 
     /**
      * 获取提炼物

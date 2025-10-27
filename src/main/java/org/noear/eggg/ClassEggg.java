@@ -122,18 +122,6 @@ public class ClassEggg implements AnnotatedEggg {
         return typeEggg;
     }
 
-    public Class<?> getType() {
-        return typeEggg.getType();
-    }
-
-    public Type getGenericType() {
-        return typeEggg.getGenericType();
-    }
-
-    public Map<String, Type> getGenericInfo() {
-        return typeEggg.getGenericInfo();
-    }
-
     @Override
     public AnnotatedElement getElement() {
         return typeEggg.getType();
@@ -144,6 +132,16 @@ public class ClassEggg implements AnnotatedEggg {
      */
     public <T extends Object> T getDigest() {
         return (T) digest;
+    }
+
+    private Annotation[] annotations;
+
+    @Override
+    public Annotation[] getAnnotations() {
+        if (annotations == null) {
+            annotations = typeEggg.getType().getAnnotations();
+        }
+        return annotations;
     }
 
     /**

@@ -89,6 +89,16 @@ public class ConstrEggg implements AnnotatedEggg {
         return (T) digest;
     }
 
+    private Annotation[] annotations;
+
+    @Override
+    public Annotation[] getAnnotations() {
+        if (annotations == null) {
+            annotations = constr.getAnnotations();
+        }
+        return annotations;
+    }
+
     /**
      * 是否安全（无参数或有注解）
      */

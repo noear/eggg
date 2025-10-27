@@ -165,18 +165,6 @@ public class FieldEggg implements Property {
         return fieldTypeEggg;
     }
 
-    public Class<?> getType() {
-        return fieldTypeEggg.getType();
-    }
-
-    public Type getGenericType() {
-        return fieldTypeEggg.getGenericType();
-    }
-
-    public Map<String, Type> getGenericInfo() {
-        return fieldTypeEggg.getGenericInfo();
-    }
-
     @Override
     public String getName() {
         return name;
@@ -189,6 +177,7 @@ public class FieldEggg implements Property {
 
     private Annotation[] annotations;
 
+    @Override
     public Annotation[] getAnnotations() {
         if (annotations == null) {
             annotations = field.getAnnotations();

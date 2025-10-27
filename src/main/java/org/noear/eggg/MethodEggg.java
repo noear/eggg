@@ -129,6 +129,7 @@ public class MethodEggg implements AnnotatedEggg {
 
     private Annotation[] annotations;
 
+    @Override
     public Annotation[] getAnnotations() {
         if (annotations == null) {
             annotations = method.getAnnotations();

@@ -25,17 +25,17 @@ public class GenericTest {
     public void case2() {
         ClassEggg classEggg = eggg.getTypeEggg(C.class).getClassEggg();
 
-        assert classEggg.getFieldEgggByName("x").getType() == List.class;
+        assert classEggg.getFieldEgggByName("x").getTypeEggg().getType() == List.class;
         assert classEggg.getFieldEgggByName("x").getTypeEggg().isParameterizedType();
         assert classEggg.getFieldEgggByName("x").getTypeEggg().getActualTypeArguments()[0] == String.class;
 
-        assert classEggg.getFieldEgggByName("y").getType() == Map.class;
+        assert classEggg.getFieldEgggByName("y").getTypeEggg().getType() == Map.class;
         assert classEggg.getFieldEgggByName("y").getTypeEggg().isParameterizedType();
         assert classEggg.getFieldEgggByName("y").getTypeEggg().getActualTypeArguments()[0] == String.class;
         assert classEggg.getFieldEgggByName("y").getTypeEggg().getActualTypeArguments()[1] == Integer.class;
 
-        assert classEggg.getFieldEgggByName("m").getType() == String.class;
-        assert classEggg.getFieldEgggByName("n").getType() == Integer.class;
+        assert classEggg.getFieldEgggByName("m").getTypeEggg().getType() == String.class;
+        assert classEggg.getFieldEgggByName("n").getTypeEggg().getType() == Integer.class;
     }
 
     public static class A<X, Y> {

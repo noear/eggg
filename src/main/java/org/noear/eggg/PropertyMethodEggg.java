@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -82,6 +83,11 @@ public class PropertyMethodEggg implements Property {
     @Override
     public <T extends Object> T getDigest() {
         return (T) digest;
+    }
+
+    @Override
+    public Annotation[] getAnnotations() {
+        return methodEggg.getAnnotations();
     }
 
     @Override
