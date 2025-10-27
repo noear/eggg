@@ -18,6 +18,8 @@ package org.noear.eggg;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * 参数包装器
@@ -58,6 +60,14 @@ public class ParamEggg implements AnnotatedEggg {
 
     public TypeEggg getTypeEggg() {
         return paramTypeEggg;
+    }
+
+    public Class<?> getType() {
+        return paramTypeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return paramTypeEggg.getGenericType();
     }
 
     public String getName() {

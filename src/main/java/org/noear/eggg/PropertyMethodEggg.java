@@ -18,6 +18,7 @@ package org.noear.eggg;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Objects;
 
 /**
@@ -132,6 +133,14 @@ public class PropertyMethodEggg implements Property {
     @Override
     public TypeEggg getTypeEggg() {
         return propertyTypeEggg;
+    }
+
+    public Class<?> getType() {
+        return propertyTypeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return propertyTypeEggg.getGenericType();
     }
 
     public FieldEggg getFieldEggg() {

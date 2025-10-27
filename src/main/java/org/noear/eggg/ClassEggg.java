@@ -122,6 +122,14 @@ public class ClassEggg implements AnnotatedEggg {
         return typeEggg;
     }
 
+    public Class<?> getType() {
+        return typeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return typeEggg.getGenericType();
+    }
+
     @Override
     public AnnotatedElement getElement() {
         return typeEggg.getType();

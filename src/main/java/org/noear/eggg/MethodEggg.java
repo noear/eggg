@@ -102,6 +102,14 @@ public class MethodEggg implements AnnotatedEggg {
         return returnTypeEggg;
     }
 
+    public Class<?> getReturnType() {
+        return returnTypeEggg.getType();
+    }
+
+    public Type getGenericReturnType() {
+        return returnTypeEggg.getGenericType();
+    }
+
     /**
      * 只读的
      */

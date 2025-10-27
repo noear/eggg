@@ -165,6 +165,14 @@ public class FieldEggg implements Property {
         return fieldTypeEggg;
     }
 
+    public Class<?> getType() {
+        return fieldTypeEggg.getType();
+    }
+
+    public Type getGenericType() {
+        return fieldTypeEggg.getGenericType();
+    }
+
     @Override
     public String getName() {
         return name;
