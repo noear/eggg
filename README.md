@@ -144,35 +144,32 @@ public class EgggUtil {
             .withDigestHandler(EgggUtil::doDigestHandle)
             .withAliasHandler(EgggUtil::doAliasHandle);
 
-    private static String doAliasHandle(ClassEggg cw, Object h, Object digest, String ref) {
-        if (digest instanceof ONodeAttrHolder) {
-            return ((ONodeAttrHolder) digest).getAlias();
+    private static String doAliasHandle(ClassEggg cw, AnnotatedEggg s, String ref) {
+        if (s.getDigest() instanceof ONodeAttrHolder) {
+            return ((ONodeAttrHolder) s.getDigest()).getAlias();
         } else {
             return ref;
         }
     }
 
-    private static ONodeAttrHolder doDigestHandle(ClassEggg cw, Object h, AnnotatedElement e, ONodeAttrHolder ref) {
-        ONodeAttr attr = e.getAnnotation(ONodeAttr.class);
+    private static Object doDigestHandle(ClassEggg cw, AnnotatedEggg s, Object ref) {
+        ONodeAttr attr = s.getElement().getAnnotation(ONodeAttr.class);
 
         if (attr == null && ref != null) {
             return ref;
         }
 
-        if (h instanceof FieldEggg) {
-            return new ONodeAttrHolder(attr, ((Field) e).getName());
-        } else if (h instanceof PropertyMethodEggg) {
-            return new ONodeAttrHolder(attr, Property.resolvePropertyName(((Method) e).getName()));
-        } else if (h instanceof ParamEggg) {
-            return new ONodeAttrHolder(attr, ((Parameter) e).getName());
+        if (s instanceof FieldEggg) {
+            return new ONodeAttrHolder(attr, ((Field) s.getElement()).getName());
+        } else if (s instanceof PropertyMethodEggg) {
+            return new ONodeAttrHolder(attr, Property.resolvePropertyName(((Method) s.getElement()).getName()));
+        } else if (s instanceof ParamEggg) {
+            return new ONodeAttrHolder(attr, ((Parameter) s.getElement()).getName());
         } else {
             return null;
         }
     }
-
-    /**
-     * 获取类型包装器
-     */
+    
     public static TypeEggg getTypeEggg(Type type) {
         return eggg.getTypeEggg(type);
     }
@@ -216,19 +213,19 @@ public class EgggUtil {
             .withDigestHandler(EgggUtil::doDigestHandle)
             .withReflectHandler(new EgggReflectHandler());
 
-    private static String doAliasHandle(ClassEggg cw, Object h, Object digest, String ref) {
-        if (digest instanceof VarSpec) {
-            return ((VarSpec) digest).getName();
+    private static String doAliasHandle(ClassEggg cw, AnnotatedEggg s, String ref) {
+        if (s.getDigest() instanceof VarSpec) {
+            return s.<VarSpec>getDigest().getName();
         }
 
         return ref;
     }
 
-    private static VarSpec doDigestHandle(ClassEggg cw, Object h, AnnotatedElement e, VarSpec ref) {
-        if (h instanceof FieldEggg) {
-            return new FieldSpec((FieldEggg) h);
-        } else if (h instanceof ParamEggg) {
-            return new ParamSpec((ParamEggg) h);
+    private static Object doDigestHandle(ClassEggg cw, AnnotatedEggg s, Object ref) {
+        if (s instanceof FieldEggg) {
+            return new FieldSpec((FieldEggg) s);
+        } else if (s instanceof ParamEggg) {
+            return new ParamSpec((ParamEggg) s);
         }
 
         return ref;
@@ -239,7 +236,7 @@ public class EgggUtil {
     }
 
     public static ClassEggg getClassEggg(Type type) {
-        return eggg.getClassEggg(type);
+        return getTypeEggg(type).getClassEggg();
     }
 }
 ```
