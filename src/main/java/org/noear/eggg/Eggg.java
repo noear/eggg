@@ -162,31 +162,31 @@ public class Eggg {
 
     ///
 
-    protected TypeEggg newTypeEggg(Type type) {
+    public TypeEggg newTypeEggg(Type type) {
         return new TypeEggg(this, type);
     }
 
-    protected ClassEggg newClassEggg(TypeEggg typeEggg) {
+    public ClassEggg newClassEggg(TypeEggg typeEggg) {
         return new ClassEggg(this, typeEggg);
     }
 
-    protected FieldEggg newFieldEggg(ClassEggg classEggg, Field field) {
+    public FieldEggg newFieldEggg(ClassEggg classEggg, Field field) {
         return new FieldEggg(this, classEggg, field);
     }
 
-    protected MethodEggg newMethodEggg(ClassEggg classEggg, Method method) {
+    public MethodEggg newMethodEggg(ClassEggg classEggg, Method method) {
         return new MethodEggg(this, classEggg, method);
     }
 
-    protected ConstrEggg newConstrEggg(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
+    public ConstrEggg newConstrEggg(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
         return new ConstrEggg(this, classEggg, constr, constrAnno);
     }
 
-    protected PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, MethodEggg methodEggg) {
+    public PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, MethodEggg methodEggg) {
         return new PropertyMethodEggg(this, classEggg, methodEggg);
     }
 
-    protected ParamEggg newParamEggg(ClassEggg classEggg, Parameter param) {
+    public ParamEggg newParamEggg(ClassEggg classEggg, Parameter param) {
         return new ParamEggg(this, classEggg, param);
     }
 
