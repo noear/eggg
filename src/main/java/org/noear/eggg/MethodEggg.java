@@ -27,7 +27,7 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class MethodEggg {
+public class MethodEggg implements AnnotatedEggg {
     private final ClassEggg ownerEggg;
 
     private final Method method;
@@ -62,7 +62,7 @@ public class MethodEggg {
             this.returnTypeEggg = eggg.getTypeEggg(method.getGenericReturnType());
         }
 
-        this.digest = eggg.findDigest(ownerEggg, this, method, null);
+        this.digest = eggg.findDigest(ownerEggg, this, null);
 
         if (method.getParameterCount() == 0) {
             paramEgggsForAlias = Collections.emptyMap();
@@ -88,6 +88,12 @@ public class MethodEggg {
         return method;
     }
 
+    @Override
+    public AnnotatedElement getElement() {
+        return method;
+    }
+
+    @Override
     public <T extends Object> T getDigest() {
         return (T) digest;
     }

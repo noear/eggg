@@ -25,7 +25,7 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ClassEggg {
+public class ClassEggg implements AnnotatedEggg {
     private final TypeEggg typeEggg;
 
     private final Object digest;
@@ -101,7 +101,7 @@ public class ClassEggg {
         loadConstr(declaredConstructors);
 
 
-        this.digest = eggg.findDigest(this, this, typeEggg.getType(), null);
+        this.digest = eggg.findDigest(this, this, null);
     }
 
     /**
@@ -132,6 +132,11 @@ public class ClassEggg {
 
     public Map<String, Type> getGenericInfo() {
         return typeEggg.getGenericInfo();
+    }
+
+    @Override
+    public AnnotatedElement getElement() {
+        return typeEggg.getType();
     }
 
     /**

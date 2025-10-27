@@ -85,14 +85,14 @@ public class Eggg {
         return this;
     }
 
-    public <T extends Object> Eggg withAliasHandler(AliasHandler<T> aliasHandler) {
+    public Eggg withAliasHandler(AliasHandler aliasHandler) {
         Objects.requireNonNull(aliasHandler, "aliasHandler");
 
         this.aliasHandler = aliasHandler;
         return this;
     }
 
-    public <T extends Object> Eggg withDigestHandler(DigestHandler<T> digestHandler) {
+    public Eggg withDigestHandler(DigestHandler digestHandler) {
         Objects.requireNonNull(digestHandler, "digestHandler");
 
         this.digestHandler = digestHandler;
@@ -192,19 +192,19 @@ public class Eggg {
 
     ///
 
-    protected Object findDigest(ClassEggg classEggg, Object holder, AnnotatedElement source, Object defaultValue) {
+    protected Object findDigest(ClassEggg classEggg, AnnotatedEggg source, Object defaultValue) {
         if (digestHandler == null) {
             return defaultValue;
         } else {
-            return digestHandler.apply(classEggg, holder, source, defaultValue);
+            return digestHandler.apply(classEggg, source, defaultValue);
         }
     }
 
-    protected String findAlias(ClassEggg classEggg, Object holder, Object digest, String defaultValue) {
+    protected String findAlias(ClassEggg classEggg, AnnotatedEggg source, String defaultValue) {
         if (aliasHandler == null) {
             return defaultValue;
         } else {
-            return aliasHandler.apply(classEggg, holder, digest, defaultValue);
+            return aliasHandler.apply(classEggg, source, defaultValue);
         }
     }
 

@@ -15,13 +15,21 @@
  */
 package org.noear.eggg;
 
+import java.lang.reflect.AnnotatedElement;
+
 /**
- * 别名处理器
  *
  * @author noear
  * @since 1.0
  */
-@FunctionalInterface
-public interface AliasHandler {
-    String apply(ClassEggg classEggg, AnnotatedEggg source, String defaultValue);
+public interface AnnotatedEggg {
+    /**
+     * 获取注解元素
+     */
+    AnnotatedElement getElement();
+
+    /**
+     * 获取提炼物
+     */
+    <T extends Object> T getDigest();
 }

@@ -25,7 +25,7 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ConstrEggg {
+public class ConstrEggg implements AnnotatedEggg {
     private final ClassEggg ownerEggg;
 
     private final Executable constr;
@@ -64,7 +64,7 @@ public class ConstrEggg {
 
         security = (constr.getParameterCount() == 0 || constrAnno != null || ownerEggg.isRealRecordClass());
 
-        digest = eggg.findDigest(ownerEggg, this, constr, null);
+        digest = eggg.findDigest(ownerEggg, this, null);
     }
 
     public ClassEggg getOwnerEggg() {
@@ -79,6 +79,12 @@ public class ConstrEggg {
         return constrAnno;
     }
 
+    @Override
+    public AnnotatedElement getElement() {
+        return constr;
+    }
+
+    @Override
     public <T extends Object> T getDigest() {
         return (T) digest;
     }

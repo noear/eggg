@@ -16,6 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -26,7 +27,7 @@ import java.util.Map;
  * @author noear
  * @since 1.0
  */
-public class ParamEggg {
+public class ParamEggg implements AnnotatedEggg {
     private final Parameter param;
     private final TypeEggg paramTypeEggg;
 
@@ -39,14 +40,20 @@ public class ParamEggg {
         this.paramTypeEggg = eggg.getTypeEggg(eggg.reviewType(param.getParameterizedType(), classEggg.getTypeEggg().getGenericInfo()));
 
         this.name = param.getName();
-        this.digest = eggg.findDigest(classEggg, this, param, null);
-        this.alias = eggg.findAlias(classEggg, this, digest, name);
+        this.digest = eggg.findDigest(classEggg, this, null);
+        this.alias = eggg.findAlias(classEggg, this, name);
     }
 
     public Parameter getParam() {
         return param;
     }
 
+    @Override
+    public AnnotatedElement getElement() {
+        return param;
+    }
+
+    @Override
     public <T extends Object> T getDigest() {
         return (T) digest;
     }

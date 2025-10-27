@@ -15,6 +15,7 @@
  */
 package org.noear.eggg;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
@@ -57,12 +58,12 @@ public class PropertyMethodEggg implements Property {
         this.fieldEggg = ownerEggg.getFieldEgggByName(this.name);
 
         if (fieldEggg == null) {
-            this.digest = eggg.findDigest(ownerEggg, this, methodEggg.getMethod(), null);
+            this.digest = eggg.findDigest(ownerEggg, this, null);
         } else {
-            this.digest = eggg.findDigest(ownerEggg, this, methodEggg.getMethod(), fieldEggg.getDigest());
+            this.digest = eggg.findDigest(ownerEggg, this, fieldEggg.getDigest());
         }
 
-        this.alias = eggg.findAlias(ownerEggg, this, digest, name);
+        this.alias = eggg.findAlias(ownerEggg, this, name);
     }
 
     public ClassEggg getOwnerEggg() {
@@ -71,6 +72,16 @@ public class PropertyMethodEggg implements Property {
 
     public Method getMethod() {
         return methodEggg.getMethod();
+    }
+
+    @Override
+    public AnnotatedElement getElement() {
+        return methodEggg.getMethod();
+    }
+
+    @Override
+    public <T extends Object> T getDigest() {
+        return (T) digest;
     }
 
     @Override
@@ -111,10 +122,6 @@ public class PropertyMethodEggg implements Property {
         }
     }
 
-    @Override
-    public <T extends Object> T getDigest() {
-        return (T) digest;
-    }
 
     @Override
     public TypeEggg getTypeEggg() {

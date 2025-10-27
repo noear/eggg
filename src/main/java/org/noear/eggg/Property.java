@@ -21,7 +21,7 @@ package org.noear.eggg;
  * @author noear
  * @since 1.0
  */
-public interface Property {
+public interface Property extends AnnotatedEggg {
     static String resolvePropertyName(String methodName) {
         String nameTmp = null;
         if (methodName.startsWith("is")) {

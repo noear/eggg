@@ -274,8 +274,8 @@ class PropertyMethodEgggAdditionalTest {
 
     @Test
     void testPropertyDigestAndAlias() throws Exception {
-        DigestHandler<String> digestHandler = (cw, holder, source, ref) -> "property_digest";
-        AliasHandler<String> aliasHandler = (cw, holder, digest, def) -> "alias_" + digest;
+        DigestHandler digestHandler = (cw, s, ref) -> "property_digest";
+        AliasHandler aliasHandler = (cw, s, def) -> "alias_" + s.getDigest();
 
         Eggg customEggg = new Eggg()
                 .withDigestHandler(digestHandler)

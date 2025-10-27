@@ -16,6 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -53,8 +54,8 @@ public class FieldEggg implements Property {
         this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(ownerEggg.getTypeEggg(), field)));
 
         this.name = field.getName();
-        this.digest = eggg.findDigest(ownerEggg, this, field, null);
-        this.alias = eggg.findAlias(ownerEggg, this, digest, name);
+        this.digest = eggg.findDigest(ownerEggg, this, null);
+        this.alias = eggg.findAlias(ownerEggg, this, name);
     }
 
     public ClassEggg getOwnerEggg() {
@@ -62,6 +63,11 @@ public class FieldEggg implements Property {
     }
 
     public Field getField() {
+        return field;
+    }
+
+    @Override
+    public AnnotatedElement getElement() {
         return field;
     }
 

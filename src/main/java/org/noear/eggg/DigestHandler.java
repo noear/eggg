@@ -15,8 +15,6 @@
  */
 package org.noear.eggg;
 
-import java.lang.reflect.AnnotatedElement;
-
 /**
  * 提炼处理器
  *
@@ -24,6 +22,6 @@ import java.lang.reflect.AnnotatedElement;
  * @since 1.0
  */
 @FunctionalInterface
-public interface DigestHandler<T> {
-    T apply(ClassEggg classEggg, Object holder, AnnotatedElement source, T defaultValue);
+public interface DigestHandler {
+    Object apply(ClassEggg classEggg, AnnotatedEggg source, Object defaultValue);
 }

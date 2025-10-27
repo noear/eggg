@@ -28,8 +28,8 @@ class UtilAndConfigTest {
     @Test
     void testEgggConfiguration() {
         Eggg eggg = new Eggg()
-                .withAliasHandler((cw, holder, digest, def) -> "custom_alias")
-                .withDigestHandler((cw, holder, source, ref) -> "custom_digest");
+                .withAliasHandler((cw, s, def) -> "custom_alias")
+                .withDigestHandler((cw, s, ref) -> "custom_digest");
 
         // Test that configuration is accepted without error
         assertNotNull(eggg);
@@ -73,14 +73,14 @@ class UtilAndConfigTest {
 
     @Test
     void testCustomHandlers() {
-        DigestHandler<String> digestHandler = (cw, holder, source, ref) -> {
-            if (source instanceof java.lang.reflect.Field) {
+        DigestHandler digestHandler = (cw, s, ref) -> {
+            if (s.getElement() instanceof java.lang.reflect.Field) {
                 return "field_digest";
             }
             return "default_digest";
         };
 
-        AliasHandler<String> aliasHandler = (cw, holder, digest, def) -> "custom_" + digest;
+        AliasHandler aliasHandler = (cw, s, def) -> "custom_" + s.getDigest();
 
         Eggg eggg = new Eggg()
                 .withDigestHandler(digestHandler)
