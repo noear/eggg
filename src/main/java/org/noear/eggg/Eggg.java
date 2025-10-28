@@ -218,6 +218,9 @@ public class Eggg {
         }
     }
 
+    /**
+     * 查找泛型信息
+     */
     public List<Type> findGenericList(TypeEggg owner, Class<?> declaringClass) {
         Map<String, Type> map = findGenericInfo(owner, declaringClass);
 
