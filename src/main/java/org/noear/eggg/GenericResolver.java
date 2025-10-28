@@ -32,14 +32,14 @@ public class GenericResolver {
     }
 
     /**
-     * 创建类所有的泛型变量和泛型实际类型的对应关系Map（可能会失真）
+     * 创建类所有的泛型变量和泛型实际类型的对应关系Map（可能会同名覆盖）
      *
      * @param type 被解析的包含泛型参数的类
      * @return 泛型对应关系Map
      */
     public Map<String, Type> createTypeDeepGenericMap(Type type) {
         try {
-            final Map<String, Type> typeMap = new HashMap<>();
+            final Map<String, Type> typeMap = new LinkedHashMap<>();
 
             while (null != type) {
                 final ParameterizedType parameterizedType = toParameterizedType(type, typeMap);
@@ -71,22 +71,19 @@ public class GenericResolver {
      */
     public Map<String, Type> createTypeSelfGenericMap(Type type) {
         try {
-            final Map<String, Type> typeMap = new HashMap<>();
+            final Map<String, Type> typeMap = new LinkedHashMap<>();
 
-            while (null != type) {
+            if (null != type) {
                 final ParameterizedType parameterizedType = toParameterizedType(type, typeMap);
-                if (null == parameterizedType) {
-                    break;
-                }
-                final Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
-                final TypeVariable[] typeParameters = rawType.getTypeParameters();
+                if (null != parameterizedType) {
+                    final Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                    final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+                    final TypeVariable[] typeParameters = rawType.getTypeParameters();
 
-                for (int i = 0; i < typeParameters.length; i++) {
-                    typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
+                    for (int i = 0; i < typeParameters.length; i++) {
+                        typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
+                    }
                 }
-
-                type = rawType;
             }
 
             if (typeMap.isEmpty()) {
