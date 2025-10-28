@@ -74,12 +74,19 @@ public class Eggg {
     private AliasHandler aliasHandler;
     private DigestHandler digestHandler;
     private ReflectHandler reflectHandler = ReflectHandlerDefault.getInstance();
-    private Class<? extends Annotation> creatorClass = null;
+    private CreatorMatcher creatorMatcher;
 
     public Eggg withCreatorClass(Class<? extends Annotation> creatorClass) {
         Objects.requireNonNull(creatorClass, "creatorClass");
 
-        this.creatorClass = creatorClass;
+        this.creatorMatcher = (e, s) -> s.isAnnotationPresent(creatorClass);
+        return this;
+    }
+
+    public Eggg withCreatorMatcher(CreatorMatcher creatorMatcher) {
+        Objects.requireNonNull(creatorMatcher, "creatorMatcher");
+
+        this.creatorMatcher = creatorMatcher;
         return this;
     }
 
@@ -175,8 +182,8 @@ public class Eggg {
         return new MethodEggg(this, classEggg, method);
     }
 
-    public ConstrEggg newConstrEggg(ClassEggg classEggg, Executable constr, Annotation constrAnno) {
-        return new ConstrEggg(this, classEggg, constr, constrAnno);
+    public ConstrEggg newConstrEggg(ClassEggg classEggg, Executable constr, boolean isCreator) {
+        return new ConstrEggg(this, classEggg, constr, isCreator);
     }
 
     public PropertyMethodEggg newPropertyMethodEggg(ClassEggg classEggg, MethodEggg methodEggg) {
@@ -249,11 +256,11 @@ public class Eggg {
         }
     }
 
-    protected Annotation findCreator(Executable executable) {
-        if (creatorClass == null) {
-            return null;
+    protected boolean findCreator(Executable executable) {
+        if (creatorMatcher == null) {
+            return false;
         } else {
-            return executable.getAnnotation(creatorClass);
+            return creatorMatcher.apply(this, executable);
         }
     }
 

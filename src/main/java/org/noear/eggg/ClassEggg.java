@@ -276,9 +276,9 @@ public class ClassEggg implements AnnotatedEggg {
         if (typeEggg.getType().isEnum()) {
             for (MethodEggg me : declaredMethodEgggs) {
                 if (me.isStatic()) {
-                    Annotation constrAnno = eggg.findCreator(me.getMethod());
-                    if (constrAnno != null) {
-                        creator = eggg.newConstrEggg(this, me.getMethod(), constrAnno);
+                    boolean isCreator = eggg.findCreator(me.getMethod());
+                    if (isCreator) {
+                        creator = eggg.newConstrEggg(this, me.getMethod(), isCreator);
                         return;
                     }
                 }
@@ -287,7 +287,7 @@ public class ClassEggg implements AnnotatedEggg {
 
         //再从构造方法找
         for (ConstrEggg c1 : constrEgggs) {
-            if (c1.getConstrAnno() != null) {
+            if (c1.isCreator()) {
                 creator = c1;
                 return;
             } else if (creator == null) {

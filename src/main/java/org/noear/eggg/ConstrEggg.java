@@ -29,7 +29,7 @@ public class ConstrEggg implements AnnotatedEggg {
     private final ClassEggg ownerEggg;
 
     private final Executable constr;
-    private final Annotation constrAnno;
+    private final boolean isCreator;
 
     private final Object digest;
 
@@ -38,14 +38,14 @@ public class ConstrEggg implements AnnotatedEggg {
 
     private final boolean security;
 
-    public ConstrEggg(Eggg eggg, ClassEggg ownerEggg, Executable constr, Annotation constrAnno) {
+    public ConstrEggg(Eggg eggg, ClassEggg ownerEggg, Executable constr, boolean isCreator) {
         Objects.requireNonNull(eggg, "eggg");
         Objects.requireNonNull(ownerEggg, "ownerEggg");
         Objects.requireNonNull(constr, "constr");
 
         this.ownerEggg = ownerEggg;
         this.constr = constr;
-        this.constrAnno = constrAnno;
+        this.isCreator = isCreator;
 
         if (constr.getParameterCount() == 0) {
             paramAliasMap = Collections.emptyMap();
@@ -62,7 +62,7 @@ public class ConstrEggg implements AnnotatedEggg {
             }
         }
 
-        security = (constr.getParameterCount() == 0 || constrAnno != null || ownerEggg.isRealRecordClass());
+        security = (constr.getParameterCount() == 0 || isCreator || ownerEggg.isRealRecordClass());
 
         digest = eggg.findDigest(ownerEggg, this, null);
     }
@@ -75,8 +75,8 @@ public class ConstrEggg implements AnnotatedEggg {
         return constr;
     }
 
-    public Annotation getConstrAnno() {
-        return constrAnno;
+    protected boolean isCreator() {
+        return isCreator;
     }
 
     @Override
