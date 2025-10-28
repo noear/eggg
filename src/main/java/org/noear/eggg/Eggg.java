@@ -18,8 +18,7 @@ package org.noear.eggg;
 import java.lang.annotation.Annotation;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.*;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -198,12 +197,34 @@ public class Eggg {
         if (declaringClass == owner.getType()) {
             return owner.getGenericInfo();
         } else {
+            if (declaringClass.isInterface()) {
+                for (Type superInte : owner.getType().getGenericInterfaces()) {
+                    Type superType = genericResolver.reviewType(superInte, owner.getGenericInfo());
+                    TypeEggg superTypeEggg = getTypeEggg(superType);
+
+                    if (declaringClass.isAssignableFrom(superTypeEggg.getType())) {
+                        return findGenericInfo(superTypeEggg, declaringClass);
+                    }
+                }
+            }
+
             Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+
             if (superType == null || superType == Object.class) {
                 return owner.getGenericInfo();
             } else {
                 return findGenericInfo(getTypeEggg(superType), declaringClass);
             }
+        }
+    }
+
+    public List<Type> findGenericList(TypeEggg owner, Class<?> declaringClass) {
+        Map<String, Type> map = findGenericInfo(owner, declaringClass);
+
+        if (map.isEmpty()) {
+            return Collections.emptyList();
+        } else {
+            return new ArrayList<>(map.values());
         }
     }
 
