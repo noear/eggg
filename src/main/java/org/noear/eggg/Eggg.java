@@ -264,7 +264,11 @@ public class Eggg {
             return owner.getGenericInfo();
         } else {
             Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            return getFieldGenericInfo(getTypeEggg(superType), field);
+            if (superType == null || superType == Object.class) {
+                return owner.getGenericInfo();
+            } else {
+                return getFieldGenericInfo(getTypeEggg(superType), field);
+            }
         }
     }
 
