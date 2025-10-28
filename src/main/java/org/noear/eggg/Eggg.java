@@ -117,7 +117,6 @@ public class Eggg {
     public void clear() {
         typeEgggCached.clear();
         classEgggCached.clear();
-        genericResolver.clear();
     }
 
     ///
@@ -191,6 +190,25 @@ public class Eggg {
 
     ///
 
+
+    /**
+     * 查找泛型信息
+     */
+    public Map<String, Type> findGenericInfo(TypeEggg owner, Class<?> declaringClass) {
+        if (declaringClass == owner.getType()) {
+            return owner.getGenericInfo();
+        } else {
+            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            if (superType == null || superType == Object.class) {
+                return owner.getGenericInfo();
+            } else {
+                return findGenericInfo(getTypeEggg(superType), declaringClass);
+            }
+        }
+    }
+
+    ///
+
     protected Object findDigest(ClassEggg classEggg, AnnotatedEggg source, Object defaultValue) {
         if (digestHandler == null) {
             return defaultValue;
@@ -241,42 +259,10 @@ public class Eggg {
     ///
 
     /**
-     * 获取方法的泛型信息
+     * 生成泛型信息
      */
-    protected Map<String, Type> getMethodGenericInfo(TypeEggg owner, Method method) {
-        if (method.getDeclaringClass() == owner.getType()) {
-            return owner.getGenericInfo();
-        } else {
-            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            if (superType == null || superType == Object.class) {
-                return owner.getGenericInfo();
-            } else {
-                return getMethodGenericInfo(getTypeEggg(superType), method);
-            }
-        }
-    }
-
-    /**
-     * 获取字段的泛型信息
-     */
-    protected Map<String, Type> getFieldGenericInfo(TypeEggg owner, Field field) {
-        if (field.getDeclaringClass() == owner.getType()) {
-            return owner.getGenericInfo();
-        } else {
-            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
-            if (superType == null || superType == Object.class) {
-                return owner.getGenericInfo();
-            } else {
-                return getFieldGenericInfo(getTypeEggg(superType), field);
-            }
-        }
-    }
-
-    /**
-     * 获取泛型信息
-     */
-    protected Map<String, Type> getGenericInfo(Type type) {
-        return genericResolver.getGenericInfo(type);
+    protected Map<String, Type> createGenericInfo(Type type) {
+        return genericResolver.createTypeSelfGenericMap(type);
     }
 
     /**

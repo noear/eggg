@@ -44,11 +44,11 @@ public class TypeEggg {
         this.eggg = eggg;
 
         if (genericType instanceof Class<?>) {
-            this.genericInfo = eggg.getGenericInfo(genericType);
+            this.genericInfo = eggg.createGenericInfo(genericType);
             this.genericType = genericType;
             this.type = (Class<?>) genericType;
         } else {
-            this.genericInfo = eggg.getGenericInfo(genericType);
+            this.genericInfo = eggg.createGenericInfo(genericType);
             this.genericType = eggg.reviewType(genericType, this.genericInfo);
 
             if (isParameterizedType()) {

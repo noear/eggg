@@ -57,7 +57,7 @@ public class MethodEggg implements AnnotatedEggg {
         }
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.getMethodGenericInfo(ownerEggg.getTypeEggg(), method)));
+            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.findGenericInfo(ownerEggg.getTypeEggg(), method.getDeclaringClass())));
         } else {
             this.returnTypeEggg = eggg.getTypeEggg(method.getGenericReturnType());
         }

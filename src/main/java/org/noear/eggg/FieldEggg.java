@@ -20,7 +20,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -51,7 +50,7 @@ public class FieldEggg implements Property {
         this.ownerEggg = ownerEggg;
 
         this.field = field;
-        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.getFieldGenericInfo(ownerEggg.getTypeEggg(), field)));
+        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.findGenericInfo(ownerEggg.getTypeEggg(), field.getDeclaringClass())));
 
         this.name = field.getName();
         this.digest = eggg.findDigest(ownerEggg, this, null);
