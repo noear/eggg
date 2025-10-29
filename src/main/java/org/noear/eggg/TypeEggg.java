@@ -16,9 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.reflect.*;
-import java.util.Collections;
-import java.util.Map;
-import java.util.List;
+import java.util.*;
 
 /**
  * 类型包装器
@@ -27,18 +25,13 @@ import java.util.List;
  * @since 1.0
  */
 public class TypeEggg {
-    private static final byte FLAG_STRING = 1;
-    private static final byte FLAG_BOOLEAN = 1 << 1;
-    private static final byte FLAG_NUMBER = 1 << 2;
-    private static final byte FLAG_MAP = 1 << 3;
-    private static final byte FLAG_LIST = 1 << 4;
+    private static final Set<Class<?>> PRIMITIVE_NUMBER_TYPES = new HashSet<>(Arrays.asList(byte.class, int.class, short.class, long.class, float.class, double.class));
 
     private final Type genericType;
     private final Map<String, Type> genericInfo;
 
     private Class<?> type = Object.class;
 
-    private final byte flags;
     private final Eggg eggg;
 
     public TypeEggg(Eggg eggg, Type genericType) {
@@ -67,28 +60,6 @@ public class TypeEggg {
                     type = (Class<?>) tmp;
                 }
             }
-        }
-
-        if (type == String.class) {
-            flags = FLAG_STRING;
-        } else if (type == Boolean.class || type == Boolean.TYPE) {
-            flags = FLAG_BOOLEAN;
-        } else if (Number.class.isAssignableFrom(type)) {
-            flags = FLAG_NUMBER;
-        } else if (type.isPrimitive() && (
-                type == byte.class ||
-                        type == short.class ||
-                        type == int.class ||
-                        type == long.class ||
-                        type == float.class ||
-                        type == double.class)) {
-            flags = FLAG_NUMBER;
-        } else if (List.class.isAssignableFrom(type)) {
-            flags = FLAG_LIST;
-        } else if (Map.class.isAssignableFrom(type)) {
-            flags = FLAG_MAP;
-        } else {
-            flags = 0;
         }
     }
 
@@ -139,23 +110,23 @@ public class TypeEggg {
     }
 
     public boolean isList() {
-        return (flags & FLAG_LIST) != 0;
+        return List.class.isAssignableFrom(type);
     }
 
     public boolean isMap() {
-        return (flags & FLAG_MAP) != 0;
+        return Map.class.isAssignableFrom(type);
     }
 
     public boolean isString() {
-        return (flags & FLAG_STRING) != 0;
+        return type == String.class;
     }
 
     public boolean isBoolean() {
-        return (flags & FLAG_BOOLEAN) != 0;
+        return type == Boolean.class || type == Boolean.TYPE;
     }
 
     public boolean isNumber() {
-        return (flags & FLAG_NUMBER) != 0;
+        return Number.class.isAssignableFrom(type) || PRIMITIVE_NUMBER_TYPES.contains(type);
     }
 
     ///
