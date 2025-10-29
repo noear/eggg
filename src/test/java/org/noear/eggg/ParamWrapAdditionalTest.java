@@ -17,10 +17,14 @@ class ParamEgggAdditionalTest {
                 Integer integerParam,
                 String[] arrayParam,
                 java.util.List<String> listParam
-        ) {}
+        ) {
+        }
 
-        public void methodWithFinalParam(final String finalParam) {}
-        public void methodWithAnnotatedParam(@Deprecated String annotatedParam) {}
+        public void methodWithFinalParam(final String finalParam) {
+        }
+
+        public void methodWithAnnotatedParam(@Deprecated String annotatedParam) {
+        }
     }
 
     @Test
@@ -32,15 +36,15 @@ class ParamEgggAdditionalTest {
         MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
         assertNotNull(methodEggg);
 
-        java.util.List<ParamEggg> params = methodEggg.getParamEgggAry();
+        java.util.Collection<ParamEggg> params = methodEggg.getParamEgggAry();
         assertEquals(5, params.size());
 
         // Test different parameter types
-        assertEquals(String.class, params.get(0).getTypeEggg().getType());
-        assertEquals(int.class, params.get(1).getTypeEggg().getType());
-        assertEquals(Integer.class, params.get(2).getTypeEggg().getType());
-        assertEquals(String[].class, params.get(3).getTypeEggg().getType());
-        assertTrue(params.get(4).getTypeEggg().isList());
+        assertEquals(String.class, methodEggg.getParamEgggAt(0).getTypeEggg().getType());
+        assertEquals(int.class, methodEggg.getParamEgggAt(1).getTypeEggg().getType());
+        assertEquals(Integer.class, methodEggg.getParamEgggAt(2).getTypeEggg().getType());
+        assertEquals(String[].class, methodEggg.getParamEgggAt(3).getTypeEggg().getType());
+        assertTrue(methodEggg.getParamEgggAt(4).getTypeEggg().isList());
     }
 
     @Test
@@ -144,7 +148,7 @@ class ParamEgggAdditionalTest {
         assertNotNull(constrEggg);
         assertEquals(1, constrEggg.getParamCount());
 
-        ParamEggg paramEggg = constrEggg.getParamEgggAry().get(0);
+        ParamEggg paramEggg = constrEggg.getParamEgggAt(0);
         assertNotNull(paramEggg);
         assertEquals("value", paramEggg.getName());
         assertEquals(String.class, paramEggg.getTypeEggg().getType());
@@ -153,10 +157,12 @@ class ParamEgggAdditionalTest {
     @Test
     void testGenericParameterType() throws Exception {
         class GenericClass<T> {
-            public void process(T item) {}
+            public void process(T item) {
+            }
         }
 
-        class StringClass extends GenericClass<String> {}
+        class StringClass extends GenericClass<String> {
+        }
 
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(StringClass.class));
         Method method = GenericClass.class.getMethod("process", Object.class);
@@ -164,7 +170,7 @@ class ParamEgggAdditionalTest {
         MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
         assertNotNull(methodEggg);
 
-        ParamEggg paramEggg = methodEggg.getParamEgggAry().get(0);
+        ParamEggg paramEggg = methodEggg.getParamEgggAt(0);
         assertNotNull(paramEggg);
 
         // The parameter type should be resolved to String due to generic inheritance

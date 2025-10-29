@@ -159,8 +159,12 @@ public class MethodEggg implements AnnotatedEggg {
         return method.getParameterCount();
     }
 
-    public List<ParamEggg> getParamEgggAry() {
+    public Collection<ParamEggg> getParamEgggAry() {
         return paramAry;
+    }
+
+    public ParamEggg getParamEgggAt(int index) {
+        return paramAry.get(index);
     }
 
     public ParamEggg getParamEgggByAlias(String alias) {

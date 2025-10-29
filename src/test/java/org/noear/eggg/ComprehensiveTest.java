@@ -67,7 +67,7 @@ class ComprehensiveTest {
         MethodEggg methodEggg = processMethod.get();
         assertEquals(3, methodEggg.getParamCount());
 
-        List<ParamEggg> params = methodEggg.getParamEgggAry();
+        Collection<ParamEggg> params = methodEggg.getParamEgggAry();
         assertNotNull(params);
         assertEquals(3, params.size());
     }

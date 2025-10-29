@@ -53,7 +53,7 @@ public class PropertyMethodEggg implements Property {
             this.propertyTypeEggg = methodEggg.getReturnTypeEggg();
         } else {
             //setter
-            this.propertyTypeEggg = methodEggg.getParamEgggAry().get(0).getTypeEggg();
+            this.propertyTypeEggg = methodEggg.getParamEgggAt(0).getTypeEggg();
         }
 
         this.name = Property.resolvePropertyName(methodEggg.getName());

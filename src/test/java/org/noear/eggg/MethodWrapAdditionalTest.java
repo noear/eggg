@@ -3,6 +3,7 @@ package org.noear.eggg;
 import org.junit.jupiter.api.Test;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -103,10 +104,10 @@ class MethodEgggAdditionalTest {
         assertNotNull(methodEggg);
         assertEquals(2, methodEggg.getParamCount());
 
-        List<ParamEggg> params = methodEggg.getParamEgggAry();
+        Collection<ParamEggg> params = methodEggg.getParamEgggAry();
         assertEquals(2, params.size());
-        assertEquals("param1", params.get(0).getName());
-        assertEquals("param2", params.get(1).getName());
+        assertEquals("param1", methodEggg.getParamEgggAt(0).getName());
+        assertEquals("param2", methodEggg.getParamEgggAt(1).getName());
 
         // Test parameter access by alias
         ParamEggg param1 = methodEggg.getParamEgggByAlias("param1");

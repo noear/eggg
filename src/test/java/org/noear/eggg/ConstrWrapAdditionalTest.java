@@ -184,12 +184,12 @@ class ConstrEgggAdditionalTest {
         assertNotNull(constrEggg);
 
         // Test parameter list access
-        java.util.List<ParamEggg> params = constrEggg.getParamEgggAry();
+        java.util.Collection<ParamEggg> params = constrEggg.getParamEgggAry();
         assertNotNull(params);
         assertEquals(2, params.size());
 
         // Verify parameter order
-        assertEquals("param1", params.get(0).getName());
-        assertEquals("param2", params.get(1).getName());
+        assertEquals("param1", constrEggg.getParamEgggAt(0).getName());
+        assertEquals("param2", constrEggg.getParamEgggAt(1).getName());
     }
 }

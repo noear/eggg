@@ -110,8 +110,12 @@ public class ConstrEggg implements AnnotatedEggg {
         return constr.getParameterCount();
     }
 
-    public List<ParamEggg> getParamEgggAry() {
+    public Collection<ParamEggg> getParamEgggAry() {
         return paramAry;
+    }
+
+    public ParamEggg getParamEgggAt(int idx) {
+        return paramAry.get(idx);
     }
 
     public ParamEggg getParamEgggByAlias(String alias) {

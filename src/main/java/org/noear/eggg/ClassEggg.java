@@ -236,7 +236,7 @@ public class ClassEggg implements AnnotatedEggg {
         return ownMethodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
     }
 
-    public List<MethodEggg> getOwnMethodEgggs() {
+    public Collection<MethodEggg> getOwnMethodEgggs() {
         return ownMethodEgggs;
     }
 

@@ -16,6 +16,7 @@
 package org.noear.eggg;
 
 import java.lang.reflect.*;
+import java.util.Collections;
 import java.util.Map;
 import java.util.List;
 
@@ -44,11 +45,11 @@ public class TypeEggg {
         this.eggg = eggg;
 
         if (genericType instanceof Class<?>) {
-            this.genericInfo = eggg.createGenericInfo(genericType);
+            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(genericType));
             this.genericType = genericType;
             this.type = (Class<?>) genericType;
         } else {
-            this.genericInfo = eggg.createGenericInfo(genericType);
+            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(genericType));
             this.genericType = eggg.reviewType(genericType, this.genericInfo);
 
             if (isParameterizedType()) {
