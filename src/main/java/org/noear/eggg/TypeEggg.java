@@ -27,37 +27,40 @@ import java.util.*;
 public class TypeEggg {
     private static final Set<Class<?>> PRIMITIVE_NUMBER_TYPES = new HashSet<>(Arrays.asList(byte.class, int.class, short.class, long.class, float.class, double.class));
 
+    private final Eggg eggg;
+    private final Type originType;
+
     private final Type genericType;
     private final Map<String, Type> genericInfo;
 
     private Class<?> type = Object.class;
 
-    private final Eggg eggg;
 
-    public TypeEggg(Eggg eggg, Type genericType) {
+    public TypeEggg(Eggg eggg, Type originType) {
         this.eggg = eggg;
+        this.originType = originType;
 
-        if (genericType instanceof Class<?>) {
-            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(genericType));
-            this.genericType = genericType;
-            this.type = (Class<?>) genericType;
+        if (originType instanceof Class<?>) {
+            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
+            this.genericType = originType;
+            this.type = (Class<?>) originType;
         } else {
-            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(genericType));
-            this.genericType = eggg.reviewType(genericType, this.genericInfo);
+            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
+            this.genericType = eggg.reviewType(originType, this.genericInfo);
 
             if (isParameterizedType()) {
                 Type tmp = getParameterizedType().getRawType();
 
                 if (tmp instanceof Class) {
-                    type = (Class<?>) tmp;
+                    this.type = (Class<?>) tmp;
                 }
             } else if (isGenericArrayType()) {
-                type = Object[].class;
+                this.type = Object[].class;
             } else if (isTypeVariable()) {
                 Type tmp = getTypeVariable().getBounds()[0];
 
                 if (tmp instanceof Class) {
-                    type = (Class<?>) tmp;
+                    this.type = (Class<?>) tmp;
                 }
             }
         }
@@ -75,6 +78,10 @@ public class TypeEggg {
 
     public ClassEggg newClassEggg() {
         return eggg.newClassEggg(this);
+    }
+
+    public Type getOriginType() {
+        return originType;
     }
 
     public Class<?> getType() {
