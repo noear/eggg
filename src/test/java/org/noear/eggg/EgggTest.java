@@ -6,7 +6,10 @@ import org.noear.eggg.model.MyList;
 import org.noear.eggg.model.UserModel;
 
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -65,7 +68,8 @@ public class EgggTest {
 
     @Test
     public void case4() {
-        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {}.getClass());
+        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {
+        }.getClass());
 
         if (typeEggg.isMap()) {
             if (typeEggg.isParameterizedType()) {
@@ -80,5 +84,22 @@ public class EgggTest {
         }
 
         assert false;
+    }
+
+    @Test
+    public void case5() {
+        TypeEggg typeEggg = eggg.getTypeEggg(List.class);
+        assert typeEggg.isList();
+        assert typeEggg.getGenericInfo().size() == 1;
+        assert typeEggg.getGenericInfo().get("E") instanceof TypeVariable;
+    }
+
+    @Test
+    public void case6() {
+        TypeEggg typeEggg = eggg.getTypeEggg(Map.class);
+        assert typeEggg.isMap();
+        assert typeEggg.getGenericInfo().size() == 2;
+        assert typeEggg.getGenericInfo().get("K") instanceof TypeVariable;
+        assert typeEggg.getGenericInfo().get("V") instanceof TypeVariable;
     }
 }

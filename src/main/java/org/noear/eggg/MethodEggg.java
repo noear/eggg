@@ -27,13 +27,14 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class MethodEggg implements AnnotatedEggg {
+public class MethodEggg implements ExecutableEggg {
     private final ClassEggg ownerEggg;
 
     private final Method method;
     private MethodHandle methodHandle;
 
     private final TypeEggg returnTypeEggg;
+    private final Map<String, Type> declaredGenericInfo;
 
     private final Object digest;
 
@@ -56,8 +57,10 @@ public class MethodEggg implements AnnotatedEggg {
             this.methodHandle = null;
         }
 
+        declaredGenericInfo = eggg.findGenericInfo(ownerEggg.getTypeEggg(), method.getDeclaringClass());
+
         if (method.getReturnType() != void.class) {
-            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), eggg.findGenericInfo(ownerEggg.getTypeEggg(), method.getDeclaringClass())));
+            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), declaredGenericInfo));
         } else {
             this.returnTypeEggg = eggg.getTypeEggg(method.getGenericReturnType());
         }
@@ -72,7 +75,7 @@ public class MethodEggg implements AnnotatedEggg {
             paramAry = new ArrayList<>(method.getParameterCount());
 
             for (Parameter p1 : method.getParameters()) {
-                ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
+                ParamEggg pe = eggg.newParamEggg(ownerEggg, this, p1);
 
                 paramEgggsForAlias.put(pe.getAlias(), pe);
                 paramAry.add(pe);
@@ -86,6 +89,10 @@ public class MethodEggg implements AnnotatedEggg {
 
     public Method getMethod() {
         return method;
+    }
+
+    public Map<String, Type> getDeclaredGenericInfo() {
+        return declaredGenericInfo;
     }
 
     @Override

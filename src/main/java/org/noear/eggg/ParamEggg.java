@@ -19,7 +19,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * 参数包装器
@@ -35,9 +34,9 @@ public class ParamEggg implements AnnotatedEggg {
     private final String alias;
     private final Object digest;
 
-    public ParamEggg(Eggg eggg, ClassEggg classEggg, Parameter param) {
+    public ParamEggg(Eggg eggg, ClassEggg classEggg, ExecutableEggg execEggg, Parameter param) {
         this.param = param;
-        this.paramTypeEggg = eggg.getTypeEggg(eggg.reviewType(param.getParameterizedType(), classEggg.getTypeEggg().getGenericInfo()));
+        this.paramTypeEggg = eggg.getTypeEggg(eggg.reviewType(param.getParameterizedType(), execEggg.getDeclaredGenericInfo()));
 
         this.name = param.getName();
         this.digest = eggg.findDigest(classEggg, this, null);

@@ -190,8 +190,8 @@ public class Eggg {
         return new PropertyMethodEggg(this, classEggg, methodEggg);
     }
 
-    public ParamEggg newParamEggg(ClassEggg classEggg, Parameter param) {
-        return new ParamEggg(this, classEggg, param);
+    public ParamEggg newParamEggg(ClassEggg classEggg, ExecutableEggg execEggg, Parameter param) {
+        return new ParamEggg(this, classEggg, execEggg, param);
     }
 
     ///

@@ -53,8 +53,10 @@ class ParamEgggAdditionalTest {
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams",
                 String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
+        MethodEggg methodEggg = classEggg.findMethodEgggOrNew(method);
+
         Parameter parameter = method.getParameters()[0];
-        ParamEggg paramEggg = eggg.newParamEggg(classEggg, parameter);
+        ParamEggg paramEggg = eggg.newParamEggg(classEggg, methodEggg, parameter);
 
         assertNotNull(paramEggg);
         assertEquals("stringParam", paramEggg.getName());
@@ -73,8 +75,10 @@ class ParamEgggAdditionalTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithFinalParam", String.class);
 
+        MethodEggg methodEggg = classEggg.findMethodEgggOrNew(method);
+
         Parameter parameter = method.getParameters()[0];
-        ParamEggg paramEggg = eggg.newParamEggg(classEggg, parameter);
+        ParamEggg paramEggg = eggg.newParamEggg(classEggg, methodEggg, parameter);
 
         assertNotNull(paramEggg);
         assertEquals("finalParam", paramEggg.getName());
@@ -85,8 +89,10 @@ class ParamEgggAdditionalTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithAnnotatedParam", String.class);
 
+        MethodEggg methodEggg = classEggg.findMethodEgggOrNew(method);
+
         Parameter parameter = method.getParameters()[0];
-        ParamEggg paramEggg = eggg.newParamEggg(classEggg, parameter);
+        ParamEggg paramEggg = eggg.newParamEggg(classEggg, methodEggg, parameter);
 
         assertNotNull(paramEggg);
         assertEquals("annotatedParam", paramEggg.getName());
@@ -109,8 +115,10 @@ class ParamEgggAdditionalTest {
         ClassEggg classEggg = customEggg.getClassEggg(customEggg.getTypeEggg(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams", String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
+        MethodEggg methodEggg = classEggg.findMethodEgggOrNew(method);
+
         Parameter parameter = method.getParameters()[0];
-        ParamEggg paramEggg = customEggg.newParamEggg(classEggg, parameter);
+        ParamEggg paramEggg = customEggg.newParamEggg(classEggg, methodEggg, parameter);
 
         assertNotNull(paramEggg);
         assertEquals("param_digest", paramEggg.getDigest());
@@ -122,8 +130,10 @@ class ParamEgggAdditionalTest {
         ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ClassWithVariousParameters.class));
         Method method = ClassWithVariousParameters.class.getMethod("methodWithParams", String.class, int.class, Integer.class, String[].class, java.util.List.class);
 
+        MethodEggg methodEggg = classEggg.findMethodEgggOrNew(method);
+
         Parameter parameter = method.getParameters()[4]; // List parameter
-        ParamEggg paramEggg = eggg.newParamEggg(classEggg, parameter);
+        ParamEggg paramEggg = eggg.newParamEggg(classEggg, methodEggg, parameter);
 
         assertNotNull(paramEggg);
         TypeEggg typeEggg = paramEggg.getTypeEggg();

@@ -25,7 +25,7 @@ import java.util.*;
  * @author noear
  * @since 1.0
  */
-public class ConstrEggg implements AnnotatedEggg {
+public class ConstrEggg implements ExecutableEggg {
     private final ClassEggg ownerEggg;
 
     private final Executable constr;
@@ -55,7 +55,7 @@ public class ConstrEggg implements AnnotatedEggg {
             paramAry = new ArrayList<>(constr.getParameterCount());
 
             for (Parameter p1 : constr.getParameters()) {
-                ParamEggg pe = eggg.newParamEggg(ownerEggg, p1);
+                ParamEggg pe = eggg.newParamEggg(ownerEggg, this, p1);
 
                 paramAliasMap.put(pe.getAlias(), pe);
                 paramAry.add(pe);
@@ -73,6 +73,10 @@ public class ConstrEggg implements AnnotatedEggg {
 
     public Executable getConstr() {
         return constr;
+    }
+
+    public Map<String, Type> getDeclaredGenericInfo() {
+        return ownerEggg.getTypeEggg().getGenericInfo();
     }
 
     protected boolean isCreator() {

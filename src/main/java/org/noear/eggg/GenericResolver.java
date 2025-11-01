@@ -74,14 +74,20 @@ public class GenericResolver {
             final Map<String, Type> typeMap = new LinkedHashMap<>();
 
             if (null != type) {
-                final ParameterizedType parameterizedType = toParameterizedType(type, typeMap);
-                if (null != parameterizedType) {
-                    final Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                    final Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+                if(type instanceof Class<?>){
+                    final Class<?> type1 = (Class<?>) type;
+                    for(TypeVariable tv : type1.getTypeParameters()) {
+                        typeMap.put(tv.getTypeName(), tv);
+                    }
+                } else if(type instanceof ParameterizedType){
+                    final ParameterizedType type1 =  (ParameterizedType) type;
+
+                    final Type[] typeArguments = type1.getActualTypeArguments();
+                    final Class<?> rawType = (Class<?>) type1.getRawType();
                     final TypeVariable[] typeParameters = rawType.getTypeParameters();
 
                     for (int i = 0; i < typeParameters.length; i++) {
-                        typeMap.putIfAbsent(typeParameters[i].getTypeName(), typeArguments[i]);
+                        typeMap.put(typeParameters[i].getTypeName(), typeArguments[i]);
                     }
                 }
             }
