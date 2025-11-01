@@ -1,4 +1,8 @@
 
+### 1.0.3
+
+* 优化 createTypeSelfGenericMap 和方法参数的泛型传递
+
 ### 1.0.2
 
 * 添加 TypeEggg:getOriginType 方法（获取原始类型）
