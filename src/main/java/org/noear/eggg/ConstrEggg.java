@@ -30,6 +30,7 @@ public class ConstrEggg implements ExecutableEggg {
 
     private final Executable constr;
     private final boolean isCreator;
+    private final boolean isStatic;
 
     private final Object digest;
 
@@ -46,6 +47,7 @@ public class ConstrEggg implements ExecutableEggg {
         this.ownerEggg = ownerEggg;
         this.constr = constr;
         this.isCreator = isCreator;
+        this.isStatic = Modifier.isStatic(constr.getModifiers());
 
         if (constr.getParameterCount() == 0) {
             paramAliasMap = Collections.emptyMap();
@@ -81,6 +83,10 @@ public class ConstrEggg implements ExecutableEggg {
 
     protected boolean isCreator() {
         return isCreator;
+    }
+
+    public boolean isStatic() {
+        return isStatic;
     }
 
     @Override
