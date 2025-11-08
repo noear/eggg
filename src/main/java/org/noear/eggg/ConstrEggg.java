@@ -139,7 +139,8 @@ public class ConstrEggg implements ExecutableEggg {
         if (constr instanceof Constructor) {
             return (T) ((Constructor) constr).newInstance(args);
         } else {
-            return (T) ((Method) constr).invoke(args);
+            //只能是静态函数
+            return (T) ((Method) constr).invoke(null, args);
         }
     }
 

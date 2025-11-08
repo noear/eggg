@@ -1,3 +1,8 @@
+
+### 1.0.5
+
+* 修复 ConstrEggg 当为静态函数时不能执行的问题
+
 ### 1.0.4
 
 * 优化 newTypeEggg, newClassEggg 异常提示（可显示触发异常的类）
