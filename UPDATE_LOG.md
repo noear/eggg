@@ -1,3 +1,6 @@
+### 1.0.4
+
+* 优化 newTypeEggg, newClassEggg 异常提示（可显示触发异常的类）
 
 ### 1.0.3
 
