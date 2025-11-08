@@ -167,11 +167,19 @@ public class Eggg {
     ///
 
     public TypeEggg newTypeEggg(Type type) {
-        return new TypeEggg(this, type);
+        try {
+            return new TypeEggg(this, type);
+        } catch (Throwable e) {
+            throw new IllegalStateException("The type eggg failed: " + type.getTypeName(), e);
+        }
     }
 
     public ClassEggg newClassEggg(TypeEggg typeEggg) {
-        return new ClassEggg(this, typeEggg);
+        try {
+            return new ClassEggg(this, typeEggg);
+        } catch (Throwable e) {
+            throw new IllegalStateException("The class eggg failed: " + typeEggg.getType().getTypeName(), e);
+        }
     }
 
     public FieldEggg newFieldEggg(ClassEggg classEggg, Field field) {
