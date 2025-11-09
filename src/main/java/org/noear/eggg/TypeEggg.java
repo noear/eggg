@@ -34,16 +34,21 @@ public class TypeEggg {
     private final Map<String, Type> genericInfo;
 
     private Class<?> type = Object.class;
-
+    private boolean isJdkType;
 
     public TypeEggg(Eggg eggg, Type originType) {
         this.eggg = eggg;
         this.originType = originType;
 
         if (originType instanceof Class<?>) {
-            this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
-            this.genericType = originType;
             this.type = (Class<?>) originType;
+            this.genericType = originType;
+
+            if (type.isPrimitive()) {
+                this.genericInfo = Collections.emptyMap();
+            } else {
+                this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
+            }
         } else {
             this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
             this.genericType = eggg.reviewType(originType, this.genericInfo);
@@ -64,6 +69,19 @@ public class TypeEggg {
                 }
             }
         }
+
+        isJdkType = isJdkType(type);
+    }
+
+    private static boolean isJdkType(Class<?> clazz) {
+        if (clazz == null || clazz.getPackage() == null) {
+            return false;
+        }
+
+        String packageName = clazz.getPackage().getName();
+
+        return packageName.startsWith("java.") ||
+                packageName.startsWith("javax.");
     }
 
     private ClassEggg classEggg;
@@ -94,6 +112,10 @@ public class TypeEggg {
 
     public Map<String, Type> getGenericInfo() {
         return genericInfo;
+    }
+
+    public boolean isJdkType() {
+        return isJdkType;
     }
 
     public boolean isInterface() {

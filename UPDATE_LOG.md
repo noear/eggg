@@ -1,6 +1,12 @@
 
+
+### 1.0.6
+
+* 添加 TypeEggg:isJdkType() 方法（是否为 jdk 提供的类型）
+
 ### 1.0.5
 
+* 添加 ConstrEggg:isStatic() 方法
 * 修复 ConstrEggg 当为静态函数时不能执行的问题
 
 ### 1.0.4
