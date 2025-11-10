@@ -314,12 +314,12 @@ public class GenericResolver {
 
         @Override
         public Type[] getUpperBounds() {
-            return upperBounds.clone(); // 防御性拷贝
+            return upperBounds;
         }
 
         @Override
         public Type[] getLowerBounds() {
-            return lowerBounds.clone(); // 防御性拷贝
+            return lowerBounds;
         }
 
         @Override
