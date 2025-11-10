@@ -1,4 +1,7 @@
 
+### 1.0.7
+
+* 取消 WildcardTypeImpl 的 clone 处理（不利于缓存）
 
 ### 1.0.6
 
