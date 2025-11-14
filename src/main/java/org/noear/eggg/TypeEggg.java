@@ -25,7 +25,9 @@ import java.util.*;
  * @since 1.0
  */
 public class TypeEggg {
-    private static final Set<Class<?>> PRIMITIVE_NUMBER_TYPES = new HashSet<>(Arrays.asList(byte.class, int.class, short.class, long.class, float.class, double.class));
+    private static final Set<Class<?>> PRIMITIVE_NUMBER_TYPES = new HashSet<>(Arrays.asList(
+            byte.class, int.class, short.class,
+            long.class, float.class, double.class));
 
     private final Eggg eggg;
     private final Type originType;
