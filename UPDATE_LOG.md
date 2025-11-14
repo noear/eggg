@@ -1,4 +1,8 @@
 
+### 1.0.8
+
+* 添加 TypeEggg:isCollection, isSet 方法
+
 ### 1.0.7
 
 * 取消 WildcardTypeImpl 的 clone 处理（不利于缓存）
