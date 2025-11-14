@@ -198,11 +198,18 @@ public class TypeEggg {
 
     @Override
     public int hashCode() {
-        return genericType.hashCode();
+        return originType.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof TypeEggg)) return false;
+        TypeEggg typeEggg = (TypeEggg) object;
+        return Objects.equals(originType, typeEggg.originType);
     }
 
     @Override
     public String toString() {
-        return genericType.toString();
+        return originType.toString();
     }
 }
