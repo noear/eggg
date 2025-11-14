@@ -216,8 +216,8 @@ class FieldEgggAdditionalTest {
 
     @Test
     void testFieldDigestAndAlias() throws Exception {
-        DigestHandler digestHandler = (cw, s,  ref) -> "field_digest";
-        AliasHandler aliasHandler = (cw, s,  def) -> "alias_" + s.getDigest();
+        DigestHandler digestHandler = (cw, s, ref) -> "field_digest";
+        AliasHandler aliasHandler = (cw, s, def) -> "alias_" + s.getDigest();
 
         Eggg customEggg = new Eggg()
                 .withDigestHandler(digestHandler)
@@ -231,26 +231,32 @@ class FieldEgggAdditionalTest {
         assertEquals("alias_field_digest", fieldEggg.getAlias());
     }
 
-//    @Test
-//    void testFieldDeclaredFlag() throws Exception {
-//        class ParentClass {
-//            public String parentField;
-//        }
-//
-//        class ChildClass extends ParentClass {
-//            public String childField;
-//        }
-//
-//        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ChildClass.class));
-//
-//        // Child field should be declared
-//        FieldEggg childField = classEggg.getFieldEgggByName("childField");
-//        assertNotNull(childField);
-//        assertTrue(childField.isDeclared());
-//
-//        // Parent field should not be declared in child
-//        FieldEggg parentField = classEggg.getFieldEgggByName("parentField");
-//        assertNotNull(parentField);
-//        assertFalse(parentField.isDeclared());
-//    }
+    @Test
+    void testFieldDeclaredFlag() throws Exception {
+        class ParentClass {
+            public String parentField;
+            private String dualField;
+        }
+
+        class ChildClass extends ParentClass {
+            public String childField;
+            private String dualField;
+        }
+
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(ChildClass.class));
+
+        // Child field should be declared
+        FieldEggg childField = classEggg.getFieldEgggByName("childField");
+        assertNotNull(childField);
+        assertTrue(childField.getField().getDeclaringClass() == ChildClass.class);
+
+        FieldEggg dualField = classEggg.getFieldEgggByName("dualField");
+        assertNotNull(dualField);
+        assertTrue(dualField.getField().getDeclaringClass() == ChildClass.class);
+
+        // Parent field should not be declared in child
+        FieldEggg parentField = classEggg.getFieldEgggByName("parentField");
+        assertNotNull(parentField);
+        assertTrue(parentField.getField().getDeclaringClass() == ParentClass.class);
+    }
 }

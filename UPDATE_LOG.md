@@ -2,6 +2,7 @@
 ### 1.0.8
 
 * 添加 TypeEggg:isCollection, isSet 方法
+* 修复 ClassEggg:loadFields 出现父类的私有字段盖掉当前类的字段
 
 ### 1.0.7
 

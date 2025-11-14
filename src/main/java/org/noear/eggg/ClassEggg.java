@@ -33,7 +33,6 @@ public class ClassEggg implements AnnotatedEggg {
 
     private final List<ConstrEggg> constrEgggs;
 
-    private final List<FieldEggg> allFieldEgggs = new ArrayList<>();
     private final Map<String, FieldEggg> allFieldEgggsForName;
     private final Map<String, FieldEggg> allFieldEgggsForAlias;
 
@@ -59,14 +58,13 @@ public class ClassEggg implements AnnotatedEggg {
         this.realRecordClass = JavaUtil.isRecordClass(typeEggg.getType()); //不能放下面(构造器要用到)
 
         //1.加载字段
+        this.allFieldEgggsForName = new LinkedHashMap<>();
         loadFields();
 
-        this.likeRecordClass = likeRecordClass && allFieldEgggs.size() > 0;
-        allFieldEgggsForName = new LinkedHashMap<>(allFieldEgggs.size());
-        allFieldEgggsForAlias = new LinkedHashMap<>(allFieldEgggs.size());
-        for (FieldEggg fe : allFieldEgggs) {
-            allFieldEgggsForName.put(fe.getName(), fe);
-            allFieldEgggsForAlias.put(fe.getAlias(), fe);
+        this.likeRecordClass = likeRecordClass && allFieldEgggsForName.size() > 0;
+        this.allFieldEgggsForAlias = new LinkedHashMap<>(allFieldEgggsForName.size());
+        for (Map.Entry<String, FieldEggg> entry : allFieldEgggsForName.entrySet()) {
+            allFieldEgggsForAlias.put(entry.getValue().getAlias(), entry.getValue());
         }
 
 
@@ -231,7 +229,6 @@ public class ClassEggg implements AnnotatedEggg {
         return null;
     }
 
-
     public MethodEggg findMethodEgggOrNew(Method method) {
         return ownMethodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
     }
@@ -241,7 +238,7 @@ public class ClassEggg implements AnnotatedEggg {
     }
 
     public Collection<FieldEggg> getAllFieldEgggs() {
-        return allFieldEgggs;
+        return allFieldEgggsForName.values();
     }
 
     public FieldEggg getFieldEgggByName(String name) {
@@ -307,7 +304,7 @@ public class ClassEggg implements AnnotatedEggg {
             for (Field f1 : eggg.getDeclaredFields(clz)) {
                 FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                allFieldEgggs.add(fe); //不能用 Map 接收（会有重名的私有字段）
+                allFieldEgggsForName.putIfAbsent(fe.getName(), fe); //不能用 put 接收（会有重名的私有字段）
 
                 if (fe.isStatic() == false) {
                     //如果全是只读，则
