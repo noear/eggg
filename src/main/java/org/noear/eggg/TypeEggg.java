@@ -138,8 +138,16 @@ public class TypeEggg {
         return type.isPrimitive();
     }
 
+    public boolean isCollection() {
+        return Collection.class.isAssignableFrom(type);
+    }
+
     public boolean isList() {
         return List.class.isAssignableFrom(type);
+    }
+
+    public boolean isSet() {
+        return Set.class.isAssignableFrom(type);
     }
 
     public boolean isMap() {
