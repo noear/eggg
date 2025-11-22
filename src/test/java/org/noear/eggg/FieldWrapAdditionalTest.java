@@ -258,5 +258,8 @@ class FieldEgggAdditionalTest {
         FieldEggg parentField = classEggg.getFieldEgggByName("parentField");
         assertNotNull(parentField);
         assertTrue(parentField.getField().getDeclaringClass() == ParentClass.class);
+
+        PropertyEggg pe = classEggg.getPropertyEgggByName("dualField");
+        assertTrue(pe.getFieldEggg().getField().getDeclaringClass() == ChildClass.class);
     }
 }
