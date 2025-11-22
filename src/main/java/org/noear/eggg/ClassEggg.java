@@ -302,16 +302,20 @@ public class ClassEggg implements AnnotatedEggg {
 
         while (clz != null) {
             for (Field f1 : eggg.getDeclaredFields(clz)) {
-                FieldEggg fe = eggg.newFieldEggg(this, f1);
+                allFieldEgggsForName.computeIfAbsent(f1.getName(), kn->{
+                    //不能用 put 接收（会有重名的私有字段）
+                    //
+                    FieldEggg fe = eggg.newFieldEggg(this, f1);
 
-                allFieldEgggsForName.putIfAbsent(fe.getName(), fe); //不能用 put 接收（会有重名的私有字段）
+                    if (fe.isStatic() == false) {
+                        //如果全是只读，则
+                        likeRecordClass = likeRecordClass && fe.isFinal();
+                        propertyEgggsForName.computeIfAbsent(fe.getName(), k -> new PropertyEggg(k))
+                                .setFieldEggg(fe);
+                    }
 
-                if (fe.isStatic() == false) {
-                    //如果全是只读，则
-                    likeRecordClass = likeRecordClass && fe.isFinal();
-                    propertyEgggsForName.computeIfAbsent(fe.getName(), k -> new PropertyEggg(k))
-                            .setFieldEggg(fe);
-                }
+                    return fe;
+                });
             }
 
             clz = clz.getSuperclass();
