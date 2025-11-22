@@ -1,4 +1,8 @@
 
+### 1.0.9
+
+* 修复 ClassEggg:loadFields 出现父类的私有字段盖掉当前类的 propertyEgggsForName 值
+
 ### 1.0.8
 
 * 添加 TypeEggg:isCollection, isSet 方法
