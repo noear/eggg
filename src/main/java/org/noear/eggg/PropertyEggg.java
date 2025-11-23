@@ -81,25 +81,34 @@ public class PropertyEggg {
     /// //////////
 
     protected void setFieldEggg(FieldEggg f) {
-        this.fieldEggg = f;
-        this.alias = f.getAlias();
+        if (fieldEggg == null) {
+            //以第一次为准
+            this.fieldEggg = f;
+            this.alias = f.getAlias();
+        }
     }
 
     protected void setGetterEggg(PropertyMethodEggg g) {
-        this.getterEggg = g;
-        this.alias = g.getAlias();
+        if(getterEggg == null) {
+            //以第一次为准
+            this.getterEggg = g;
+            this.alias = g.getAlias();
 
-        if (fieldEggg != null) {
-            fieldEggg.getterEggg = g;
+            if (fieldEggg != null) {
+                fieldEggg.getterEggg = g;
+            }
         }
     }
 
     protected void setSetterEggg(PropertyMethodEggg s) {
-        this.setterEggg = s;
-        this.alias = s.getAlias();
+        if (setterEggg == null) {
+            //以第一次为准
+            this.setterEggg = s;
+            this.alias = s.getAlias();
 
-        if (fieldEggg != null) {
-            fieldEggg.setterEggg = s;
+            if (fieldEggg != null) {
+                fieldEggg.setterEggg = s;
+            }
         }
     }
 

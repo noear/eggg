@@ -334,7 +334,7 @@ public class ClassEggg implements AnnotatedEggg {
                 declaredMethodEgggs.add(me);
 
                 if (me.isPublic() == false) {
-                    //发果是公有，由公有处添加
+                    //如果是公有，由公有处添加
                     ownMethodEgggs.add(me);
                     ownMethodEgggsMap.put(m1, me);
                 }
