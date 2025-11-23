@@ -1,7 +1,11 @@
+### 1.0.10
+
+* 修复 ClassEggg:loadMethods 出现父类的同名属方法会盖掉当前类的 propertyEgggsForName 值
+
 
 ### 1.0.9
 
-* 修复 ClassEggg:loadFields 出现父类的私有字段盖掉当前类的 propertyEgggsForName 值
+* 修复 ClassEggg:loadFields 出现父类的同名私有字段盖掉当前类的 propertyEgggsForName 值
 
 ### 1.0.8
 
