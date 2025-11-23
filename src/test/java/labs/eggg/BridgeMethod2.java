@@ -1,11 +1,8 @@
-package org.noear.eggg.issue;
+package labs.eggg;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.noear.eggg.ClassEggg;
-import org.noear.eggg.Eggg;
-import org.noear.eggg.PropertyEggg;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -13,21 +10,47 @@ import java.util.List;
  * @author noear 2025/11/23 created
  *
  */
-public class Issue_ID828T {
+public class BridgeMethod2 {
 
     @Test
     public void case1() {
-        Eggg eggg = new Eggg();
+        for(Method m1: PageResult.class.getDeclaredMethods()){
+            System.out.println(m1);
+        }
 
-        PageResult<String> pageResult1 = new PageResult<>();
+        System.out.println("--------");
 
-        ClassEggg classEggg = eggg.getClassEggg(pageResult1.getClass());
-        PropertyEggg pe = classEggg.getPropertyEgggByName("data");
+        for(Method m1: PageResult.class.getMethods()){
+            System.out.println(m1);
+        }
 
-        Assertions.assertEquals(PageResult.class, pe.getGetterEggg().getMethod().getDeclaringClass());
-        Assertions.assertEquals(4, classEggg.getPropertyEgggs().size());
-        Assertions.assertEquals(2, classEggg.getDeclaredMethodEgggs().size());
-        Assertions.assertEquals(8, classEggg.getPublicMethodEgggs().size());
+
+        /**
+         * public void labs.eggg.BridgeMethod2$PageResult.setData(labs.eggg.BridgeMethod2$PageData)
+         * public void labs.eggg.BridgeMethod2$PageResult.setData(java.lang.Object)
+         * public labs.eggg.BridgeMethod2$PageData labs.eggg.BridgeMethod2$PageResult.getData()
+         * public java.lang.Object labs.eggg.BridgeMethod2$PageResult.getData()
+         * --------
+         * public void labs.eggg.BridgeMethod2$PageResult.setData(labs.eggg.BridgeMethod2$PageData)
+         * public void labs.eggg.BridgeMethod2$PageResult.setData(java.lang.Object)
+         * public labs.eggg.BridgeMethod2$PageData labs.eggg.BridgeMethod2$PageResult.getData()
+         * public java.lang.Object labs.eggg.BridgeMethod2$PageResult.getData()
+         * public java.lang.String labs.eggg.BridgeMethod2$R.getMsg()
+         * public int labs.eggg.BridgeMethod2$R.getCode()
+         * public void labs.eggg.BridgeMethod2$R.setId(java.lang.String)
+         * public void labs.eggg.BridgeMethod2$R.setCode(int)
+         * public void labs.eggg.BridgeMethod2$R.setMsg(java.lang.String)
+         * public java.lang.String labs.eggg.BridgeMethod2$R.getId()
+         * public final void java.lang.Object.wait(long,int) throws java.lang.InterruptedException
+         * public final native void java.lang.Object.wait(long) throws java.lang.InterruptedException
+         * public final void java.lang.Object.wait() throws java.lang.InterruptedException
+         * public boolean java.lang.Object.equals(java.lang.Object)
+         * public java.lang.String java.lang.Object.toString()
+         * public native int java.lang.Object.hashCode()
+         * public final native java.lang.Class java.lang.Object.getClass()
+         * public final native void java.lang.Object.notify()
+         * public final native void java.lang.Object.notifyAll()
+         * */
     }
 
     public static class PageResult<T> extends R<PageData<T>> {
