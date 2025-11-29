@@ -23,6 +23,8 @@ public class BridgeMethod1 {
             System.out.println(m1);
         }
 
+        //为什么 SysResourcePermissionController 生成了 saveAll 桥接方法；但是没有生成 saveOne 的？
+
         /**
          * public java.util.List labs.eggg.BridgeMethod1$SysResourcePermissionController.saveAll(java.util.List)
          * --------
