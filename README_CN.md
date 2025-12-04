@@ -5,7 +5,7 @@
 	<strong>一个 Java 类型元数据分析与构建工具（泛型、注解、提炼、别名、缓存）</strong>
 </p>
 <p align="center">
-    <a href="https://deepwiki.com/noear/liquor"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+    <a href="https://deepwiki.com/noear/eggg"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
     <a target="_blank" href="https://central.sonatype.com/artifact/org.noear/eggg">
         <img src="https://img.shields.io/maven-central/v/org.noear/eggg.svg?label=Maven%20Central" alt="Maven" />
     </a>
