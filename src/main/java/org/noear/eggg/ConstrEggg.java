@@ -124,6 +124,26 @@ public class ConstrEggg implements ExecutableEggg {
         return paramAry;
     }
 
+    public ParamEggg getParamEgggBy(Parameter p1) {
+        for (ParamEggg pe : paramAry) {
+            if (p1.equals(pe.getParam())) {
+                return pe;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean hasParamEgggBy(Parameter p1) {
+        for (ParamEggg pe : paramAry) {
+            if (p1.equals(pe.getParam())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public ParamEggg getParamEgggAt(int idx) {
         return paramAry.get(idx);
     }
