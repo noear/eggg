@@ -1,3 +1,9 @@
+
+### 1.0.11
+
+* 添加 ConstrEggg: getParamEgggBy, hasParamEgggBy 方法
+* 添加 MethodEggg: getParamEgggBy, hasParamEgggBy 方法
+
 ### 1.0.10
 
 * 修复 ClassEggg:loadMethods 出现父类的同名属方法会盖掉当前类的 propertyEgggsForName 值
