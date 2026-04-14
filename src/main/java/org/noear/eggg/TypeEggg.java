@@ -160,6 +160,10 @@ public class TypeEggg {
         return type == String.class;
     }
 
+    public boolean isObject() {
+        return type == Object.class;
+    }
+
     public boolean isBoolean() {
         return type == Boolean.class || type == Boolean.TYPE;
     }

@@ -1,4 +1,8 @@
 
+### 1.0.12
+
+* 添加 TypeEggg.isObject 方法
+
 ### 1.0.11
 
 * 添加 ConstrEggg: getParamEgggBy, hasParamEgggBy 方法
