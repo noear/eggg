@@ -202,22 +202,22 @@ public class ClassEggg implements AnnotatedEggg {
      * </ul>
      *
      * @param availableKeys 可用 key 集合
-     * @param defCreator    默认创造器（通常来自 getCreator()）
+     * @param defConstr    默认创造器（通常来自 getCreator()）
      * @return 最佳匹配的构造器
      */
-    public ConstrEggg matchBestCreator(Set<String> availableKeys, ConstrEggg defCreator) {
+    public ConstrEggg findConstrEggg(Set<String> availableKeys, ConstrEggg defConstr) {
         if (availableKeys == null || availableKeys.isEmpty()) {
-            return defCreator;
+            return defConstr;
         }
 
         // 快速路径1：只有一个构造器，无需选择
         if (constrEgggs.size() <= 1) {
-            return defCreator;
+            return defConstr;
         }
 
         // 快速路径2：默认构造器是无参的，无需匹配
-        if (defCreator.getParamCount() == 0) {
-            return defCreator;
+        if (defConstr.getParamCount() == 0) {
+            return defConstr;
         }
 
         // 快速路径3：只有一个有参构造器（就是 defCreator 本身），无需匹配
@@ -228,14 +228,14 @@ public class ClassEggg implements AnnotatedEggg {
             }
         }
         if (paramConstructorCount <= 1) {
-            return defCreator;
+            return defConstr;
         }
 
         // 完整匹配：constrEgggs 已按参数数降序排序，首个全匹配即为最优
         for (ConstrEggg candidate : constrEgggs) {
             int paramCount = candidate.getParamCount();
             // 已降序排列，后续不可能更优
-            if (paramCount <= defCreator.getParamCount()) {
+            if (paramCount <= defConstr.getParamCount()) {
                 break;
             }
 
@@ -253,7 +253,7 @@ public class ClassEggg implements AnnotatedEggg {
             }
         }
 
-        return defCreator;
+        return defConstr;
     }
 
     public Collection<MethodEggg> getPublicMethodEgggs() {
@@ -369,7 +369,7 @@ public class ClassEggg implements AnnotatedEggg {
             }
         }
 
-        //按参数数量降序排序，供 matchBestCreator 使用（首个全匹配即为最优，可提前退出）
+        //按参数数量降序排序，供 findConstrEggg(keys,defConstr) 使用（首个全匹配即为最优，可提前退出）
         constrEgggs.sort((a, b) -> Integer.compare(b.getParamCount(), a.getParamCount()));
     }
 
