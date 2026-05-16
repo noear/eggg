@@ -1,4 +1,9 @@
 
+### 1.0.13
+
+* 添加 ClassEggg.matchBestCreator 方法
+* 添加 ConstrEggg.getParamAliasAry 方法
+
 ### 1.0.12
 
 * 添加 TypeEggg.isObject 方法

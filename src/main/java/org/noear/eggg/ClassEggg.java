@@ -157,6 +157,13 @@ public class ClassEggg implements AnnotatedEggg {
         return creator;
     }
 
+    /**
+     * 获取所有构造器（不可变视图）
+     */
+    public List<ConstrEggg> getConstrEgggs() {
+        return Collections.unmodifiableList(constrEgggs);
+    }
+
     public ConstrEggg findConstrEggg(Class<?>... parameterTypes) throws NoSuchMethodException {
         ConstrEggg c1 = findConstrEgggOrNull(parameterTypes);
 
@@ -181,6 +188,72 @@ public class ClassEggg implements AnnotatedEggg {
         }
 
         return null;
+    }
+
+    /**
+     * 根据可用 key 集合，从所有构造器中选择最佳匹配的创造器。
+     * 优先选择：参数全部匹配（matchCount == paramCount）且参数最多的构造器。
+     * 如果没有完全匹配的，返回 defCreator。
+     *
+     * <p>性能优化：
+     * <ul>
+     *   <li>快速路径：构造器数<=1、无参默认构造器、有参构造器仅1个时直接返回</li>
+     *   <li>constrEgggs 已在 loadConstr 中按参数数降序排序，首个全匹配即为最优，可立即返回</li>
+     * </ul>
+     *
+     * @param availableKeys 可用 key 集合
+     * @param defCreator    默认创造器（通常来自 getCreator()）
+     * @return 最佳匹配的构造器
+     */
+    public ConstrEggg matchBestCreator(Set<String> availableKeys, ConstrEggg defCreator) {
+        if (availableKeys == null || availableKeys.isEmpty()) {
+            return defCreator;
+        }
+
+        // 快速路径1：只有一个构造器，无需选择
+        if (constrEgggs.size() <= 1) {
+            return defCreator;
+        }
+
+        // 快速路径2：默认构造器是无参的，无需匹配
+        if (defCreator.getParamCount() == 0) {
+            return defCreator;
+        }
+
+        // 快速路径3：只有一个有参构造器（就是 defCreator 本身），无需匹配
+        int paramConstructorCount = 0;
+        for (ConstrEggg c : constrEgggs) {
+            if (c.getParamCount() > 0) {
+                paramConstructorCount++;
+            }
+        }
+        if (paramConstructorCount <= 1) {
+            return defCreator;
+        }
+
+        // 完整匹配：constrEgggs 已按参数数降序排序，首个全匹配即为最优
+        for (ConstrEggg candidate : constrEgggs) {
+            int paramCount = candidate.getParamCount();
+            // 已降序排列，后续不可能更优
+            if (paramCount <= defCreator.getParamCount()) {
+                break;
+            }
+
+            String[] aliases = candidate.getParamAliasAry();
+            int matchCount = 0;
+            for (String alias : aliases) {
+                if (availableKeys.contains(alias)) {
+                    matchCount++;
+                }
+            }
+
+            // 严格全匹配：所有参数都有对应 key，直接返回（降序排列保证是最多参数的）
+            if (matchCount == paramCount) {
+                return candidate;
+            }
+        }
+
+        return defCreator;
     }
 
     public Collection<MethodEggg> getPublicMethodEgggs() {
@@ -295,6 +368,9 @@ public class ClassEggg implements AnnotatedEggg {
                 creator = c1;
             }
         }
+
+        //按参数数量降序排序，供 matchBestCreator 使用（首个全匹配即为最优，可提前退出）
+        constrEgggs.sort((a, b) -> Integer.compare(b.getParamCount(), a.getParamCount()));
     }
 
     protected void loadFields() {

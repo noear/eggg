@@ -37,6 +37,9 @@ public class ConstrEggg implements ExecutableEggg {
     private final Map<String, ParamEggg> paramAliasMap;
     private final List<ParamEggg> paramAry;
 
+    //参数别名快照（用于构造器匹配，避免遍历 paramAry）
+    private final String[] paramAliasAry;
+
     private final boolean security;
 
     public ConstrEggg(Eggg eggg, ClassEggg ownerEggg, Executable constr, boolean isCreator) {
@@ -52,15 +55,19 @@ public class ConstrEggg implements ExecutableEggg {
         if (constr.getParameterCount() == 0) {
             paramAliasMap = Collections.emptyMap();
             paramAry = Collections.emptyList();
+            paramAliasAry = new String[0];
         } else {
             paramAliasMap = new LinkedHashMap<>(constr.getParameterCount());
             paramAry = new ArrayList<>(constr.getParameterCount());
+            paramAliasAry = new String[constr.getParameterCount()];
 
+            int idx = 0;
             for (Parameter p1 : constr.getParameters()) {
                 ParamEggg pe = eggg.newParamEggg(ownerEggg, this, p1);
 
                 paramAliasMap.put(pe.getAlias(), pe);
                 paramAry.add(pe);
+                paramAliasAry[idx++] = pe.getAlias();
             }
         }
 
@@ -154,6 +161,13 @@ public class ConstrEggg implements ExecutableEggg {
 
     public boolean hasParamEgggByAlias(String alias) {
         return paramAliasMap.containsKey(alias);
+    }
+
+    /**
+     * 获取参数别名快照数组（用于高性能构造器匹配）
+     */
+    public String[] getParamAliasAry() {
+        return paramAliasAry;
     }
 
     public <T> T newInstance(Object... args)
