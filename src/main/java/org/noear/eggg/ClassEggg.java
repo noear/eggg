@@ -20,7 +20,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * 类包装器
+ * 类包装器，提供对类的反射元数据访问，包括字段、方法、构造器和属性的统一封装
  *
  * @author noear
  * @since 1.0
@@ -103,27 +103,36 @@ public class ClassEggg implements AnnotatedEggg {
     }
 
     /**
-     * 真实的记录类
+     * 是否为 Java Record 类（java.lang.Record 的子类）
      */
     public boolean isRealRecordClass() {
         return realRecordClass;
     }
 
     /**
-     * 疑似的记录类
+     * 是否为疑似记录类（所有字段均为 final 的普通类，行为类似 Record）
      */
     public boolean isLikeRecordClass() {
         return likeRecordClass;
     }
 
+    /**
+     * 获取关联的类型包装器
+     */
     public TypeEggg getTypeEggg() {
         return typeEggg;
     }
 
+    /**
+     * 获取原始 Class 对象
+     */
     public Class<?> getType() {
         return typeEggg.getType();
     }
 
+    /**
+     * 获取泛型类型信息（如 ParameterizedType、Class 等）
+     */
     public Type getGenericType() {
         return typeEggg.getGenericType();
     }
@@ -134,7 +143,7 @@ public class ClassEggg implements AnnotatedEggg {
     }
 
     /**
-     * 获取提炼物
+     * 获取提炼物（由 Eggg 的 digestHandler 产生的自定义元数据）
      */
     public <T extends Object> T getDigest() {
         return (T) digest;
@@ -151,7 +160,7 @@ public class ClassEggg implements AnnotatedEggg {
     }
 
     /**
-     * 获取创造器
+     * 获取创造器（标记了 @Creator 或参数最少的构造器）
      */
     public ConstrEggg getCreator() {
         return creator;
@@ -164,6 +173,13 @@ public class ClassEggg implements AnnotatedEggg {
         return Collections.unmodifiableList(constrEgggs);
     }
 
+    /**
+     * 按参数类型查找构造器
+     *
+     * @param parameterTypes 构造器参数类型
+     * @return 匹配的构造器包装器
+     * @throws NoSuchMethodException 未找到匹配的构造器
+     */
     public ConstrEggg findConstrEggg(Class<?>... parameterTypes) throws NoSuchMethodException {
         ConstrEggg c1 = findConstrEgggOrNull(parameterTypes);
 
@@ -174,6 +190,12 @@ public class ClassEggg implements AnnotatedEggg {
         }
     }
 
+    /**
+     * 按参数类型查找构造器，未找到时返回 null
+     *
+     * @param parameterTypes 构造器参数类型
+     * @return 匹配的构造器包装器，或 null
+     */
     public ConstrEggg findConstrEgggOrNull(Class<?>... parameterTypes) throws NoSuchMethodException {
         for (ConstrEggg c1 : constrEgggs) {
             if (c1.getParamCount() == parameterTypes.length) {
@@ -256,14 +278,28 @@ public class ClassEggg implements AnnotatedEggg {
         return defConstr;
     }
 
+    /**
+     * 获取所有公有方法（含继承的，排除桥接方法和 Object 方法）
+     */
     public Collection<MethodEggg> getPublicMethodEgggs() {
         return publicMethodEgggs;
     }
 
+    /**
+     * 获取所有声明方法（仅当前类声明的，含私有，排除桥接方法和 Object 方法）
+     */
     public Collection<MethodEggg> getDeclaredMethodEgggs() {
         return declaredMethodEgggs;
     }
 
+    /**
+     * 按名称和参数类型查找方法，先查声明方法再查公有方法
+     *
+     * @param name 方法名
+     * @param parameterTypes 方法参数类型
+     * @return 匹配的方法包装器
+     * @throws NoSuchMethodException 未找到匹配的方法
+     */
     public MethodEggg findMethodEggg(String name, Class<?>... parameterTypes) throws NoSuchMethodException {
         MethodEggg m1 = findMethodEgggOrNull(name, parameterTypes);
 
@@ -274,6 +310,13 @@ public class ClassEggg implements AnnotatedEggg {
         }
     }
 
+    /**
+     * 按名称和参数类型查找方法，未找到时返回 null
+     *
+     * @param name 方法名
+     * @param parameterTypes 方法参数类型
+     * @return 匹配的方法包装器，或 null
+     */
     public MethodEggg findMethodEgggOrNull(String name, Class<?>... parameterTypes) {
         for (MethodEggg m1 : declaredMethodEgggs) {
             if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
@@ -302,34 +345,70 @@ public class ClassEggg implements AnnotatedEggg {
         return null;
     }
 
+    /**
+     * 按反射 Method 查找方法包装器，不存在则创建并缓存
+     */
     public MethodEggg findMethodEgggOrNew(Method method) {
         return ownMethodEgggsMap.computeIfAbsent(method, k -> eggg.newMethodEggg(this, k));
     }
 
+    /**
+     * 获取自有方法（公有方法 + 声明的私有方法，去重合并）
+     */
     public Collection<MethodEggg> getOwnMethodEgggs() {
         return ownMethodEgggs;
     }
 
+    /**
+     * 获取所有字段（含父类的，子类同名字段优先）
+     */
     public Collection<FieldEggg> getAllFieldEgggs() {
         return allFieldEgggsForName.values();
     }
 
+    /**
+     * 按字段名查找字段
+     *
+     * @param name 字段名
+     * @return 字段包装器，或 null
+     */
     public FieldEggg getFieldEgggByName(String name) {
         return allFieldEgggsForName.get(name);
     }
 
+    /**
+     * 按别名查找字段
+     *
+     * @param alias 字段别名
+     * @return 字段包装器，或 null
+     */
     public FieldEggg getFieldEgggByAlias(String alias) {
         return allFieldEgggsForAlias.get(alias);
     }
 
+    /**
+     * 获取所有属性（由字段和 getter/setter 方法组合而成）
+     */
     public Collection<PropertyEggg> getPropertyEgggs() {
         return propertyEgggsForName.values();
     }
 
+    /**
+     * 按属性名查找属性
+     *
+     * @param name 属性名
+     * @return 属性包装器，或 null
+     */
     public PropertyEggg getPropertyEgggByName(String name) {
         return propertyEgggsForName.get(name);
     }
 
+    /**
+     * 按属性别名查找属性
+     *
+     * @param alias 属性别名
+     * @return 属性包装器，或 null
+     */
     public PropertyEggg getPropertyEgggByAlias(String alias) {
         return propertyEgggsForAlias.get(alias);
     }
