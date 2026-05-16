@@ -205,7 +205,7 @@ public class ClassEggg implements AnnotatedEggg {
      * @param defConstr    默认创造器（通常来自 getCreator()）
      * @return 最佳匹配的构造器
      */
-    public ConstrEggg findConstrEggg(Set<String> availableKeys, ConstrEggg defConstr) {
+    public ConstrEggg matchConstrEggg(Set<String> availableKeys, ConstrEggg defConstr) {
         if (availableKeys == null || availableKeys.isEmpty()) {
             return defConstr;
         }

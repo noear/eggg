@@ -1,7 +1,7 @@
 
 ### 1.0.13
 
-* 添加 ClassEggg.findConstrEggg(keys,defConstr) 方法
+* 添加 ClassEggg.matchConstrEggg(keys,defConstr) 方法
 * 添加 ConstrEggg.getParamAliasAry 方法
 
 ### 1.0.12
