@@ -6,7 +6,7 @@
 
     <groupId>org.noear</groupId>
     <artifactId>eggg</artifactId>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -44,6 +44,7 @@
 
         <maven-compiler.version>3.13.0</maven-compiler.version>
         <maven-assembly.version>3.7.1</maven-assembly.version>
+        <maven-surefire.version>3.5.5</maven-surefire.version>
     </properties>
 
 
@@ -140,6 +141,12 @@
                     <target>${java.version}</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.5.5</version>
             </plugin>
 
             <plugin>
