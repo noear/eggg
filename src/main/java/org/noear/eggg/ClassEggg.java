@@ -423,10 +423,22 @@ public class ClassEggg implements AnnotatedEggg {
             }
 
             if (m1.isBridge()) {
-                m1 = findActualMethod(typeEggg.getType().getSuperclass(), m1);
+                // 桥接方法：在继承链中解析为实际方法
+                m1 = findActualMethod(m1);
+                if (m1 == null) {
+                    continue;
+                }
+            } else if (m1.getDeclaringClass() != typeEggg.getType()) {
+                // 非桥接但从父类继承的方法：尝试在声明类中找到更具体的版本（保留泛型签名）
+                Method moreSpecific = findDeclaredMethodInChain(m1);
+                if (moreSpecific != null) {
+                    m1 = moreSpecific;
+                }
             }
 
-            if (m1 == null) {
+            // 去重：按方法名+参数类型查找是否已添加（处理覆写方法和桥接方法解析后的重复）
+            MethodEggg existing = findExistingMethodEggg(m1);
+            if (existing != null) {
                 continue;
             }
 
@@ -462,23 +474,48 @@ public class ClassEggg implements AnnotatedEggg {
         }
     }
 
-    private Method findActualMethod(Class<?> clz, Method m1) {
-        try {
-            m1 = clz.getMethod(m1.getName(), m1.getParameterTypes());
+    /**
+     * 在 ownMethodEgggsMap 中按方法名和参数类型查找已存在的 MethodEggg（用于 bridge 方法去重）
+     */
+    private MethodEggg findExistingMethodEggg(Method method) {
+        for (Map.Entry<Method, MethodEggg> entry : ownMethodEgggsMap.entrySet()) {
+            Method key = entry.getKey();
+            if (key.getName().equals(method.getName())
+                    && Arrays.equals(key.getParameterTypes(), method.getParameterTypes())) {
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
 
-            if (m1 != null) {
-                //如果有找到
-                if (m1.isBridge()) {
-                    //如果还是桥接方法
-                    return findActualMethod(clz.getSuperclass(), m1);
-                } else {
-                    //如果不是桥接方法
-                    return m1;
+    /**
+     * 桥接方法解析：在继承链中查找同名非桥接方法
+     */
+    private Method findActualMethod(Method m1) {
+        Class<?> clz = typeEggg.getType();
+        while (clz != null && clz != Object.class) {
+            for (Method dm : clz.getDeclaredMethods()) {
+                if (dm.getName().equals(m1.getName()) && !dm.isBridge()) {
+                    return dm;
                 }
             }
-        } catch (NoSuchMethodException ignore) {
+            clz = clz.getSuperclass();
         }
+        return null;
+    }
 
+    /**
+     * 对从父类继承的非桥接方法，尝试在声明类中找到带有更完整泛型信息的 declared 版本
+     */
+    private Method findDeclaredMethodInChain(Method m1) {
+        Class<?> clz = m1.getDeclaringClass();
+        for (Method dm : clz.getDeclaredMethods()) {
+            if (dm.getName().equals(m1.getName())
+                    && !dm.isBridge()
+                    && Arrays.equals(dm.getParameterTypes(), m1.getParameterTypes())) {
+                return dm;
+            }
+        }
         return null;
     }
 
