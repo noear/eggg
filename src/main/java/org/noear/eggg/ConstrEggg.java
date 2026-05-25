@@ -26,6 +26,7 @@ import java.util.*;
  * @since 1.0
  */
 public class ConstrEggg implements ExecutableEggg {
+    private final Eggg eggg;
     private final ClassEggg ownerEggg;
 
     private final Executable constr;
@@ -47,6 +48,7 @@ public class ConstrEggg implements ExecutableEggg {
         Objects.requireNonNull(ownerEggg, "ownerEggg");
         Objects.requireNonNull(constr, "constr");
 
+        this.eggg = eggg;
         this.ownerEggg = ownerEggg;
         this.constr = constr;
         this.isCreator = isCreator;
@@ -84,8 +86,14 @@ public class ConstrEggg implements ExecutableEggg {
         return constr;
     }
 
+    @Override
     public Map<String, Type> getDeclaredGenericInfo() {
         return ownerEggg.getTypeEggg().getGenericInfo();
+    }
+
+    @Override
+    public Type substituteType(Type type) {
+        return eggg.substituteType(type, getDeclaredGenericInfo());
     }
 
     protected boolean isCreator() {

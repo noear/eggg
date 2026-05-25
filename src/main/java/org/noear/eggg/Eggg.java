@@ -246,19 +246,6 @@ public class Eggg {
         }
     }
 
-    /**
-     * 特化类型
-     * <p>
-     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
-     *
-     * @param type        原始类型
-     * @param genericInfo 泛型信息 (类型变量名 -> 实际类型)
-     * @return 特化后的类型
-     */
-    public Type substituteType(Type type, Map<String, Type> genericInfo) {
-        return genericResolver.substituteType(type, genericInfo);
-    }
-
     ///
 
     protected Object findDigest(ClassEggg classEggg, AnnotatedEggg source, Object defaultValue) {
@@ -318,5 +305,20 @@ public class Eggg {
      */
     protected Map<String, Type> createGenericInfo(Type type) {
         return genericResolver.createTypeSelfGenericMap(type);
+    }
+
+
+
+    /**
+     * 特化类型
+     * <p>
+     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
+     *
+     * @param type        原始类型
+     * @param genericInfo 泛型信息 (类型变量名 -> 实际类型)
+     * @return 特化后的类型
+     */
+    protected Type substituteType(Type type, Map<String, Type> genericInfo) {
+        return genericResolver.substituteType(type, genericInfo);
     }
 }

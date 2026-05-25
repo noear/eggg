@@ -28,6 +28,7 @@ import java.util.*;
  * @since 1.0
  */
 public class MethodEggg implements ExecutableEggg {
+    private final Eggg eggg;
     private final ClassEggg ownerEggg;
 
     private final Method method;
@@ -46,6 +47,7 @@ public class MethodEggg implements ExecutableEggg {
         Objects.requireNonNull(ownerEggg, "ownerEggg");
         Objects.requireNonNull(method, "method");
 
+        this.eggg = eggg;
         this.ownerEggg = ownerEggg;
         this.method = method;
 
@@ -91,8 +93,14 @@ public class MethodEggg implements ExecutableEggg {
         return method;
     }
 
+    @Override
     public Map<String, Type> getDeclaredGenericInfo() {
         return declaredGenericInfo;
+    }
+
+    @Override
+    public Type substituteType(Type type) {
+        return eggg.substituteType(type, getDeclaredGenericInfo());
     }
 
     @Override

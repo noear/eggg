@@ -28,4 +28,16 @@ public interface ExecutableEggg extends AnnotatedEggg {
      * 获取申明的泛型信息
      */
     Map<String, Type> getDeclaredGenericInfo();
+
+
+
+    /**
+     * 特化类型
+     * <p>
+     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
+     *
+     * @param type        原始类型
+     * @return 特化后的类型
+     */
+     Type substituteType(Type type) ;
 }
