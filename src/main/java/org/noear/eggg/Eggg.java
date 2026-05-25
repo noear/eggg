@@ -305,7 +305,7 @@ public class Eggg {
     }
 
     /**
-     * 检查类型
+     * 审查类型
      */
     protected Type reviewType(Type type, Map<String, Type> genericInfo) {
         return genericResolver.reviewType(type, genericInfo);
