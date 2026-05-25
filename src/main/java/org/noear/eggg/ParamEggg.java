@@ -36,7 +36,7 @@ public class ParamEggg implements AnnotatedEggg {
 
     public ParamEggg(Eggg eggg, ClassEggg classEggg, ExecutableEggg execEggg, Parameter param) {
         this.param = param;
-        this.paramTypeEggg = eggg.getTypeEggg(eggg.reviewType(param.getParameterizedType(), execEggg.getDeclaredGenericInfo()));
+        this.paramTypeEggg = eggg.getTypeEggg(eggg.substituteType(param.getParameterizedType(), execEggg.getDeclaredGenericInfo()));
 
         this.name = param.getName();
         this.digest = eggg.findDigest(classEggg, this, null);

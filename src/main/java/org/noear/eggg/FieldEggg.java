@@ -50,7 +50,7 @@ public class FieldEggg implements Property {
         this.ownerEggg = ownerEggg;
 
         this.field = field;
-        this.fieldTypeEggg = eggg.getTypeEggg(eggg.reviewType(field.getGenericType(), eggg.findGenericInfo(ownerEggg.getTypeEggg(), field.getDeclaringClass())));
+        this.fieldTypeEggg = eggg.getTypeEggg(eggg.substituteType(field.getGenericType(), eggg.findGenericInfo(ownerEggg.getTypeEggg(), field.getDeclaringClass())));
 
         this.name = field.getName();
         this.digest = eggg.findDigest(ownerEggg, this, null);

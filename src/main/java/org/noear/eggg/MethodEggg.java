@@ -60,7 +60,7 @@ public class MethodEggg implements ExecutableEggg {
         declaredGenericInfo = eggg.findGenericInfo(ownerEggg.getTypeEggg(), method.getDeclaringClass());
 
         if (method.getReturnType() != void.class) {
-            this.returnTypeEggg = eggg.getTypeEggg(eggg.reviewType(method.getGenericReturnType(), declaredGenericInfo));
+            this.returnTypeEggg = eggg.getTypeEggg(eggg.substituteType(method.getGenericReturnType(), declaredGenericInfo));
         } else {
             this.returnTypeEggg = eggg.getTypeEggg(method.getGenericReturnType());
         }

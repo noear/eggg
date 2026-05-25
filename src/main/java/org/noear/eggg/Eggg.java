@@ -214,7 +214,7 @@ public class Eggg {
         } else {
             if (declaringClass.isInterface()) {
                 for (Type superInte : owner.getType().getGenericInterfaces()) {
-                    Type superType = genericResolver.reviewType(superInte, owner.getGenericInfo());
+                    Type superType = genericResolver.substituteType(superInte, owner.getGenericInfo());
                     TypeEggg superTypeEggg = getTypeEggg(superType);
 
                     if (declaringClass.isAssignableFrom(superTypeEggg.getType())) {
@@ -223,7 +223,7 @@ public class Eggg {
                 }
             }
 
-            Type superType = genericResolver.reviewType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
+            Type superType = genericResolver.substituteType(owner.getType().getGenericSuperclass(), owner.getGenericInfo());
 
             if (superType == null || superType == Object.class) {
                 return owner.getGenericInfo();
@@ -244,6 +244,19 @@ public class Eggg {
         } else {
             return new ArrayList<>(map.values());
         }
+    }
+
+    /**
+     * 特化类型
+     * <p>
+     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
+     *
+     * @param type        原始类型
+     * @param genericInfo 泛型信息 (类型变量名 -> 实际类型)
+     * @return 特化后的类型
+     */
+    public Type substituteType(Type type, Map<String, Type> genericInfo) {
+        return genericResolver.substituteType(type, genericInfo);
     }
 
     ///
@@ -299,15 +312,11 @@ public class Eggg {
 
     /**
      * 生成泛型信息
+     *
+     * @param type        原始类型
+     * @return 泛型信息 (类型变量名 -> 实际类型)
      */
     protected Map<String, Type> createGenericInfo(Type type) {
         return genericResolver.createTypeSelfGenericMap(type);
-    }
-
-    /**
-     * 审查类型
-     */
-    protected Type reviewType(Type type, Map<String, Type> genericInfo) {
-        return genericResolver.reviewType(type, genericInfo);
     }
 }

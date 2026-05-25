@@ -53,7 +53,7 @@ public class TypeEggg {
             }
         } else {
             this.genericInfo = Collections.unmodifiableMap(eggg.createGenericInfo(originType));
-            this.genericType = eggg.reviewType(originType, this.genericInfo);
+            this.genericType = eggg.substituteType(originType, this.genericInfo);
 
             if (isParameterizedType()) {
                 Type tmp = getParameterizedType().getRawType();

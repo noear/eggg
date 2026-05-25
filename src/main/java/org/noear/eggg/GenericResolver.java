@@ -74,13 +74,13 @@ public class GenericResolver {
             final Map<String, Type> typeMap = new LinkedHashMap<>();
 
             if (null != type) {
-                if(type instanceof Class<?>){
+                if (type instanceof Class<?>) {
                     final Class<?> type1 = (Class<?>) type;
-                    for(TypeVariable tv : type1.getTypeParameters()) {
+                    for (TypeVariable tv : type1.getTypeParameters()) {
                         typeMap.put(tv.getTypeName(), tv);
                     }
-                } else if(type instanceof ParameterizedType){
-                    final ParameterizedType type1 =  (ParameterizedType) type;
+                } else if (type instanceof ParameterizedType) {
+                    final ParameterizedType type1 = (ParameterizedType) type;
 
                     final Type[] typeArguments = type1.getActualTypeArguments();
                     final Class<?> rawType = (Class<?>) type1.getRawType();
@@ -154,25 +154,29 @@ public class GenericResolver {
     }
 
     /**
-     * 审查类型
+     * 特化类型
+     * <p>
+     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
      *
      * @param type        原始类型
-     * @param genericInfo 泛型信息
-     * @since 3.0
-     *
+     * @param genericInfo 泛型信息 (类型变量名 -> 实际类型)
+     * @return 特化后的类型
      */
-    public Type reviewType(Type type, Map<String, Type> genericInfo) {
-        return reviewType(type, genericInfo, new HashSet<>());
+    public Type substituteType(Type type, Map<String, Type> genericInfo) {
+        return substituteType(type, genericInfo, new HashSet<>());
     }
 
     /**
-     * 审查类型
+     * 特化类型
+     * <p>
+     * 将泛型变量替换为具体类型，例如将 {@code List<T>} 特化为 {@code List<String>}
      *
      * @param type        原始类型
-     * @param genericInfo 泛型信息
+     * @param genericInfo 泛型信息 (类型变量名 -> 实际类型)
      * @param visited     已访问的类型集合，防止循环引用
+     * @return 替换后的类型
      */
-    private Type reviewType(Type type, Map<String, Type> genericInfo, Set<Type> visited) {
+    private Type substituteType(Type type, Map<String, Type> genericInfo, Set<Type> visited) {
         if (genericInfo == null || genericInfo.isEmpty() || type instanceof Class) {
             return type;
         }
@@ -185,16 +189,16 @@ public class GenericResolver {
         try {
             if (type instanceof TypeVariable) {
                 Type resolved = genericInfo.get(type.getTypeName());
-                return resolved != null ? reviewType(resolved, genericInfo, visited) : type;
+                return resolved != null ? substituteType(resolved, genericInfo, visited) : type;
 
             } else if (type instanceof WildcardType) {
-                return reviewWildcardType((WildcardType) type, genericInfo, visited);
+                return substituteWildcardType((WildcardType) type, genericInfo, visited);
 
             } else if (type instanceof ParameterizedType) {
-                return reviewParameterizedType((ParameterizedType) type, genericInfo, visited);
+                return substituteParameterizedType((ParameterizedType) type, genericInfo, visited);
 
             } else if (type instanceof GenericArrayType) {
-                return reviewGenericArrayType((GenericArrayType) type, genericInfo, visited);
+                return substituteGenericArrayType((GenericArrayType) type, genericInfo, visited);
             }
 
             return type;
@@ -203,9 +207,9 @@ public class GenericResolver {
         }
     }
 
-    private Type reviewWildcardType(WildcardType wildcardType, Map<String, Type> genericInfo, Set<Type> visited) {
-        Type[] upperBounds = reviewTypes(wildcardType.getUpperBounds(), genericInfo, visited);
-        Type[] lowerBounds = reviewTypes(wildcardType.getLowerBounds(), genericInfo, visited);
+    private Type substituteWildcardType(WildcardType wildcardType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type[] upperBounds = substituteTypes(wildcardType.getUpperBounds(), genericInfo, visited);
+        Type[] lowerBounds = substituteTypes(wildcardType.getLowerBounds(), genericInfo, visited);
 
         // 如果边界没有变化，返回原类型
         if (Arrays.equals(upperBounds, wildcardType.getUpperBounds()) &&
@@ -216,8 +220,8 @@ public class GenericResolver {
         return new WildcardTypeImpl(upperBounds, lowerBounds);
     }
 
-    private Type reviewParameterizedType(ParameterizedType parameterizedType, Map<String, Type> genericInfo, Set<Type> visited) {
-        Type[] typeArgs = reviewTypes(parameterizedType.getActualTypeArguments(), genericInfo, visited);
+    private Type substituteParameterizedType(ParameterizedType parameterizedType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type[] typeArgs = substituteTypes(parameterizedType.getActualTypeArguments(), genericInfo, visited);
 
         // 如果类型参数没有变化，返回原类型
         if (Arrays.equals(typeArgs, parameterizedType.getActualTypeArguments())) {
@@ -231,8 +235,8 @@ public class GenericResolver {
         );
     }
 
-    private Type reviewGenericArrayType(GenericArrayType genericArrayType, Map<String, Type> genericInfo, Set<Type> visited) {
-        Type componentType = reviewType(genericArrayType.getGenericComponentType(), genericInfo, visited);
+    private Type substituteGenericArrayType(GenericArrayType genericArrayType, Map<String, Type> genericInfo, Set<Type> visited) {
+        Type componentType = substituteType(genericArrayType.getGenericComponentType(), genericInfo, visited);
 
         if (componentType == genericArrayType.getGenericComponentType()) {
             return genericArrayType;
@@ -241,12 +245,12 @@ public class GenericResolver {
         return new GenericArrayTypeImpl(componentType);
     }
 
-    private Type[] reviewTypes(Type[] types, Map<String, Type> genericInfo, Set<Type> visited) {
+    private Type[] substituteTypes(Type[] types, Map<String, Type> genericInfo, Set<Type> visited) {
         Type[] result = new Type[types.length];
         boolean changed = false;
 
         for (int i = 0; i < types.length; i++) {
-            result[i] = reviewType(types[i], genericInfo, visited);
+            result[i] = substituteType(types[i], genericInfo, visited);
             if (result[i] != types[i]) {
                 changed = true;
             }
