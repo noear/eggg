@@ -202,6 +202,14 @@ public class TypeEggg {
         return (TypeVariable) genericType;
     }
 
+    public boolean isWildcardType() {
+        return genericType instanceof WildcardType;
+    }
+
+    public WildcardType getWildcardType() {
+        return (WildcardType) genericType;
+    }
+
     @Override
     public int hashCode() {
         return originType.hashCode();

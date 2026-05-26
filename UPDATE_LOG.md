@@ -1,4 +1,9 @@
 
+### 1.0.14
+
+* 添加 TypeEggg.isWildcardType 方法
+* 添加 ExecutableEggg.substituteType 方法
+
 ### 1.0.13
 
 * 添加 ClassEggg.matchConstrEggg(keys,defConstr) 方法
