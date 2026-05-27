@@ -47,61 +47,68 @@
 
 一个 Java 类型元数据分析与构建、及流式反射调用工具。分析会涉及：类型、类、构造器、方法、字段、属性、参数，泛型传导等细节。适合一些：涉及泛型和注解的框架性项目采用。
 
-### 示例0（流式反射调用）
 
-```java
-Eggg eggg = new Eggg();
-
-// 从类开始：创建实例 -> 调用方法
-String result = (String) eggg.onClass(String.class)
-                        .create("Hello World")
-                        .call("substring", 6)
-                        .get();
-// result = "World"
-
-// 从实例开始：直接调用
-String result2 = (String) eggg.onBean("Hello World")
-                        .call("substring", 6)
-                        .get();
-// result2 = "World"
-
-// 字段读写 + 链式
-Person person = eggg.onClass(Person.class)
-    .create()
-    .setField("name", "Tom")     // 字段写
-    .setField("age", 25)         // 字段写
-    .call("hello");             // 调方法
-String name = eggg.onBean(person).getField("name"); // 字段读 -> "Tom"
-
-// 属性读写（走 getter/setter）
-Person p = eggg.onClass(Person.class).create()
-    .setProperty("name", "Alice")  // 走 setName
-    .setProperty("age", 30)        // 走 setAge
-    .get();
-String name = eggg.onBean(p).property("name").get(); // 走 getName -> "Alice"
-
-// 按类名加载
-Object obj = eggg.onClass("java.lang.String")
-    .create("Hello")
-    .get(); // "Hello"
-
-// 调用静态方法
-String s = eggg.onClass(Person.class)
-    .call("staticHello")
-    .get();
-
-// 基本类型与包装类型自动互通
-Person p2 = eggg.onClass(Person.class)
-    .create("Bob", Integer.valueOf(30))  // Integer 自动匹配 int 参数
-    .get();
-```
-
-
-### 示例1
+### 示例 0（流式反射调用）
 
 ```java
 public class EgggDemo {
-    //一般，应用内全局单例
+    // 一般应用内全局单例
+    private static Eggg eggg = new Eggg();
+
+    @Test
+    public void case1() {
+        // 从类开始：创建实例 -> 调用方法
+        String result = eggg.onClass(String.class) // result = "World"
+                .create("Hello World")
+                .call("substring", 6)
+                .get();
+
+
+        // 从实例开始：直接调用
+        String result2 = eggg.onBean("Hello World") // result2 = "World"
+                .call("substring", 6)
+                .get();
+
+
+        // 字段读写 + 链式
+        Person person = eggg.onClass(Person.class)
+                .create()
+                .setField("name", "Tom")     // 字段写
+                .setField("age", 25)         // 字段写
+                .call("hello");             // 调方法
+        String name = eggg.onBean(person).getField("name"); // 字段读 -> "Tom"
+
+        // 属性读写（走 getter/setter）
+        Person p = eggg.onClass(Person.class).create()
+                .setProperty("name", "Alice")  // 走 setName
+                .setProperty("age", 30)        // 走 setAge
+                .get();
+        String name = eggg.onBean(p).property("name").get(); // 走 getName -> "Alice"
+
+        // 按类名加载
+        String obj = eggg.onClass("java.lang.String")
+                .create("Hello")
+                .get(); // "Hello"
+
+        // 调用静态方法
+        String s = eggg.onClass(Person.class)
+                .call("staticHello")
+                .get();
+
+        // 基本类型与包装类型自动互通
+        Person p2 = eggg.onClass(Person.class)
+                .create("Bob", Integer.valueOf(30))  // Integer 自动匹配 int 参数
+                .get();
+    }
+}
+```
+
+
+### 示例 1
+
+```java
+public class EgggDemo {
+    // 一般应用内全局单例
     private static Eggg eggg = new Eggg();
 
     @Test
@@ -110,7 +117,7 @@ public class EgggDemo {
 
         if (typeEggg.isMap()) {
             if (typeEggg.isParameterizedType()) {
-                //已经分析过的
+                // 已分析过的泛型信息
                 Type keyType = typeEggg.getActualTypeArguments()[0];
                 Type ValueType = typeEggg.getActualTypeArguments()[1];
 
@@ -126,11 +133,11 @@ public class EgggDemo {
 ```
 
 
-### 示例2（嵌套传递）
+### 示例 2（嵌套传递）
 
 ```java
 public class EgggDemo {
-    //一般，应用内全局单例
+    // 一般应用内全局单例
     private static Eggg eggg = new Eggg();
 
     @Test
@@ -170,9 +177,9 @@ public class EgggDemo {
 }
 ```
 
-### 示例3 (for snack4)
+### 示例 3（for Snack4）
 
-这个示例需要根据 "注解" 生成提炼物、别名，以及指定构造器。需要添加定制内容。
+这个示例演示如何根据注解生成提炼物、别名，以及指定构造器。需要添加定制内容。
 
 ```java
 package org.noear.snack4.codec.util;
@@ -226,14 +233,14 @@ public class EgggUtil {
 ```java
 public class Demo {
     public void case1(){
-        ypeEggg typeEggg =  EgggUtil.getTypeEggg(clazz);
+        TypeEggg typeEggg = EgggUtil.getTypeEggg(clazz);
 
         for (FieldEggg fw : typeEggg.getClassEggg().getFieldEgggs()) {
             if (fw.isStatic()) {
                 continue;
             }
 
-            //已经分析过的泛型
+            // 已分析过的泛型
             fw.getTypeEggg();
         }
     }
@@ -241,7 +248,7 @@ public class Demo {
 ```
 
 
-### 示例4（for Solon） 
+### 示例 4（for Solon） 
 
 ```java
 package org.noear.solon.core.util;

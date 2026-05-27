@@ -2,7 +2,7 @@
   EggG
 </h1>
 <p align="center">
-	<strong>A Java type metadata analysis and building tool (generics, annotations, distill, aliasing, caching)</strong>
+	<strong>A Java type metadata analysis and building, and fluent reflective invocation tool (generics, annotations, distill, aliasing, caching)</strong>
 </p>
 <p align="center">
     <a href="https://deepwiki.com/noear/eggg"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
@@ -45,18 +45,7 @@
 
 ### About EggG
 
-A tool for analyzing and building Java type metadata. It covers details of types, classes, constructors, methods, fields, properties, parameters, generic propagation, and more. Suitable for: framework projects involving generics and annotations.
-
-### Fluent Reflective Invocation
-
-Based on the Eggg metadata caching system, provides jOOR-style fluent reflective invocation. Internally reuses `ClassEggg` / `MethodEggg` / `FieldEggg` / `PropertyEggg` lookup and invocation, with MethodHandle acceleration.
-
-- `onClass` / `onBean` — Entry points: start from a class or instance
-- `create` — Construct instances (auto-matching constructors, with primitive/wrapper type interop)
-- `call` — Invoke methods (overloading, inheritance, private methods, static methods, void method chaining)
-- `field` / `getField` / `setField` — Direct field read/write (inherited fields, private fields)
-- `property` / `setProperty` — Property read/write (via getter/setter, fallback to field)
-- `type()` / `get()` — Get type and value
+A tool for analyzing and building Java type metadata, and fluent reflective invocation. It covers details of types, classes, constructors, methods, fields, properties, parameters, generic propagation, and more. Suitable for: framework projects involving generics and annotations.
 
 
 ### Example 0 (Fluent Reflective Invocation)
@@ -113,7 +102,7 @@ Person p2 = eggg.onClass(Person.class)
 
 ```java
 public class EgggDemo {
-    //Generally, application-wide singleton
+    // Generally, application-wide singleton
     private static Eggg eggg = new Eggg();
 
     @Test
@@ -122,7 +111,7 @@ public class EgggDemo {
 
         if (typeEggg.isMap()) {
             if (typeEggg.isParameterizedType()) {
-                //已经分析过的
+                // Analyzed generic info
                 Type keyType = typeEggg.getActualTypeArguments()[0];
                 Type ValueType = typeEggg.getActualTypeArguments()[1];
 
@@ -142,7 +131,7 @@ public class EgggDemo {
 
 ```java
 public class EgggDemo {
-    //一般，应用内全局单例
+    // Generally, application-wide singleton
     private static Eggg eggg = new Eggg();
 
     @Test
@@ -183,9 +172,9 @@ public class EgggDemo {
 ```
 
 
-### Example 3 (for snack4)
+### Example 3 (for Snack4)
 
-This example needs to generate refinements, aliases, and specify constructors based on the annotation. Custom content needs to be added.
+This example demonstrates how to generate refinements, aliases, and specify constructors based on annotations. Custom content needs to be added.
 
 ```java
 package org.noear.snack4.codec.util;
@@ -239,14 +228,14 @@ public class EgggUtil {
 ```java
 public class Demo {
     public void case1(){
-        ypeEggg typeEggg =  EgggUtil.getTypeEggg(clazz);
+        TypeEggg typeEggg = EgggUtil.getTypeEggg(clazz);
 
         for (FieldEggg fw : typeEggg.getClassEggg().getFieldEgggs()) {
             if (fw.isStatic()) {
                 continue;
             }
 
-            //已经分析过的泛型
+            // Analyzed generic info
             fw.getTypeEggg();
         }
     }
@@ -254,7 +243,7 @@ public class Demo {
 ```
 
 
-### Example 4 (for solon)
+### Example 4 (for Solon)
 
 ```java
 package org.noear.solon.core.util;
