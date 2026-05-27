@@ -73,6 +73,9 @@ public class EgggReflect {
     private final Class<?> type;
     private final Object object;
 
+    /** 代理缓存（接口类型 -> 代理实例），避免 as() 重复创建 */
+    private final Map<Class<?>, Object> proxyCache = new java.util.concurrent.ConcurrentHashMap<>();
+
 
     // ============ 构造器（包级，仅由 Eggg 入口创建）============
 
@@ -206,7 +209,15 @@ public class EgggReflect {
                         "No matching method: " + type.getName() + "." + name + argumentTypesToString(argTypes)));
             }
 
-            // 3. 调用 MethodEggg.invoke（内部自动使用 MethodHandle 加速）
+            // 3. 实例方法需要 object 不为 null
+            if (object == null && !methodEggg.isStatic()) {
+                throw new EgggReflectException(
+                    new NullPointerException(
+                        "Cannot invoke instance method '" + name + "' on null object (type: " + type.getName() + "). " +
+                        "Use create() first or ensure the object is not null."));
+            }
+
+            // 4. 调用 MethodEggg.invoke（内部自动使用 MethodHandle 加速）
             Object result = methodEggg.invoke(object, args);
 
             // void 方法返回 this，非 void 方法包装结果
@@ -362,9 +373,17 @@ public class EgggReflect {
 
     /**
      * 将包装对象代理为指定接口类型
+     *
+     * <p>同一 EgggReflect 实例对同一接口类型的代理结果会缓存，避免重复创建。
      */
     @SuppressWarnings("unchecked")
     public <P> P as(final Class<P> proxyType) {
+        // 缓存查找
+        Object cached = proxyCache.get(proxyType);
+        if (cached != null) {
+            return (P) cached;
+        }
+
         final boolean isMap = (object instanceof Map);
         final Object target = object;
 
@@ -381,13 +400,13 @@ public class EgggReflect {
                     int length = (args == null ? 0 : args.length);
 
                     if (length == 0 && methodName.startsWith("get") && methodName.length() > 3) {
-                        String propName = resolvePropertyName(methodName.substring(3));
+                        String propName = Property.resolvePropertyName(methodName);
                         return map.get(propName);
                     } else if (length == 0 && methodName.startsWith("is") && methodName.length() > 2) {
-                        String propName = resolvePropertyName(methodName.substring(2));
+                        String propName = Property.resolvePropertyName(methodName);
                         return map.get(propName);
                     } else if (length == 1 && methodName.startsWith("set") && methodName.length() > 3) {
-                        String propName = resolvePropertyName(methodName.substring(3));
+                        String propName = Property.resolvePropertyName(methodName);
                         map.put(propName, args[0]);
                         return null;
                     }
@@ -402,10 +421,14 @@ public class EgggReflect {
             }
         };
 
-        return (P) Proxy.newProxyInstance(
+        P proxy = (P) Proxy.newProxyInstance(
             proxyType.getClassLoader(),
             new Class[]{proxyType},
             handler);
+
+        // 缓存代理实例
+        proxyCache.put(proxyType, proxy);
+        return proxy;
     }
 
 
@@ -425,6 +448,8 @@ public class EgggReflect {
     /**
      * 将方法名后半部分转为属性名（首字母小写）
      * 例如 "Name" -> "name", "URL" -> "uRL"
+     *
+     * <p>复用 {@link Property#resolvePropertyName}
      */
     private static String resolvePropertyName(String name) {
         if (name == null || name.isEmpty()) return name;
@@ -435,16 +460,10 @@ public class EgggReflect {
      * 模糊匹配方法（基本类型与包装类型互通）
      *
      * <p>仅在 ClassEggg.findMethodEgggOrNull 精确匹配失败后作为降级使用。
-     * <p>查找顺序：先声明方法，后公有方法（与 ClassEggg.findMethodEgggOrNull 一致）。
+     * <p>使用 {@link ClassEggg#getOwnMethodEgggs()} 合并去重列表，一次遍历完成。
      */
     private MethodEggg findSimilarMethod(ClassEggg classEggg, String name, Class<?>[] argTypes) {
-        for (MethodEggg candidate : classEggg.getDeclaredMethodEgggs()) {
-            if (candidate.getName().equals(name)
-                && matchTypes(candidate.getMethod().getParameterTypes(), argTypes)) {
-                return candidate;
-            }
-        }
-        for (MethodEggg candidate : classEggg.getPublicMethodEgggs()) {
+        for (MethodEggg candidate : classEggg.getOwnMethodEgggs()) {
             if (candidate.getName().equals(name)
                 && matchTypes(candidate.getMethod().getParameterTypes(), argTypes)) {
                 return candidate;
@@ -460,11 +479,8 @@ public class EgggReflect {
      */
     private ConstrEggg findSimilarConstr(ClassEggg classEggg, Class<?>[] argTypes) {
         for (ConstrEggg candidate : classEggg.getConstrEgggs()) {
-            if (candidate.getConstr() instanceof Constructor) {
-                Constructor ctor = (Constructor) candidate.getConstr();
-                if (matchTypes(ctor.getParameterTypes(), argTypes)) {
-                    return candidate;
-                }
+            if (matchTypes(candidate.getConstr().getParameterTypes(), argTypes)) {
+                return candidate;
             }
         }
         return null;
