@@ -236,11 +236,11 @@ public class MethodEggg implements ExecutableEggg {
                     return (T) methodHandle.invokeWithArguments(combinedArgs);
                 }
             } catch (WrongMethodTypeException | ClassCastException e) {
-                // 场景 A：参数类型不匹配、调用语法错误（属于框架层/调用层不友好异常）
+                // 参数不匹配属于开发期错误，强力提示具体是哪个方法传错了参数
                 throw new IllegalArgumentException("Method invocation failed due to argument mismatch for method: " + method.toGenericString(), e);
             } catch (Throwable t) {
-                // 场景 B：目标业务方法内部真正抛出的异常
-                throw new InvocationTargetException(t, "Target method executed with an exception");
+                // 运行时业务异常，把方法名写进包装里
+                throw new InvocationTargetException(t, "Target method [" + method.getName() + "] executed with an exception");
             }
         }
     }
