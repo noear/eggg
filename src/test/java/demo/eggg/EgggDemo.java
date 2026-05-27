@@ -19,4 +19,11 @@ public class EgggDemo {
 
         classEggg.getAllFieldEgggs();
     }
+
+    public void case2() throws Exception{
+        eggg.getTypeEggg(EgggDemo.class)
+                .getClassEggg()
+                .findMethodEggg("xxx")
+                .invoke(null, "");
+    }
 }

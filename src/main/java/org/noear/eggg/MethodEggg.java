@@ -213,9 +213,7 @@ public class MethodEggg implements ExecutableEggg {
     }
 
 
-    public <T> T invoke(Object target, Object... args)
-            throws Throwable {
-
+    public <T> T invoke(Object target, Object... args) throws Exception {
         if (methodHandle == null) {
             if (method.isAccessible() == false) {
                 method.setAccessible(true);
