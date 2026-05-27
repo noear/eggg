@@ -57,9 +57,6 @@ import java.util.*;
  * String name = (String) eggg.onBean(obj).property("name").get();
  * eggg.onBean(obj).setProperty("name", "Tom");
  *
- * // 接口代理
- * MyInterface proxy = eggg.onBean(obj).as(MyInterface.class);
- * proxy.doSomething();
  * }</pre>
  *
  * @author noear
@@ -72,9 +69,6 @@ public class EgggReflect {
     private final Eggg eggg;
     private final Class<?> type;
     private final Object object;
-
-    /** 代理缓存（接口类型 -> 代理实例），避免 as() 重复创建 */
-    private final Map<Class<?>, Object> proxyCache = new java.util.concurrent.ConcurrentHashMap<>();
 
 
     // ============ 构造器（包级，仅由 Eggg 入口创建）============
@@ -369,92 +363,7 @@ public class EgggReflect {
     }
 
 
-    // ---- as ----
-
-    /**
-     * 将包装对象代理为指定接口类型
-     *
-     * <p>同一 EgggReflect 实例对同一接口类型的代理结果会缓存，避免重复创建。
-     */
-    @SuppressWarnings("unchecked")
-    public <P> P as(final Class<P> proxyType) {
-        // 缓存查找
-        Object cached = proxyCache.get(proxyType);
-        if (cached != null) {
-            return (P) cached;
-        }
-
-        final boolean isMap = (object instanceof Map);
-        final Object target = object;
-
-        InvocationHandler handler = (proxy, method, args) -> {
-            String methodName = method.getName();
-
-            try {
-                // 优先按方法名调用（复用 call -> ClassEggg.findMethodEgggOrNull -> MethodEggg.invoke）
-                return on(methodName, args).get();
-            } catch (EgggReflectException e) {
-                if (isMap) {
-                    // Map 模式：getter/setter 委托到 Map 操作
-                    Map<String, Object> map = (Map<String, Object>) target;
-                    int length = (args == null ? 0 : args.length);
-
-                    if (length == 0 && methodName.startsWith("get") && methodName.length() > 3) {
-                        String propName = Property.resolvePropertyName(methodName);
-                        return map.get(propName);
-                    } else if (length == 0 && methodName.startsWith("is") && methodName.length() > 2) {
-                        String propName = Property.resolvePropertyName(methodName);
-                        return map.get(propName);
-                    } else if (length == 1 && methodName.startsWith("set") && methodName.length() > 3) {
-                        String propName = Property.resolvePropertyName(methodName);
-                        map.put(propName, args[0]);
-                        return null;
-                    }
-                }
-
-                // default 方法支持
-                if (method.isDefault()) {
-                    return invokeDefaultMethod(proxy, method, args);
-                }
-
-                throw e;
-            }
-        };
-
-        P proxy = (P) Proxy.newProxyInstance(
-            proxyType.getClassLoader(),
-            new Class[]{proxyType},
-            handler);
-
-        // 缓存代理实例
-        proxyCache.put(proxyType, proxy);
-        return proxy;
-    }
-
-
     // ============ 内部方法 ============
-
-    /**
-     * 内部快捷调用（给 as() 代理用）
-     */
-    private EgggReflect on(String name, Object[] args) {
-        if (args == null || args.length == 0) {
-            return call(name);
-        } else {
-            return call(name, args);
-        }
-    }
-
-    /**
-     * 将方法名后半部分转为属性名（首字母小写）
-     * 例如 "Name" -> "name", "URL" -> "uRL"
-     *
-     * <p>复用 {@link Property#resolvePropertyName}
-     */
-    private static String resolvePropertyName(String name) {
-        if (name == null || name.isEmpty()) return name;
-        return name.substring(0, 1).toLowerCase() + name.substring(1);
-    }
 
     /**
      * 模糊匹配方法（基本类型与包装类型互通）
@@ -498,31 +407,6 @@ public class EgggReflect {
             }
         }
         return true;
-    }
-
-    /**
-     * default 方法调用（JDK 8+）
-     *
-     * <p>由于项目兼容 JDK 8（source 1.8），不能在编译期直接引用
-     * MethodHandles.Lookup 的内部构造器（JDK 9+ 已移除）。因此通过反射间接调用。
-     */
-    private Object invokeDefaultMethod(Object proxy, Method method, Object[] args) throws Throwable {
-        // 使用反射调用 MethodHandles.Lookup 的私有构造器（JDK 8 可用）
-        // 等价于：MethodHandles.Lookup lookup = new MethodHandles.Lookup(method.getDeclaringClass())
-        Class<?> lookupClass = Class.forName("java.lang.invoke.MethodHandles$Lookup");
-        Constructor<?> ctor = lookupClass.getDeclaredConstructor(Class.class);
-        ctor.setAccessible(true);
-        Object lookup = ctor.newInstance(method.getDeclaringClass());
-
-        // 调用 lookup.unreflectSpecial(method, declaringClass)
-        Method unreflectSpecial = lookupClass.getMethod("unreflectSpecial", Method.class, Class.class);
-        Object methodHandle = unreflectSpecial.invoke(lookup, method, method.getDeclaringClass());
-
-        // 调用 methodHandle.bindTo(proxy).invokeWithArguments(args)
-        Method bindTo = methodHandle.getClass().getMethod("bindTo", Object.class);
-        Object boundHandle = bindTo.invoke(methodHandle, proxy);
-        Method invokeWithArgs = boundHandle.getClass().getMethod("invokeWithArguments", Object[].class);
-        return invokeWithArgs.invoke(boundHandle, new Object[]{args});
     }
 
 

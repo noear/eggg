@@ -30,12 +30,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * C. call（方法调用）
  * D. field/get/set（字段读写）
  * E. property/setProperty（属性读写）
- * F. as（接口代理）
- * G. type() 和 get()
- * H. equals/hashCode/toString
- * I. 核心链式场景
- * J. Eggg 实例隔离与缓存
- * K. 异常场景
+ * F. type() 和 get()
+ * G. equals/hashCode/toString
+ * H. 核心链式场景
+ * I. Eggg 实例隔离与缓存
+ * J. 异常场景
  *
  * @author noear
  * @since 1.1
@@ -268,28 +267,6 @@ class EgggReflectTest {
         public void add(Integer n) {
             counter += n;
         }
-    }
-
-    public interface Greeting {
-        String getName();
-
-        void setName(String name);
-
-        String hello();
-    }
-
-    public interface StringProxy {
-        String substring(int beginIndex);
-
-        boolean contains(CharSequence s);
-    }
-
-    public interface MapProxy {
-        Object getName();
-
-        void setName(Object name);
-
-        Object getAge();
     }
 
     // ==================== A. 入口方法 ====================
@@ -816,88 +793,7 @@ class EgggReflectTest {
         assertEquals("Canine", eggg.onBean(dog).property("species").get());
     }
 
-    // ==================== F. as ====================
-
-    @Test
-    void testAsProxyGetter() {
-        assertEquals("Tom", eggg.onBean(new Person("Tom")).as(Greeting.class).getName());
-    }
-
-    @Test
-    void testAsProxySetter() {
-        Person person = new Person();
-        Greeting greeting = eggg.onBean(person).as(Greeting.class);
-        greeting.setName("Alice");
-        assertEquals("Alice", person.getName());
-    }
-
-    @Test
-    void testAsProxyCustomMethod() {
-        assertEquals("Hello, I'm Tom",
-                eggg.onBean(new Person("Tom")).as(Greeting.class).hello());
-    }
-
-    @Test
-    void testAsMapProxyGetter() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", "Tom");
-        assertEquals("Tom", eggg.onBean(map).as(Greeting.class).getName());
-    }
-
-    @Test
-    void testAsMapProxySetter() {
-        Map<String, Object> map = new HashMap<>();
-        Greeting greeting = eggg.onBean(map).as(Greeting.class);
-        greeting.setName("Alice");
-        assertEquals("Alice", map.get("name"));
-    }
-
-    @Test
-    void testAsStringProxy() {
-        StringProxy proxy = eggg.onBean("Hello World").as(StringProxy.class);
-        assertEquals("World", proxy.substring(6));
-        assertTrue(proxy.contains("Hello"));
-    }
-
-    @Test
-    void testAsMapProxyGetAndSet() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("name", "Tom");
-        map.put("age", 25);
-
-        MapProxy proxy = eggg.onBean(map).as(MapProxy.class);
-        assertEquals("Tom", proxy.getName());
-        assertEquals(25, proxy.getAge());
-        proxy.setName("Alice");
-        assertEquals("Alice", map.get("name"));
-    }
-
-    @Test
-    void testAsProxyMultipleCalls() {
-        Greeting greeting = eggg.onBean(new Person("Tom")).as(Greeting.class);
-        assertEquals("Tom", greeting.getName());
-        greeting.setName("Alice");
-        assertEquals("Alice", greeting.getName());
-        assertEquals("Hello, I'm Alice", greeting.hello());
-    }
-
-    @Test
-    void testAsProxyDifferentInstances() {
-        Greeting g1 = eggg.onBean(new Person("Tom")).as(Greeting.class);
-        Greeting g2 = eggg.onBean(new Person("Bob")).as(Greeting.class);
-        assertEquals("Tom", g1.getName());
-        assertEquals("Bob", g2.getName());
-    }
-
-    @Test
-    void testAsMapProxyMissingMethod() {
-        Map<String, Object> map = new HashMap<>();
-        Greeting greeting = eggg.onBean(map).as(Greeting.class);
-        // hello() 在 Map 上找不到方法，也不是 getter/setter，应抛异常
-        assertThrows(EgggReflectException.class, greeting::hello);
-    }
-
-    // ==================== G. type() 和 get() ====================
+    // ==================== F. type() 和 get() ====================
 
     @Test
     void testTypeOnClass() {
@@ -938,7 +834,7 @@ class EgggReflectTest {
         assertEquals("Hello", result);
     }
 
-    // ==================== H. equals / hashCode / toString ====================
+    // ==================== G. equals / hashCode / toString ====================
 
     @Test
     void testEqualsSameObject() {
@@ -988,7 +884,7 @@ class EgggReflectTest {
         assertEquals("null", eggg.onClass(Person.class).toString());
     }
 
-    // ==================== I. 核心链式场景 ====================
+    // ==================== H. 核心链式场景 ====================
 
     @Test
     void testUserScenarioFromClass() {
@@ -1019,13 +915,6 @@ class EgggReflectTest {
     }
 
     @Test
-    void testFullChainCreateAndProxy() {
-        Greeting greeting = eggg.onClass(Person.class).create("Tom").as(Greeting.class);
-        assertEquals("Tom", greeting.getName());
-        assertEquals("Hello, I'm Tom", greeting.hello());
-    }
-
-    @Test
     void testFullChainFieldAndProperty() {
         Person person = new Person();
         eggg.onBean(person)
@@ -1053,7 +942,7 @@ class EgggReflectTest {
         assertEquals(21L, product);
     }
 
-    // ==================== J. Eggg 实例隔离与缓存 ====================
+    // ==================== I. Eggg 实例隔离与缓存 ====================
 
     @Test
     void testCustomEgggInstance() {
@@ -1089,7 +978,7 @@ class EgggReflectTest {
         assertEquals(r1, r2);
     }
 
-    // ==================== K. 异常场景 ====================
+    // ==================== J. 异常场景 ====================
 
     @Test
     void testExceptionCauseIsNoSuchMethod() {
