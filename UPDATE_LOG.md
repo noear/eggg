@@ -10,7 +10,7 @@
 Eggg eggg = new Eggg();
 
 // 从类开始：创建实例 -> 调用方法
-String result = eggg.onClass(String.class)
+String result = eggg.reflect(String.class)
                     .create("Hello World")
                     .call("substring", 6)
                     .get();
