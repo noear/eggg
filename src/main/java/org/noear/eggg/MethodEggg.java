@@ -18,6 +18,7 @@ package org.noear.eggg;
 import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
+import java.lang.invoke.WrongMethodTypeException;
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -222,10 +223,24 @@ public class MethodEggg implements ExecutableEggg {
 
             return (T) method.invoke(target, args);
         } else {
-            if (target == null && isStatic()) {
-                return (T) methodHandle.invokeWithArguments(args);
-            } else {
-                return (T) methodHandle.bindTo(target).invokeWithArguments(args);
+            try {
+                if (isStatic()) {
+                    // 静态方法：直接传入方法参数
+                    return (T) methodHandle.invokeWithArguments(args);
+                } else {
+                    // 实例方法：需要把 target 作为第一个参数拼接进去
+                    Object[] combinedArgs = new Object[args.length + 1];
+                    combinedArgs[0] = target;
+                    System.arraycopy(args, 0, combinedArgs, 1, args.length);
+
+                    return (T) methodHandle.invokeWithArguments(combinedArgs);
+                }
+            } catch (WrongMethodTypeException | ClassCastException e) {
+                // 场景 A：参数类型不匹配、调用语法错误（属于框架层/调用层不友好异常）
+                throw new IllegalArgumentException("Method invocation failed due to argument mismatch for method: " + method.toGenericString(), e);
+            } catch (Throwable t) {
+                // 场景 B：目标业务方法内部真正抛出的异常
+                throw new InvocationTargetException(t, "Target method executed with an exception");
             }
         }
     }

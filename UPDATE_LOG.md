@@ -1,4 +1,9 @@
 
+
+### 1.0.15
+
+* 优化 MethodEggg.invoke 异常提示
+
 ### 1.0.14
 
 * 添加 TypeEggg.isWildcardType 方法
