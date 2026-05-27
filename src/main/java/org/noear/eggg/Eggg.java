@@ -162,11 +162,9 @@ public class Eggg {
         Objects.requireNonNull(type, "type");
 
         if (type instanceof Class<?>) {
-            if (type instanceof Class) {
-                Class<?> clazz = (Class<?>) type;
-                if (clazz.isAnonymousClass()) {
-                    type = clazz.getGenericSuperclass();
-                }
+            Class<?> clazz = (Class<?>) type;
+            if (clazz.isAnonymousClass()) {
+                type = clazz.getGenericSuperclass();
             }
         }
 

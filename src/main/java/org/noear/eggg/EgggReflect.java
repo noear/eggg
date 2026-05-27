@@ -51,6 +51,11 @@ import java.util.*;
  */
 public class EgggReflect {
 
+    // ============ 常量 ============
+
+    private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class[0];
+
     // ============ 字段 ============
 
     private final Eggg eggg;
@@ -104,7 +109,7 @@ public class EgggReflect {
      * 无参构造
      */
     public EgggReflect create() {
-        return create(new Object[0]);
+        return create(EMPTY_OBJECT_ARRAY);
     }
 
     /**
@@ -156,7 +161,7 @@ public class EgggReflect {
      * 调用无参方法
      */
     public EgggReflect call(String name) {
-        return call(name, new Object[0]);
+        return call(name, EMPTY_OBJECT_ARRAY);
     }
 
     /**
@@ -396,7 +401,7 @@ public class EgggReflect {
      * 获取参数对象的类型数组（null 参数用 NULL.class 占位）
      */
     private static Class<?>[] types(Object... values) {
-        if (values == null) return new Class[0];
+        if (values == null || values.length == 0) return EMPTY_CLASS_ARRAY;
         Class<?>[] result = new Class[values.length];
         for (int i = 0; i < values.length; i++) {
             result[i] = values[i] == null ? NULL.class : values[i].getClass();

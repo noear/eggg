@@ -41,6 +41,8 @@ public class ClassEggg implements AnnotatedEggg {
     private final List<MethodEggg> publicMethodEgggs;
     private final List<MethodEggg> declaredMethodEgggs;
 
+    private final Map<String, List<MethodEggg>> methodIndexForName;
+
     private final Map<String, PropertyEggg> propertyEgggsForName = new LinkedHashMap<>();
     private final Map<String, PropertyEggg> propertyEgggsForAlias;
 
@@ -98,6 +100,12 @@ public class ClassEggg implements AnnotatedEggg {
         constrEgggs = new ArrayList<>(declaredConstructors.length);
         loadConstr(declaredConstructors);
 
+
+        // 4.构建方法查找索引（按 name 分组）
+        methodIndexForName = new HashMap<>(ownMethodEgggs.size());
+        for (MethodEggg me : ownMethodEgggs) {
+            methodIndexForName.computeIfAbsent(me.getName(), k -> new ArrayList<>(2)).add(me);
+        }
 
         this.digest = eggg.findDigest(this, this, null);
     }
@@ -318,8 +326,11 @@ public class ClassEggg implements AnnotatedEggg {
      * @return 匹配的方法包装器，或 null
      */
     public MethodEggg findMethodEgggOrNull(String name, Class<?>... parameterTypes) {
-        for (MethodEggg m1 : declaredMethodEgggs) {
-            if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
+        List<MethodEggg> candidates = methodIndexForName.get(name);
+        if (candidates == null) return null;
+
+        for (MethodEggg m1 : candidates) {
+            if (m1.getParamCount() == parameterTypes.length) {
                 if (parameterTypes.length == 0) {
                     return m1;
                 } else {
@@ -329,19 +340,6 @@ public class ClassEggg implements AnnotatedEggg {
                 }
             }
         }
-
-        for (MethodEggg m1 : publicMethodEgggs) {
-            if (m1.getParamCount() == parameterTypes.length && m1.getName().equals(name)) {
-                if (parameterTypes.length == 0) {
-                    return m1;
-                } else {
-                    if (Arrays.equals(m1.getMethod().getParameterTypes(), parameterTypes)) {
-                        return m1;
-                    }
-                }
-            }
-        }
-
         return null;
     }
 
