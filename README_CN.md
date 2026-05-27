@@ -2,7 +2,7 @@
   EggG
 </h1>
 <p align="center">
-	<strong>一个 Java 类型元数据分析与构建工具（泛型、注解、提炼、别名、缓存）</strong>
+	<strong>一个 Java 类型元数据分析与构建、及流式反射调用工具（泛型、注解、提炼、别名、缓存）</strong>
 </p>
 <p align="center">
     <a href="https://deepwiki.com/noear/eggg"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
@@ -45,7 +45,57 @@
 
 ### 关于 EggG
 
-一个 Java 类型元数据分析与构建工具。分析会涉及：类型、类、构造器、方法、字段、属性、参数，泛型传导等细节。适合一些：涉及泛型和注解的框架性项目采用。
+一个 Java 类型元数据分析与构建、及流式反射调用工具。分析会涉及：类型、类、构造器、方法、字段、属性、参数，泛型传导等细节。适合一些：涉及泛型和注解的框架性项目采用。
+
+### 示例0（流式反射调用）
+
+```java
+Eggg eggg = new Eggg();
+
+// 从类开始：创建实例 -> 调用方法
+String result = (String) eggg.onClass(String.class)
+                        .create("Hello World")
+                        .call("substring", 6)
+                        .get();
+// result = "World"
+
+// 从实例开始：直接调用
+String result2 = (String) eggg.onBean("Hello World")
+                        .call("substring", 6)
+                        .get();
+// result2 = "World"
+
+// 字段读写 + 链式
+Person person = eggg.onClass(Person.class)
+    .create()
+    .setField("name", "Tom")     // 字段写
+    .setField("age", 25)         // 字段写
+    .call("hello");             // 调方法
+String name = eggg.onBean(person).getField("name"); // 字段读 -> "Tom"
+
+// 属性读写（走 getter/setter）
+Person p = eggg.onClass(Person.class).create()
+    .setProperty("name", "Alice")  // 走 setName
+    .setProperty("age", 30)        // 走 setAge
+    .get();
+String name = eggg.onBean(p).property("name").get(); // 走 getName -> "Alice"
+
+// 按类名加载
+Object obj = eggg.onClass("java.lang.String")
+    .create("Hello")
+    .get(); // "Hello"
+
+// 调用静态方法
+String s = eggg.onClass(Person.class)
+    .call("staticHello")
+    .get();
+
+// 基本类型与包装类型自动互通
+Person p2 = eggg.onClass(Person.class)
+    .create("Bob", Integer.valueOf(30))  // Integer 自动匹配 int 参数
+    .get();
+```
+
 
 ### 示例1
 

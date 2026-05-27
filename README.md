@@ -47,12 +47,73 @@
 
 A tool for analyzing and building Java type metadata. It covers details of types, classes, constructors, methods, fields, properties, parameters, generic propagation, and more. Suitable for: framework projects involving generics and annotations.
 
+### Fluent Reflective Invocation
+
+Based on the Eggg metadata caching system, provides jOOR-style fluent reflective invocation. Internally reuses `ClassEggg` / `MethodEggg` / `FieldEggg` / `PropertyEggg` lookup and invocation, with MethodHandle acceleration.
+
+- `onClass` / `onBean` — Entry points: start from a class or instance
+- `create` — Construct instances (auto-matching constructors, with primitive/wrapper type interop)
+- `call` — Invoke methods (overloading, inheritance, private methods, static methods, void method chaining)
+- `field` / `getField` / `setField` — Direct field read/write (inherited fields, private fields)
+- `property` / `setProperty` — Property read/write (via getter/setter, fallback to field)
+- `type()` / `get()` — Get type and value
+
+
+### Example 0 (Fluent Reflective Invocation)
+
+```java
+Eggg eggg = new Eggg();
+
+// Start from class: create instance -> invoke method
+String result = (String) eggg.onClass(String.class)
+                        .create("Hello World")
+                        .call("substring", 6)
+                        .get();
+// result = "World"
+
+// Start from instance: direct invocation
+String result2 = (String) eggg.onBean("Hello World")
+                        .call("substring", 6)
+                        .get();
+// result2 = "World"
+
+// Field read/write + chaining
+Person person = eggg.onClass(Person.class)
+    .create()
+    .setField("name", "Tom")     // field write
+    .setField("age", 25)         // field write
+    .call("hello");             // method invoke
+String name = eggg.onBean(person).getField("name"); // field read -> "Tom"
+
+// Property read/write (via getter/setter)
+Person p = eggg.onClass(Person.class).create()
+    .setProperty("name", "Alice")  // via setName
+    .setProperty("age", 30)        // via setAge
+    .get();
+String name = eggg.onBean(p).property("name").get(); // via getName -> "Alice"
+
+// Load by class name
+Object obj = eggg.onClass("java.lang.String")
+    .create("Hello")
+    .get(); // "Hello"
+
+// Invoke static method
+String s = eggg.onClass(Person.class)
+    .call("staticHello")
+    .get();
+
+// Primitive and wrapper types auto-interop
+Person p2 = eggg.onClass(Person.class)
+    .create("Bob", Integer.valueOf(30))  // Integer auto-matches int parameter
+    .get();
+```
+
 
 ### Example 1
 
 ```java
 public class EgggDemo {
-    //一般，应用内全局单例
+    //Generally, application-wide singleton
     private static Eggg eggg = new Eggg();
 
     @Test

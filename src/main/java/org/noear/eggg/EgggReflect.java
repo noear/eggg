@@ -19,20 +19,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * 流式反射调用包装器（jOOR 风格）
- *
- * <p>通过 {@link Eggg#onClass(Class)} 或 {@link Eggg#onBean(Object)} 创建。
- * 内部充分复用 Eggg 体系的元数据缓存和调用能力：
- * <ul>
- *   <li>方法查找：{@link ClassEggg#findMethodEgggOrNull} + 模糊匹配降级</li>
- *   <li>方法调用：{@link MethodEggg#invoke}（含 MethodHandle 加速）</li>
- *   <li>构造器查找：{@link ClassEggg#findConstrEgggOrNull} + 模糊匹配降级</li>
- *   <li>构造器调用：{@link ConstrEggg#newInstance}</li>
- *   <li>字段查找：{@link ClassEggg#getFieldEgggByName}</li>
- *   <li>字段读写：{@link FieldEggg#getValue} / {@link FieldEggg#setValue}</li>
- *   <li>属性查找：{@link ClassEggg#getPropertyEgggByName}</li>
- *   <li>属性读写：{@link PropertyEggg#getValue} / {@link PropertyEggg#setValue}</li>
- * </ul>
+ * 流式反射调用包装器
  *
  * <pre>{@code
  * Eggg eggg = new Eggg();
@@ -50,7 +37,7 @@ import java.util.*;
  *
  * // 字段读写 + 链式
  * eggg.onBean(obj)
- *     .set("name", "Tom")
+ *     .setField("name", "Tom")
  *     .call("hello");
  *
  * // 属性读写（走 getter/setter）
@@ -231,7 +218,7 @@ public class EgggReflect {
     }
 
 
-    // ---- field ----
+    // ---- field / getField / setField ----
 
     /**
      * 获取字段值的包装
@@ -266,8 +253,11 @@ public class EgggReflect {
 
     /**
      * 获取字段值（快捷方式，等价于 field(name).get()）
+     *
+     * <p>查找方式：{@link ClassEggg#getFieldEgggByName}
+     * <p>取值方式：{@link FieldEggg#getValue}
      */
-    public <T> T get(String name) {
+    public <T> T getField(String name) {
         return field(name).get();
     }
 
@@ -277,7 +267,7 @@ public class EgggReflect {
      * <p>查找方式：{@link ClassEggg#getFieldEgggByName}
      * <p>设值方式：{@link FieldEggg#setValue}
      */
-    public EgggReflect set(String name, Object value) {
+    public EgggReflect setField(String name, Object value) {
         try {
             ClassEggg classEggg = eggg.getClassEggg(type);
             FieldEggg fieldEggg = classEggg.getFieldEgggByName(name);
@@ -349,7 +339,7 @@ public class EgggReflect {
             PropertyEggg propEggg = classEggg.getPropertyEgggByName(name);
 
             if (propEggg == null) {
-                return set(name, value);  // 降级到字段
+                return setField(name, value);  // 降级到字段
             }
 
             // PropertyEggg.setValue(object, value, true) -- true 表示允许走 setter

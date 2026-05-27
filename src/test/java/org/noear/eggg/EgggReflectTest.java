@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * A. 入口方法（onClass/onBean）
  * B. create（构造实例）
  * C. call（方法调用）
- * D. field/get/set（字段读写）
+ * D. field/getField/setField（字段读写）
  * E. property/setProperty（属性读写）
  * F. type() 和 get()
  * G. equals/hashCode/toString
@@ -626,17 +626,17 @@ class EgggReflectTest {
         assertEquals(10, service.counter);
     }
 
-    // ==================== D. field / get / set ====================
+    // ==================== D. field / getField / setField ====================
 
     @Test
     void testFieldGet() {
-        assertEquals("Tom", eggg.onBean(new Person("Tom", 25)).get("name"));
+        assertEquals("Tom", eggg.onBean(new Person("Tom", 25)).getField("name"));
     }
 
     @Test
     void testFieldSet() {
         Person person = new Person();
-        eggg.onBean(person).set("name", "Alice").set("age", 30);
+        eggg.onBean(person).setField("name", "Alice").setField("age", 30);
         assertEquals("Alice", person.getName());
         assertEquals(30, person.getAge());
     }
@@ -644,7 +644,7 @@ class EgggReflectTest {
     @Test
     void testFieldSetAndGetChain() {
         assertEquals("Bob",
-                eggg.onBean(new Person()).set("name", "Bob").get("name"));
+                eggg.onBean(new Person()).setField("name", "Bob").getField("name"));
     }
 
     @Test
@@ -657,7 +657,7 @@ class EgggReflectTest {
     @Test
     void testFieldSetReturnsThis() {
         Person person = new Person();
-        EgggReflect reflect = eggg.onBean(person).set("name", "Tom");
+        EgggReflect reflect = eggg.onBean(person).setField("name", "Tom");
         assertSame(person, reflect.get());
     }
 
@@ -671,27 +671,27 @@ class EgggReflectTest {
     @Test
     void testFieldSetNotFound() {
         EgggReflectException ex = assertThrows(EgggReflectException.class, () ->
-                eggg.onBean(new Person()).set("nonExistentField", "value"));
+                eggg.onBean(new Person()).setField("nonExistentField", "value"));
         assertTrue(ex.getCause() instanceof NoSuchFieldException);
     }
 
     @Test
     void testFieldGetNull() {
         Person person = new Person();
-        assertNull(eggg.onBean(person).get("name"));
+        assertNull(eggg.onBean(person).getField("name"));
     }
 
     @Test
     void testFieldSetNull() {
         Person person = new Person("Tom");
-        eggg.onBean(person).set("name", null);
+        eggg.onBean(person).setField("name", null);
         assertNull(person.getName());
     }
 
     @Test
     void testFieldSetInt() {
         Person person = new Person();
-        eggg.onBean(person).set("age", 30);
+        eggg.onBean(person).setField("age", 30);
         assertEquals(30, person.getAge());
     }
 
@@ -699,13 +699,13 @@ class EgggReflectTest {
     void testFieldGetInherited() {
         Dog dog = new Dog();
         dog.setSpecies("Canine");
-        assertEquals("Canine", eggg.onBean(dog).get("species"));
+        assertEquals("Canine", eggg.onBean(dog).getField("species"));
     }
 
     @Test
     void testFieldSetInherited() {
         Dog dog = new Dog();
-        eggg.onBean(dog).set("species", "Canine");
+        eggg.onBean(dog).setField("species", "Canine");
         assertEquals("Canine", dog.getSpecies());
     }
 
@@ -713,12 +713,29 @@ class EgggReflectTest {
     void testFieldMultipleSets() {
         Person person = new Person();
         eggg.onBean(person)
-                .set("name", "A")
-                .set("age", 1)
-                .set("name", "B")
-                .set("age", 2);
+                .setField("name", "A")
+                .setField("age", 1)
+                .setField("name", "B")
+                .setField("age", 2);
         assertEquals("B", person.getName());
         assertEquals(2, person.getAge());
+    }
+
+    // -- 别名兼容（get/set 仍可用）--
+
+    @Test
+    void testGetAliasForGetField() {
+        Person person = new Person("Tom");
+        String v1 = eggg.onBean(person).getField("name");
+        String v2 = eggg.onBean(person).getField("name");
+        assertEquals(v1, v2);
+    }
+
+    @Test
+    void testSetAliasForSetField() {
+        Person person = new Person();
+        eggg.onBean(person).setField("name", "Alice");
+        assertEquals("Alice", person.getName());
     }
 
     // ==================== E. property / setProperty ====================
@@ -901,7 +918,7 @@ class EgggReflectTest {
     @Test
     void testFullChainCreateCallSet() {
         assertEquals("Hello, I'm Tom",
-                eggg.onClass(Person.class).create().set("name", "Tom").set("age", 25)
+                eggg.onClass(Person.class).create().setField("name", "Tom").setField("age", 25)
                         .call("hello").get());
     }
 
@@ -918,17 +935,17 @@ class EgggReflectTest {
     void testFullChainFieldAndProperty() {
         Person person = new Person();
         eggg.onBean(person)
-                .set("name", "Field")
+                .setField("name", "Field")
                 .setProperty("age", 20);
         assertEquals("Field", eggg.onBean(person).property("name").get());
-        assertEquals(20, (int) eggg.onBean(person).get("age"));
+        assertEquals(20, (int) eggg.onBean(person).getField("age"));
     }
 
     @Test
     void testFullChainVoidMethodAndGetter() {
         Person person = new Person();
         eggg.onBean(person)
-                .set("name", "Tom")
+                .setField("name", "Tom")
                 .call("voidMethod");  // void 返回 this
         assertEquals("Tom", person.getName());
     }
@@ -1013,8 +1030,8 @@ class EgggReflectTest {
     @Test
     void testSetOnFinalField() {
         Book book = eggg.onClass(Book.class).create("Title", "Author").get();
-        // final 字段 set 静默忽略（FieldEggg.setValue 内部检查 isFinal）
-        eggg.onBean(book).set("title", "NewTitle");
+        // final 字段 setField 静默忽略（FieldEggg.setValue 内部检查 isFinal）
+        eggg.onBean(book).setField("title", "NewTitle");
         assertEquals("Title", book.getTitle()); // final 不变
     }
 
