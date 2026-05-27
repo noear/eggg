@@ -124,39 +124,27 @@ public class Eggg {
      * 包装一个类，用于创建实例或调用静态方法
      *
      * <pre>{@code
-     * String result = (String) eggg.onClass(String.class)
+     * String result = (String) eggg.reflect(String.class)
      *                         .create("Hello World")
      *                         .call("substring", 6)
      *                         .get();
      * }</pre>
      */
-    public EgggReflect onClass(Class<?> clazz) {
+    public EgggReflect reflect(Class<?> clazz) {
         Objects.requireNonNull(clazz, "clazz");
         return new EgggReflect(this, clazz);
-    }
-
-    /**
-     * 按类名包装一个类
-     */
-    public EgggReflect onClass(String className) {
-        Objects.requireNonNull(className, "className");
-        try {
-            return new EgggReflect(this, Class.forName(className));
-        } catch (ClassNotFoundException e) {
-            throw new EgggReflectException(e);
-        }
     }
 
     /**
      * 包装一个已有实例
      *
      * <pre>{@code
-     * String result = (String) eggg.onBean("Hello World")
+     * String result = (String) eggg.reflect("Hello World")
      *                         .call("substring", 6)
      *                         .get();
      * }</pre>
      */
-    public EgggReflect onBean(Object object) {
+    public EgggReflect reflect(Object object) {
         Objects.requireNonNull(object, "object");
         return new EgggReflect(this, object.getClass(), object);
     }

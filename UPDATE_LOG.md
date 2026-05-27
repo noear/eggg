@@ -1,4 +1,21 @@
 
+### 1.1.0
+
+* 添加 Eggg.reflect 反射流式调用
+
+
+示例：
+
+```java
+Eggg eggg = new Eggg();
+
+// 从类开始：创建实例 -> 调用方法
+String result = eggg.onClass(String.class)
+                    .create("Hello World")
+                    .call("substring", 6)
+                    .get();
+```
+
 
 ### 1.0.15
 

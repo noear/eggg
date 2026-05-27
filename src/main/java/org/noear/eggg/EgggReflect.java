@@ -25,24 +25,24 @@ import java.util.*;
  * Eggg eggg = new Eggg();
  *
  * // 从类开始
- * String result = (String) eggg.onClass(String.class)
- *                         .create("Hello World")
- *                         .call("substring", 6)
- *                         .get();
+ * String result = eggg.reflect(String.class)
+ *                     .create("Hello World")
+ *                     .call("substring", 6)
+ *                     .get();
  *
  * // 从实例开始
- * String result = (String) eggg.onBean("Hello World")
- *                         .call("substring", 6)
- *                         .get();
+ * String result = eggg.reflect((Object) "Hello World")
+ *                     .call("substring", 6)
+ *                     .get();
  *
  * // 字段读写 + 链式
- * eggg.onBean(obj)
+ * eggg.reflect(obj)
  *     .setField("name", "Tom")
  *     .call("hello");
  *
  * // 属性读写（走 getter/setter）
- * String name = (String) eggg.onBean(obj).property("name").get();
- * eggg.onBean(obj).setProperty("name", "Tom");
+ * String name = eggg.reflect(obj).property("name").get();
+ * eggg.reflect(obj).setProperty("name", "Tom");
  *
  * }</pre>
  *
@@ -218,7 +218,7 @@ public class EgggReflect {
     }
 
 
-    // ---- field / getField / setField ----
+    // ---- field / setField ----
 
     /**
      * 获取字段值的包装
@@ -249,16 +249,6 @@ public class EgggReflect {
         } catch (Exception e) {
             throw new EgggReflectException(e);
         }
-    }
-
-    /**
-     * 获取字段值（快捷方式，等价于 field(name).get()）
-     *
-     * <p>查找方式：{@link ClassEggg#getFieldEgggByName}
-     * <p>取值方式：{@link FieldEggg#getValue}
-     */
-    public <T> T getField(String name) {
-        return field(name).get();
     }
 
     /**
