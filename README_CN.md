@@ -56,48 +56,43 @@ public class EgggDemo {
     private static Eggg eggg = new Eggg();
 
     @Test
-    public void case1() {
+    public void case0() {
         // 从类开始：创建实例 -> 调用方法
-        String result = eggg.onClass(String.class) // result = "World"
+        String result = eggg.reflect(String.class) // result = "World"
                 .create("Hello World")
                 .call("substring", 6)
                 .get();
 
 
         // 从实例开始：直接调用
-        String result2 = eggg.onBean("Hello World") // result2 = "World"
+        String result2 = eggg.reflect("Hello World") // result2 = "World"
                 .call("substring", 6)
                 .get();
 
 
         // 字段读写 + 链式
-        Person person = eggg.onClass(Person.class)
+        Person person = eggg.reflect(Person.class)
                 .create()
                 .setField("name", "Tom")     // 字段写
                 .setField("age", 25)         // 字段写
                 .call("hello");             // 调方法
-        String name = eggg.onBean(person).getField("name"); // 字段读 -> "Tom"
+        String name = eggg.reflect(person).field("name").get(); // 字段读 -> "Tom"
 
         // 属性读写（走 getter/setter）
-        Person p = eggg.onClass(Person.class).create()
+        Person p = eggg.reflect(Person.class).create()
                 .setProperty("name", "Alice")  // 走 setName
                 .setProperty("age", 30)        // 走 setAge
                 .get();
-        String name = eggg.onBean(p).property("name").get(); // 走 getName -> "Alice"
-
-        // 按类名加载
-        String obj = eggg.onClass("java.lang.String")
-                .create("Hello")
-                .get(); // "Hello"
+        String name = eggg.reflect(p).property("name").get(); // 走 getName -> "Alice"
 
         // 调用静态方法
-        String s = eggg.onClass(Person.class)
+        String s = eggg.reflect(Person.class)
                 .call("staticHello")
                 .get();
 
         // 基本类型与包装类型自动互通
-        Person p2 = eggg.onClass(Person.class)
-                .create("Bob", Integer.valueOf(30))  // Integer 自动匹配 int 参数
+        Person p2 = eggg.reflect(Person.class)
+                .create("Bob", 30)  // Integer 自动匹配 int 参数
                 .get();
     }
 }

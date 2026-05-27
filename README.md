@@ -51,50 +51,51 @@ A tool for analyzing and building Java type metadata, and fluent reflective invo
 ### Example 0 (Fluent Reflective Invocation)
 
 ```java
-Eggg eggg = new Eggg();
+public class EgggDemo {
+    // 一般应用内全局单例
+    private static Eggg eggg = new Eggg();
 
-// Start from class: create instance -> invoke method
-String result = (String) eggg.onClass(String.class)
-                        .create("Hello World")
-                        .call("substring", 6)
-                        .get();
-// result = "World"
+    @Test
+    public void case0() {
+        Eggg eggg = new Eggg();
 
-// Start from instance: direct invocation
-String result2 = (String) eggg.onBean("Hello World")
-                        .call("substring", 6)
-                        .get();
-// result2 = "World"
+        // Start from class: create instance -> invoke method
+        String result = eggg.reflect(String.class) // result = "World"
+                .create("Hello World")
+                .call("substring", 6)
+                .get();
 
-// Field read/write + chaining
-Person person = eggg.onClass(Person.class)
-    .create()
-    .setField("name", "Tom")     // field write
-    .setField("age", 25)         // field write
-    .call("hello");             // method invoke
-String name = eggg.onBean(person).getField("name"); // field read -> "Tom"
+        // Start from instance: direct invocation
+        String result2 = eggg.reflect("Hello World") // result2 = "World"
+                .call("substring", 6)
+                .get();
+        
+        // Field read/write + chaining
+        Person person = eggg.reflect(Person.class)
+                .create()
+                .setField("name", "Tom")     // field write
+                .setField("age", 25)         // field write
+                .call("hello");             // method invoke
+        String name = eggg.reflect(person).field("name").get(); // field read -> "Tom"
 
-// Property read/write (via getter/setter)
-Person p = eggg.onClass(Person.class).create()
-    .setProperty("name", "Alice")  // via setName
-    .setProperty("age", 30)        // via setAge
-    .get();
-String name = eggg.onBean(p).property("name").get(); // via getName -> "Alice"
+        // Property read/write (via getter/setter)
+        Person p = eggg.reflect(Person.class).create()
+                .setProperty("name", "Alice")  // via setName
+                .setProperty("age", 30)        // via setAge
+                .get();
+        String name = eggg.reflect(p).property("name").get(); // via getName -> "Alice"
 
-// Load by class name
-Object obj = eggg.onClass("java.lang.String")
-    .create("Hello")
-    .get(); // "Hello"
+        // Invoke static method
+        String s = eggg.reflect(Person.class)
+                .call("staticHello")
+                .get();
 
-// Invoke static method
-String s = eggg.onClass(Person.class)
-    .call("staticHello")
-    .get();
-
-// Primitive and wrapper types auto-interop
-Person p2 = eggg.onClass(Person.class)
-    .create("Bob", Integer.valueOf(30))  // Integer auto-matches int parameter
-    .get();
+        // Primitive and wrapper types auto-interop
+        Person p2 = eggg.reflect(Person.class)
+                .create("Bob", 30)  // Integer auto-matches int parameter
+                .get();
+    }
+}
 ```
 
 
