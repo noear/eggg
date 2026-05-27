@@ -48,6 +48,18 @@
 A tool for analyzing and building Java type metadata, and fluent reflective invocation. It covers details of types, classes, constructors, methods, fields, properties, parameters, generic propagation, and more. Suitable for: framework projects involving generics and annotations.
 
 
+### Dependency
+
+```xml
+<dependency>
+    <groupId>org.noear</groupId>
+    <artifactId>eggg</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+
+
 ### Example 0 (Fluent Reflective Invocation)
 
 ```java

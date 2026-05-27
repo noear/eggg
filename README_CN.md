@@ -48,6 +48,17 @@
 一个 Java 类型元数据分析与构建、及流式反射调用工具。分析会涉及：类型、类、构造器、方法、字段、属性、参数，泛型传导等细节。适合一些：涉及泛型和注解的框架性项目采用。
 
 
+### 依赖包
+
+```xml
+<dependency>
+    <groupId>org.noear</groupId>
+    <artifactId>eggg</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
+
 ### 示例 0（流式反射调用）
 
 ```java
