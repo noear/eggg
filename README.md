@@ -112,7 +112,7 @@ public class EgggDemo {
 ```
 
 
-### Example 1
+### Example 1 (Type metadata analysis)
 
 ```java
 public class EgggDemo {
@@ -141,7 +141,7 @@ public class EgggDemo {
 ```
 
 
-### Example 2 (Nested Transmission)
+### Example 2 (Generalized Nested Argument Analysis)
 
 ```java
 public class EgggDemo {

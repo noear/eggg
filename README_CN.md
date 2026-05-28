@@ -111,7 +111,7 @@ public class EgggDemo {
 ```
 
 
-### 示例 1
+### 示例 1（类型元数据分析）
 
 ```java
 public class EgggDemo {
@@ -140,7 +140,7 @@ public class EgggDemo {
 ```
 
 
-### 示例 2（嵌套传递）
+### 示例 2（泛型嵌套传递分析）
 
 ```java
 public class EgggDemo {
