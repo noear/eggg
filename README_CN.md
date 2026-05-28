@@ -71,13 +71,13 @@ public class EgggDemo {
         // 从类开始：创建实例 -> 调用方法
         String result = eggg.reflect(String.class) // result = "World"
                 .create("Hello World")
-                .call("substring", 6)
+                .call("substring", 6)  // 调方法
                 .get();
 
 
         // 从实例开始：直接调用
         String result2 = eggg.reflect("Hello World") // result2 = "World"
-                .call("substring", 6)
+                .call("substring", 6)  // 调方法
                 .get();
 
 
@@ -86,7 +86,8 @@ public class EgggDemo {
                 .create()
                 .setField("name", "Tom")     // 字段写
                 .setField("age", 25)         // 字段写
-                .call("hello");             // 调方法
+                .get();
+        
         String name = eggg.reflect(person).field("name").get(); // 字段读 -> "Tom"
 
         // 属性读写（走 getter/setter）

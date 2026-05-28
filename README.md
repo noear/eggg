@@ -74,12 +74,12 @@ public class EgggDemo {
         // Start from class: create instance -> invoke method
         String result = eggg.reflect(String.class) // result = "World"
                 .create("Hello World")
-                .call("substring", 6)
+                .call("substring", 6)  // method invoke
                 .get();
 
         // Start from instance: direct invocation
         String result2 = eggg.reflect("Hello World") // result2 = "World"
-                .call("substring", 6)
+                .call("substring", 6)  // method invoke
                 .get();
         
         // Field read/write + chaining
@@ -87,7 +87,8 @@ public class EgggDemo {
                 .create()
                 .setField("name", "Tom")     // field write
                 .setField("age", 25)         // field write
-                .call("hello");             // method invoke
+                .get();
+        
         String name = eggg.reflect(person).field("name").get(); // field read -> "Tom"
 
         // Property read/write (via getter/setter)
