@@ -1,4 +1,8 @@
 
+### 1.1.1
+
+* 添加 Eggg.remove, removeByClassLoader, removeByPackage 方法（用于支持执插拨）
+
 ### 1.1.0
 
 * 添加 Eggg.reflect 反射流式调用
