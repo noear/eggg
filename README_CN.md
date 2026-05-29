@@ -138,7 +138,7 @@ public class EgggDemo {
             assert false; 
         }
 
-        //如果是热插拨项目，用完后可移除
+        //如果是热插拨项目，用完后可移除缓存
         eggg.remove(type);
     }
 }

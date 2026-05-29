@@ -139,7 +139,7 @@ public class EgggDemo {
             assert false;
         }
 
-        //If it is a hot-swappable device, it can be removed after use.
+        //If it is a hot-swappable project, the cache can be removed after use.
         eggg.remove(type);
     }
 }
