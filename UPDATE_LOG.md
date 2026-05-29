@@ -1,16 +1,20 @@
 
+### 1.1.3.
+
+* 添加 Eggg::reflect(typeEggg) 方法
+* 优化 EgggReflect 类型缓存
 
 ### 1.1.2
 
-* 优化 Eggg.remove 支持 匿名子类自动处理
+* 优化 Eggg::remove 支持 匿名子类自动处理
 
 ### 1.1.1
 
-* 添加 Eggg.remove, removeByClassLoader, removeByPackage 方法（用于支持执插拨）
+* 添加 Eggg::remove, removeByClassLoader, removeByPackage 方法（用于支持执插拨）
 
 ### 1.1.0
 
-* 添加 Eggg.reflect 反射流式调用
+* 添加 Eggg::reflect 反射流式调用
 
 
 示例：

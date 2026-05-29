@@ -59,7 +59,7 @@ public class EgggReflect {
     // ============ 字段 ============
 
     private final Eggg eggg;
-    private final Class<?> type;
+    private final TypeEggg typeEggg;
     private final Object object;
 
 
@@ -69,17 +69,31 @@ public class EgggReflect {
      * 包装一个类（用于静态方法调用或创建实例）
      */
     EgggReflect(Eggg eggg, Class<?> type) {
-        this.eggg = eggg;
-        this.type = type;
-        this.object = null;
+        this(eggg, eggg.getTypeEggg(type), null);
     }
 
     /**
      * 包装一个对象实例
      */
     EgggReflect(Eggg eggg, Class<?> type, Object object) {
+        this(eggg, eggg.getTypeEggg(type), object);
+    }
+
+    /**
+     * 包装一个类（用于静态方法调用或创建实例）
+     */
+    EgggReflect(Eggg eggg, TypeEggg typeEggg) {
         this.eggg = eggg;
-        this.type = type;
+        this.typeEggg = typeEggg;
+        this.object = null;
+    }
+
+    /**
+     * 包装一个对象实例
+     */
+    EgggReflect(Eggg eggg, TypeEggg typeEggg, Object object) {
+        this.eggg = eggg;
+        this.typeEggg = typeEggg;
         this.object = object;
     }
 
@@ -99,7 +113,7 @@ public class EgggReflect {
      * 获取包装的类型
      */
     public Class<?> type() {
-        return type;
+        return typeEggg.getType();
     }
 
 
@@ -127,7 +141,7 @@ public class EgggReflect {
         Class<?>[] argTypes = types(args);
 
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
 
             // 1. 精确匹配（复用 ClassEggg.findConstrEgggOrNull）
             ConstrEggg constrEggg = classEggg.findConstrEgggOrNull(argTypes);
@@ -140,7 +154,7 @@ public class EgggReflect {
             if (constrEggg == null) {
                 throw new EgggReflectException(
                     new NoSuchMethodException(
-                        "No matching constructor: " + type.getName() + argumentTypesToString(argTypes)));
+                        "No matching constructor: " + typeEggg.getType().getName() + argumentTypesToString(argTypes)));
             }
 
             // 3. 调用 ConstrEggg.newInstance
@@ -179,7 +193,7 @@ public class EgggReflect {
         Class<?>[] argTypes = types(args);
 
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
 
             // 1. 精确匹配（复用 ClassEggg.findMethodEgggOrNull）
             MethodEggg methodEggg = classEggg.findMethodEgggOrNull(name, argTypes);
@@ -192,14 +206,14 @@ public class EgggReflect {
             if (methodEggg == null) {
                 throw new EgggReflectException(
                     new NoSuchMethodException(
-                        "No matching method: " + type.getName() + "." + name + argumentTypesToString(argTypes)));
+                        "No matching method: " + typeEggg.getType().getName() + "." + name + argumentTypesToString(argTypes)));
             }
 
             // 3. 实例方法需要 object 不为 null
             if (object == null && !methodEggg.isStatic()) {
                 throw new EgggReflectException(
                     new NullPointerException(
-                        "Cannot invoke instance method '" + name + "' on null object (type: " + type.getName() + "). " +
+                        "Cannot invoke instance method '" + name + "' on null object (type: " + typeEggg.getType().getName() + "). " +
                         "Use create() first or ensure the object is not null."));
             }
 
@@ -233,12 +247,12 @@ public class EgggReflect {
      */
     public EgggReflect field(String name) {
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
             FieldEggg fieldEggg = classEggg.getFieldEgggByName(name);
 
             if (fieldEggg == null) {
                 throw new EgggReflectException(
-                    new NoSuchFieldException("No field: " + type.getName() + "." + name));
+                    new NoSuchFieldException("No field: " + typeEggg.getType().getName() + "." + name));
             }
 
             // FieldEggg.getValue
@@ -264,12 +278,12 @@ public class EgggReflect {
      */
     public EgggReflect setField(String name, Object value) {
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
             FieldEggg fieldEggg = classEggg.getFieldEgggByName(name);
 
             if (fieldEggg == null) {
                 throw new EgggReflectException(
-                    new NoSuchFieldException("No field: " + type.getName() + "." + name));
+                    new NoSuchFieldException("No field: " + typeEggg.getType().getName() + "." + name));
             }
 
             // FieldEggg.setValue
@@ -293,7 +307,7 @@ public class EgggReflect {
      */
     public EgggReflect property(String name) {
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
             PropertyEggg propEggg = classEggg.getPropertyEgggByName(name);
 
             if (propEggg == null) {
@@ -330,7 +344,7 @@ public class EgggReflect {
      */
     public EgggReflect setProperty(String name, Object value) {
         try {
-            ClassEggg classEggg = eggg.getClassEggg(type);
+            ClassEggg classEggg = typeEggg.getClassEggg();
             PropertyEggg propEggg = classEggg.getPropertyEgggByName(name);
 
             if (propEggg == null) {
@@ -452,7 +466,7 @@ public class EgggReflect {
 
     @Override
     public int hashCode() {
-        return object == null ? type.hashCode() : object.hashCode();
+        return object == null ? typeEggg.hashCode() : object.hashCode();
     }
 
     @Override

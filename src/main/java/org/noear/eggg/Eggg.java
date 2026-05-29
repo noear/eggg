@@ -124,10 +124,10 @@ public class Eggg {
      * 包装一个类，用于创建实例或调用静态方法
      *
      * <pre>{@code
-     * String result = (String) eggg.reflect(String.class)
-     *                         .create("Hello World")
-     *                         .call("substring", 6)
-     *                         .get();
+     * String result = eggg.reflect(String.class)
+     *                     .create("Hello World")
+     *                     .call("substring", 6)
+     *                     .get();
      * }</pre>
      */
     public EgggReflect reflect(Class<?> clazz) {
@@ -136,12 +136,26 @@ public class Eggg {
     }
 
     /**
+     * 包装一个类型包装器，用于创建实例或调用静态方法
+     *
+     * <pre>{@code
+     * String result = eggg.reflect(nameField.getTypeEggg())
+     *                     .create("Hello World")
+     *                     .get();
+     * }</pre>
+     */
+    public EgggReflect reflect(TypeEggg typeEggg) {
+        Objects.requireNonNull(typeEggg, "typeEggg");
+        return new EgggReflect(this, typeEggg);
+    }
+
+    /**
      * 包装一个已有实例
      *
      * <pre>{@code
-     * String result = (String) eggg.reflect("Hello World")
-     *                         .call("substring", 6)
-     *                         .get();
+     * String result = eggg.reflect("Hello World")
+     *                     .call("substring", 6)
+     *                     .get();
      * }</pre>
      */
     public EgggReflect reflect(Object object) {
@@ -151,6 +165,9 @@ public class Eggg {
 
     ///
 
+    /**
+     * 清空
+     */
     public void clear() {
         typeEgggCached.clear();
         classEgggCached.clear();
