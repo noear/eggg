@@ -172,6 +172,8 @@ public class Eggg {
     public boolean remove(Type type) {
         Objects.requireNonNull(type, "type");
 
+        type = resolveCacheType(type);
+
         SoftReference<TypeEggg> ref = typeEgggCached.remove(type);
         if (ref != null) {
             TypeEggg typeEggg = ref.get();
@@ -274,15 +276,23 @@ public class Eggg {
 
     ///
 
-    public TypeEggg getTypeEggg(Type type) {
-        Objects.requireNonNull(type, "type");
-
+    /**
+     * 解析实际缓存类型：匿名子类（如 {@code new HashMap<K,V>() {} }）会被转换为其泛型父类
+     */
+    private Type resolveCacheType(Type type) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
             if (clazz.isAnonymousClass()) {
-                type = clazz.getGenericSuperclass();
+                return clazz.getGenericSuperclass();
             }
         }
+        return type;
+    }
+
+    public TypeEggg getTypeEggg(Type type) {
+        Objects.requireNonNull(type, "type");
+
+        type = resolveCacheType(type);
 
         return typeEgggCached.compute(type, (t, softRef) -> {
             if (softRef != null && softRef.get() != null) {

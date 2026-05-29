@@ -244,12 +244,49 @@ public class EgggRemoveTest {
 
     @Test
     public void test_remove_parameterized_type() {
-        // 测试参数化类型的移除
+        // 测试参数化类型的移除（用 getOriginType）
         TypeEggg t1 = eggg.getTypeEggg(new org.noear.eggg.model.MyList<UserModel>() {}.getClass());
         Assertions.assertNotNull(t1);
 
-        // 移除
+        // 用 getOriginType 获取实际缓存 key 移除
         boolean removed = eggg.remove(t1.getOriginType());
         Assertions.assertTrue(removed);
+    }
+
+    @Test
+    public void test_remove_anonymous_class_by_original_class() {
+        // 关键场景：用户传入匿名类 Class，remove 应该也能正确移除
+        // 因为 getTypeEggg 内部会把匿名类转换为泛型父类
+        TypeEggg t1 = eggg.getTypeEggg(new org.noear.eggg.model.MyList<UserModel>() {}.getClass());
+        Assertions.assertNotNull(t1);
+        Assertions.assertTrue(t1.isList());
+        Assertions.assertTrue(t1.isParameterizedType());
+
+        // 1. 用原始匿名类 Class 做移除（而非 getOriginType）
+        Class<?> anonymousClass = new org.noear.eggg.model.MyList<UserModel>() {}.getClass();
+        boolean removed = eggg.remove(anonymousClass);
+        Assertions.assertTrue(removed);
+
+        // 2. 再次用同一个匿名类获取，应该是新实例
+        TypeEggg t2 = eggg.getTypeEggg(new org.noear.eggg.model.MyList<UserModel>() {}.getClass());
+        Assertions.assertNotSame(t1, t2);
+    }
+
+    @Test
+    public void test_remove_hashmap_anonymous_class() {
+        // 模拟用户示例中的 HashMap 匿名子类场景
+        TypeEggg t1 = eggg.getTypeEggg(new java.util.HashMap<Integer, UserModel>() {}.getClass());
+        Assertions.assertNotNull(t1);
+        Assertions.assertTrue(t1.isMap());
+        Assertions.assertTrue(t1.isParameterizedType());
+
+        // 用匿名类 Class 移除
+        Class<?> anonymousClass = new java.util.HashMap<Integer, UserModel>() {}.getClass();
+        boolean removed = eggg.remove(anonymousClass);
+        Assertions.assertTrue(removed);
+
+        // 再次移除应返回 false
+        boolean removedAgain = eggg.remove(anonymousClass);
+        Assertions.assertFalse(removedAgain);
     }
 }

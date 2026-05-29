@@ -1,4 +1,9 @@
 
+
+### 1.1.2
+
+* 优化 Eggg.remove 支持 匿名子类自动处理
+
 ### 1.1.1
 
 * 添加 Eggg.remove, removeByClassLoader, removeByPackage 方法（用于支持执插拨）
