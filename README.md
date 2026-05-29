@@ -54,7 +54,7 @@ A tool for analyzing and building Java type metadata, and fluent reflective invo
 <dependency>
     <groupId>org.noear</groupId>
     <artifactId>eggg</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
