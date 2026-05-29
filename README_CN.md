@@ -120,7 +120,8 @@ public class EgggDemo {
 
     @Test
     public void case1() {
-        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {}.getClass());
+        Class<?> type = new HashMap<Integer, UserModel>() {}.getClass();
+        TypeEggg typeEggg = eggg.getTypeEggg(type);
 
         if (typeEggg.isMap()) {
             if (typeEggg.isParameterizedType()) {
@@ -130,11 +131,15 @@ public class EgggDemo {
 
                 assert keyType.equals(Integer.class);
                 assert ValueType.equals(UserModel.class);
-                return;
+            } else {
+                assert false;
             }
+        } else {
+            assert false; 
         }
 
-        assert false;
+        //如果是热插拨项目，用完后可移除
+        eggg.remove(type);
     }
 }
 ```

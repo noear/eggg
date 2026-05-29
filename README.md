@@ -121,21 +121,26 @@ public class EgggDemo {
 
     @Test
     public void case1() {
-        TypeEggg typeEggg = eggg.getTypeEggg(new HashMap<Integer, UserModel>() {}.getClass());
+        Class<?> type = new HashMap<Integer, UserModel>() {}.getClass();
+        TypeEggg typeEggg = eggg.getTypeEggg(type);
 
         if (typeEggg.isMap()) {
             if (typeEggg.isParameterizedType()) {
-                // Analyzed generic info
+                // The analyzed generic information
                 Type keyType = typeEggg.getActualTypeArguments()[0];
                 Type ValueType = typeEggg.getActualTypeArguments()[1];
 
                 assert keyType.equals(Integer.class);
                 assert ValueType.equals(UserModel.class);
-                return;
+            } else {
+                assert false;
             }
+        } else {
+            assert false;
         }
 
-        assert false;
+        //If it is a hot-swappable device, it can be removed after use.
+        eggg.remove(type);
     }
 }
 ```
