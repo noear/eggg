@@ -156,6 +156,122 @@ public class Eggg {
         classEgggCached.clear();
     }
 
+    /**
+     * 移除指定类型的缓存元数据（用于热插拔场景）
+     *
+     * <p>会级联移除关联的 ClassEggg 缓存。适用于插件卸载等需要精确清理单个类型的场景。
+     *
+     * <pre>{@code
+     * // 插件卸载时，移除特定类型的元数据
+     * eggg.remove(MyPluginClass.class);
+     * }</pre>
+     *
+     * @param type 要移除的类型
+     * @return 是否成功移除（true 表示缓存中存在并已移除）
+     */
+    public boolean remove(Type type) {
+        Objects.requireNonNull(type, "type");
+
+        SoftReference<TypeEggg> ref = typeEgggCached.remove(type);
+        if (ref != null) {
+            TypeEggg typeEggg = ref.get();
+            if (typeEggg != null) {
+                classEgggCached.remove(typeEggg);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 移除由指定类加载器加载的所有类型的缓存元数据（用于热插拔场景）
+     *
+     * <p>遍历缓存，移除所有由目标 ClassLoader 加载的类型及其关联的 ClassEggg。
+     * 适用于插件系统卸载整个插件时，一次性清理该插件下所有类型的元数据，
+     * 避免类加载器泄漏。
+     *
+     * <pre>{@code
+     * // 插件卸载时，按类加载器批量清理
+     * eggg.removeByClassLoader(pluginClassLoader);
+     * }</pre>
+     *
+     * @param classLoader 目标类加载器
+     * @return 移除的类型数量
+     */
+    public int removeByClassLoader(ClassLoader classLoader) {
+        Objects.requireNonNull(classLoader, "classLoader");
+
+        int count = 0;
+        Iterator<Map.Entry<Type, SoftReference<TypeEggg>>> it = typeEgggCached.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<Type, SoftReference<TypeEggg>> entry = it.next();
+            SoftReference<TypeEggg> ref = entry.getValue();
+            TypeEggg typeEggg = (ref != null) ? ref.get() : null;
+
+            if (typeEggg != null) {
+                Class<?> clazz = typeEggg.getType();
+                if (clazz != null && clazz.getClassLoader() == classLoader) {
+                    classEgggCached.remove(typeEggg);
+                    it.remove();
+                    count++;
+                }
+            } else {
+                // SoftReference 已被回收，也清理掉
+                it.remove();
+            }
+        }
+
+        return count;
+    }
+
+    /**
+     * 移除指定包下所有类型的缓存元数据（用于热插拔场景）
+     *
+     * <p>遍历缓存，移除所有类名以 {@code packageName} 为前缀的类型及其关联的 ClassEggg。
+     * 支持子包匹配，例如传入 "com.example.plugin" 会同时移除
+     * "com.example.plugin.service" 和 "com.example.plugin.model" 下的类型。
+     *
+     * <p>适用于同一 ClassLoader 下按模块/包粒度进行热更新的场景。
+     *
+     * <pre>{@code
+     * // 卸载某个模块的所有类型元数据
+     * eggg.removeByPackage("com.example.plugin");
+     * }</pre>
+     *
+     * @param packageName 目标包名（必须为合法包名前缀）
+     * @return 移除的类型数量
+     */
+    public int removeByPackage(String packageName) {
+        Objects.requireNonNull(packageName, "packageName");
+
+        // 构建类名前缀："com.example" → "com.example."
+        String prefix = packageName.endsWith(".") ? packageName : packageName + ".";
+
+        int count = 0;
+        Iterator<Map.Entry<Type, SoftReference<TypeEggg>>> it = typeEgggCached.entrySet().iterator();
+
+        while (it.hasNext()) {
+            Map.Entry<Type, SoftReference<TypeEggg>> entry = it.next();
+            SoftReference<TypeEggg> ref = entry.getValue();
+            TypeEggg typeEggg = (ref != null) ? ref.get() : null;
+
+            if (typeEggg != null) {
+                Class<?> clazz = typeEggg.getType();
+                if (clazz != null && clazz.getName().startsWith(prefix)) {
+                    classEgggCached.remove(typeEggg);
+                    it.remove();
+                    count++;
+                }
+            } else {
+                // SoftReference 已被回收，也清理掉
+                it.remove();
+            }
+        }
+
+        return count;
+    }
+
     ///
 
     public TypeEggg getTypeEggg(Type type) {
