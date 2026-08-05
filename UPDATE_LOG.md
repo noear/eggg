@@ -1,6 +1,7 @@
 
 ### 1.1.4
 
+* 优化 MethodEggg.invoke 执行性能
 * 修复 MethodEggg.invoke 与可变参数（`int...`）的兼容问题
 
 ### 1.1.3
