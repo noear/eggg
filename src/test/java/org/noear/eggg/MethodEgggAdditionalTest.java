@@ -20,6 +20,7 @@ class MethodEgggAdditionalTest {
         public List<String> genericMethod() { return null; }
 
         public void methodWithParams(String param1, int param2) {}
+        public void methodWithParamArgs(String param1, int... param2) {}
         public String methodWithReturn(String input) { return input; }
 
         public static void staticMethod() {}
@@ -117,6 +118,36 @@ class MethodEgggAdditionalTest {
         // Test parameter existence check
         assertTrue(methodEggg.hasParamEgggByAlias("param1"));
         assertFalse(methodEggg.hasParamEgggByAlias("nonExistent"));
+    }
+
+    @Test
+    void testMethodWithParamArgs() throws Exception {
+        ClassEggg classEggg = eggg.getClassEggg(eggg.getTypeEggg(MethodTestClass.class));
+        Method method = MethodTestClass.class.getMethod("methodWithParamArgs", String.class, int[].class);
+        MethodEggg methodEggg = eggg.newMethodEggg(classEggg, method);
+
+        assertNotNull(methodEggg);
+        assertEquals(2, methodEggg.getParamCount());
+
+        Collection<ParamEggg> params = methodEggg.getParamEgggAry();
+        assertEquals(2, params.size());
+        assertEquals("param1", methodEggg.getParamEgggAt(0).getName());
+        assertEquals("param2", methodEggg.getParamEgggAt(1).getName());
+
+        // Test parameter access by alias
+        ParamEggg param1 = methodEggg.getParamEgggByAlias("param1");
+        ParamEggg param2 = methodEggg.getParamEgggByAlias("param2");
+        assertNotNull(param1);
+        assertNotNull(param2);
+        assertEquals(String.class, param1.getTypeEggg().getType());
+        assertEquals(int[].class, param2.getTypeEggg().getType());
+
+        // Test parameter existence check
+        assertTrue(methodEggg.hasParamEgggByAlias("param1"));
+        assertFalse(methodEggg.hasParamEgggByAlias("nonExistent"));
+
+        Object target = classEggg.getCreator().newInstance();
+        methodEggg.invoke(target, "a", new int[]{1, 2});
     }
 
     @Test

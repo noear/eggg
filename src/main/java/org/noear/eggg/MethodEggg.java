@@ -54,7 +54,9 @@ public class MethodEggg implements ExecutableEggg {
 
         try {
             if (isPublic()) {
-                this.methodHandle = MethodHandles.lookup().unreflect(method);
+                MethodHandle mh = MethodHandles.lookup().unreflect(method);
+                // varargs 方法句柄按固定元数处理，避免 invokeWithArguments 误把数组当单个元素收集
+                this.methodHandle = mh.isVarargsCollector() ? mh.asFixedArity() : mh;
             }
         } catch (Throwable e) {
             this.methodHandle = null;

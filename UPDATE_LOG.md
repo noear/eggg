@@ -1,5 +1,9 @@
 
-### 1.1.3.
+### 1.1.4
+
+* 修复 MethodEggg.invoke 与可变参数（`int...`）的兼容问题
+
+### 1.1.3
 
 * 添加 Eggg::reflect(typeEggg) 方法
 * 优化 EgggReflect 类型缓存
