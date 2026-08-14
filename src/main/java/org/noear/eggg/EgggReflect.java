@@ -47,6 +47,9 @@ import java.util.*;
  * // 提取所有属性值为 Map（getter 优先，降级字段）
  * Map<String, Object> map = eggg.reflect(obj).toMap();
  *
+ * // 用 Map 批量填充属性（setter 优先，降级字段，未知 key 忽略）
+ * eggg.reflect(obj).fillMap(map);
+ *
  * }</pre>
  *
  * @author noear
@@ -422,6 +425,77 @@ public class EgggReflect {
         }
     }
 
+
+    // ---- fillMap（用 Map 批量填充属性）----
+
+    /**
+     * 用 Map 批量填充对象属性（setter 优先，降级字段），返回 this
+     *
+     * <pre>{@code
+     * eggg.reflect(user).fillMap(map);
+     * }</pre>
+     *
+     * <p>规则（与 {@link #toMap()} 对称）：
+     * <ul>
+     *   <li>按属性名（{@link PropertyEggg#getName}）匹配 map 的 key，未知 key 忽略</li>
+     *   <li>设值优先走 setter（{@link PropertyEggg#setValue(Object, Object, boolean)}，allowSetter=true），无 setter 时降级字段</li>
+     *   <li>只读属性（仅有 getter，无 setter 也无字段）跳过</li>
+     *   <li>final 字段自动跳过（{@link FieldEggg#setValue(Object, Object)} 内部已处理）</li>
+     * </ul>
+     */
+    public EgggReflect fillMap(Map<String, Object> map) {
+        return fillMap(map, false);
+    }
+
+    /**
+     * 用 Map 批量填充对象属性（setter 优先，降级字段），返回 this
+     *
+     * @param map     待填充的键值对
+     * @param useAlias 是否按属性别名（{@link PropertyEggg#getAlias}）匹配 key（需配置 AliasHandler，默认别名与属性名一致）
+     */
+    public EgggReflect fillMap(Map<String, Object> map, boolean useAlias) {
+        try {
+            if (object == null) {
+                throw new EgggReflectException(
+                    new NullPointerException(
+                        "Cannot fill properties from map on null object (type: " + typeEggg.getType().getName() + "). " +
+                        "Use create() first or ensure the object is not null."));
+            }
+            if (map == null) {
+                throw new EgggReflectException(
+                    new NullPointerException("map must not be null"));
+            }
+
+            ClassEggg classEggg = typeEggg.getClassEggg();
+
+            // 建立 key -> 属性 索引（按属性名或别名）
+            Map<String, PropertyEggg> propIndex = new HashMap<>();
+            for (PropertyEggg propEggg : classEggg.getPropertyEgggs()) {
+                propIndex.put(useAlias ? propEggg.getAlias() : propEggg.getName(), propEggg);
+            }
+
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                PropertyEggg propEggg = propIndex.get(entry.getKey());
+                if (propEggg == null) {
+                    continue;  // 未知 key 忽略
+                }
+
+                // 只读属性（仅有 getter，无 setter 也无字段）不可写，跳过
+                if (propEggg.getSetterEggg() == null && propEggg.getFieldEggg() == null) {
+                    continue;
+                }
+
+                // 属性设值（setter 优先，降级字段；final 字段自动跳过）
+                propEggg.setValue(object, entry.getValue(), true);
+            }
+
+            return this;
+        } catch (EgggReflectException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EgggReflectException(e);
+        }
+    }
 
     // ============ 内部方法 ============
 

@@ -36,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * I. Eggg 实例隔离与缓存
  * J. 异常场景
  * K. toMap（对象转 Map）
+ * L. fillMap（Map 填充对象）
  *
  * @author noear
  * @since 1.1
@@ -1172,5 +1173,171 @@ class EgggReflectTest {
         assertEquals(2, map.size());
         assertEquals("Tom", map.get("name"));
         assertEquals(25, map.get("age"));
+    }
+
+    // ==================== L. fillMap（Map 填充对象）====================
+
+    @Test
+    void testFillMapBasic() {
+        Person person = new Person();
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "Tom");
+        map.put("age", 25);
+
+        eggg.reflect(person).fillMap(map);
+
+        assertEquals("Tom", person.getName());
+        assertEquals(25, person.getAge());
+    }
+
+    @Test
+    void testFillMapReturnsThis() {
+        // 返回 this，支持链式
+        Person person = new Person();
+        EgggReflect reflect = eggg.reflect(person);
+
+        assertSame(reflect, reflect.fillMap(Collections.singletonMap("name", "Tom")));
+    }
+
+    @Test
+    void testFillMapInherited() {
+        // 继承属性也可填充
+        Dog dog = new Dog();
+        Map<String, Object> map = new HashMap<>();
+        map.put("species", "Canine");
+        map.put("name", "Rex");
+
+        eggg.reflect(dog).fillMap(map);
+
+        assertEquals("Canine", dog.getSpecies());
+        assertEquals("Rex", dog.getName());
+    }
+
+    @Test
+    void testFillMapIgnoreUnknownKey() {
+        // 未知 key 忽略，不影响已匹配属性
+        Person person = new Person();
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "Tom");
+        map.put("unknown", "x");
+
+        eggg.reflect(person).fillMap(map);
+
+        assertEquals("Tom", person.getName());
+    }
+
+    @Test
+    void testFillMapPrivateFieldFallback() {
+        // 无公有 setter 的私有字段降级写入
+        PrivateAccess pa = new PrivateAccess();
+        eggg.reflect(pa).fillMap(Collections.singletonMap("secret", "newSecret"));
+
+        assertEquals("newSecret", pa.getSecret());
+    }
+
+    @Test
+    void testFillMapReadOnlySkip() {
+        // 只有 getter 的计算属性不可写，应跳过；可写属性正常填充
+        PropertyOnly po = new PropertyOnly();
+        Map<String, Object> map = new HashMap<>();
+        map.put("value", "v");
+        map.put("readOnly", "should-not-set");
+
+        eggg.reflect(po).fillMap(map);
+
+        assertEquals("v", po.getValue());
+        assertEquals("readonly", po.getReadOnly()); // 不变
+    }
+
+    @Test
+    void testFillMapFinalFieldSkipped() {
+        // final 字段不可变，自动跳过
+        Book book = eggg.reflect(Book.class).create("Java", "James").get();
+        Map<String, Object> map = new HashMap<>();
+        map.put("title", "Changed");
+        map.put("author", "Other");
+        map.put("info", "computed");
+
+        eggg.reflect(book).fillMap(map);
+
+        assertEquals("Java", book.getTitle());   // final 不变
+        assertEquals("James", book.getAuthor()); // final 不变
+        assertEquals("Java by James", book.getInfo()); // 计算属性不变
+    }
+
+    @Test
+    void testFillMapNullValue() {
+        Person person = new Person("Tom", 25);
+        eggg.reflect(person).fillMap(Collections.singletonMap("name", null));
+
+        assertNull(person.getName());
+        assertEquals(25, person.getAge());
+    }
+
+    @Test
+    void testFillMapNullObject() {
+        EgggReflectException ex = assertThrows(EgggReflectException.class, () ->
+                eggg.reflect(Person.class).fillMap(Collections.singletonMap("name", "Tom")));
+        assertTrue(ex.getCause() instanceof NullPointerException);
+    }
+
+    @Test
+    void testFillMapNullMap() {
+        EgggReflectException ex = assertThrows(EgggReflectException.class, () ->
+                eggg.reflect(new Person()).fillMap((Map<String, Object>) null));
+        assertTrue(ex.getCause() instanceof NullPointerException);
+    }
+
+    @Test
+    void testFillMapEmptyMap() {
+        Person person = new Person("Tom", 25);
+        eggg.reflect(person).fillMap(Collections.emptyMap());
+
+        assertEquals("Tom", person.getName()); // 无操作，原值不变
+        assertEquals(25, person.getAge());
+    }
+
+    @Test
+    void testFillMapWriteOnly() {
+        // 只有 setter 的属性：调用 setter，不抛异常
+        WriteOnly wo = new WriteOnly();
+        assertDoesNotThrow(() ->
+                eggg.reflect(wo).fillMap(Collections.singletonMap("only", "v")));
+    }
+
+    @Test
+    void testFillMapTypeMismatch() {
+        // 值类型与属性类型不匹配时抛异常（与 setProperty 行为一致）
+        Person person = new Person();
+        assertThrows(EgggReflectException.class, () ->
+                eggg.reflect(person).fillMap(Collections.singletonMap("age", "abc")));
+    }
+
+    @Test
+    void testFillMapUseAlias() {
+        Eggg aliasEggg = new Eggg().withAliasHandler((cw, source, ref) -> "alias_" + ref);
+        Person person = new Person();
+        Map<String, Object> map = new HashMap<>();
+        map.put("alias_name", "Tom");
+        map.put("alias_age", 25);
+
+        aliasEggg.reflect(person).fillMap(map, true);
+
+        assertEquals("Tom", person.getName());
+        assertEquals(25, person.getAge());
+    }
+
+    @Test
+    void testFillMapUseNameDefault() {
+        // 配置了 AliasHandler 时，fillMap() 默认仍按属性名匹配
+        Eggg aliasEggg = new Eggg().withAliasHandler((cw, source, ref) -> "alias_" + ref);
+        Person person = new Person();
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", "Tom");
+        map.put("alias_name", "Ignored");
+
+        aliasEggg.reflect(person).fillMap(map);
+
+        assertEquals("Tom", person.getName());
     }
 }

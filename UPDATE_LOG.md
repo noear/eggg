@@ -3,6 +3,7 @@
 ### 1.1.5
 
 * 添加 Eggg::reflect(typeEggg).toMap() 方法
+* 添加 Eggg::reflect(typeEggg).fillMap(map).get() 方法
 
 ### 1.1.4
 
