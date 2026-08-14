@@ -54,7 +54,7 @@
 <dependency>
     <groupId>org.noear</groupId>
     <artifactId>eggg</artifactId>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
 </dependency>
 ```
 
