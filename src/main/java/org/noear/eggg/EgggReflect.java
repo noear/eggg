@@ -44,6 +44,9 @@ import java.util.*;
  * String name = eggg.reflect(obj).property("name").get();
  * eggg.reflect(obj).setProperty("name", "Tom");
  *
+ * // 提取所有属性值为 Map（getter 优先，降级字段）
+ * Map<String, Object> map = eggg.reflect(obj).toMap();
+ *
  * }</pre>
  *
  * @author noear
@@ -354,6 +357,64 @@ public class EgggReflect {
             // PropertyEggg.setValue(object, value, true) -- true 表示允许走 setter
             propEggg.setValue(object, value, true);
             return this;
+        } catch (EgggReflectException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new EgggReflectException(e);
+        }
+    }
+
+
+    // ---- toMap（提取所有属性值为 Map）----
+
+    /**
+     * 提取对象的所有属性值为 Map（getter 优先，降级字段）
+     *
+     * <pre>{@code
+     * Map<String, Object> map = eggg.reflect(user).toMap();
+     * }</pre>
+     *
+     * <p>规则：
+     * <ul>
+     *   <li>遍历所有属性（含父类继承的），key 为属性名（{@link PropertyEggg#getName}）</li>
+     *   <li>取值优先走 getter（{@link PropertyEggg#getValue(Object, boolean)}，allowGetter=true），无 getter 时降级读取字段</li>
+     *   <li>静态字段不参与（字段加载时已排除）</li>
+     *   <li>只写属性（仅有 setter，不可读）会被跳过</li>
+     * </ul>
+     */
+    public Map<String, Object> toMap() {
+        return toMap(false);
+    }
+
+    /**
+     * 提取对象的所有属性值为 Map（getter 优先，降级字段）
+     *
+     * @param useAlias 是否使用属性别名作为 key（{@link PropertyEggg#getAlias}；需配置 AliasHandler，默认别名与属性名一致）
+     */
+    public Map<String, Object> toMap(boolean useAlias) {
+        try {
+            if (object == null) {
+                throw new EgggReflectException(
+                    new NullPointerException(
+                        "Cannot extract properties to map on null object (type: " + typeEggg.getType().getName() + "). " +
+                        "Use create() first or ensure the object is not null."));
+            }
+
+            ClassEggg classEggg = typeEggg.getClassEggg();
+            Map<String, Object> map = new LinkedHashMap<>();
+
+            for (PropertyEggg propEggg : classEggg.getPropertyEgggs()) {
+                // 只写属性（仅有 setter，无 getter 也无字段）不可读，跳过
+                if (propEggg.getGetterEggg() == null && propEggg.getFieldEggg() == null) {
+                    continue;
+                }
+
+                // 属性取值（getter 优先，降级字段）
+                Object value = propEggg.getValue(object, true);
+                map.put(useAlias ? propEggg.getAlias() : propEggg.getName(), value);
+            }
+
+            return map;
         } catch (EgggReflectException e) {
             throw e;
         } catch (Exception e) {

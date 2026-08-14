@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * H. 核心链式场景
  * I. Eggg 实例隔离与缓存
  * J. 异常场景
+ * K. toMap（对象转 Map）
  *
  * @author noear
  * @since 1.1
@@ -266,6 +267,17 @@ class EgggReflectTest {
 
         public void add(Integer n) {
             counter += n;
+        }
+    }
+
+    public static class StaticHolder {
+        public static final String STATIC_NAME = "static";
+        public String name = "dynamic";
+    }
+
+    public static class WriteOnly {
+        public void setOnly(String v) {
+            // 只有 setter，没有字段也没有 getter
         }
     }
 
@@ -1033,5 +1045,132 @@ class EgggReflectTest {
         // String.substring(-1) 触发 StringIndexOutOfBoundsException
         assertThrows(EgggReflectException.class, () ->
                 eggg.reflect((Object) "Hello").call("substring", -1));
+    }
+
+    // ==================== K. toMap（对象转 Map）====================
+
+    @Test
+    void testToMapBasic() {
+        Person person = new Person("Tom", 25);
+        Map<String, Object> map = eggg.reflect(person).toMap();
+
+        assertEquals(2, map.size());
+        assertEquals("Tom", map.get("name"));
+        assertEquals(25, map.get("age"));
+    }
+
+    @Test
+    void testToMapReturnsLinkedHashMap() {
+        Person person = new Person("Tom", 25);
+        Map<String, Object> map = eggg.reflect(person).toMap();
+
+        assertInstanceOf(LinkedHashMap.class, map);
+    }
+
+    @Test
+    void testToMapInherited() {
+        Dog dog = new Dog();
+        dog.setSpecies("Canine");
+        dog.setName("Rex");
+        Map<String, Object> map = eggg.reflect(dog).toMap();
+
+        assertEquals(2, map.size());
+        assertEquals("Canine", map.get("species"));
+        assertEquals("Rex", map.get("name"));
+    }
+
+    @Test
+    void testToMapComputedProperty() {
+        // readOnly 是只有 getter 的计算属性，也应被提取
+        PropertyOnly po = new PropertyOnly();
+        po.setValue("v");
+        Map<String, Object> map = eggg.reflect(po).toMap();
+
+        assertEquals(2, map.size());
+        assertEquals("v", map.get("value"));
+        assertEquals("readonly", map.get("readOnly"));
+    }
+
+    @Test
+    void testToMapPrivateFieldFallback() {
+        // secret 无公有 getter，通过字段降级读取
+        PrivateAccess pa = new PrivateAccess();
+        Map<String, Object> map = eggg.reflect(pa).toMap();
+
+        assertEquals(1, map.size());
+        assertEquals("hidden", map.get("secret"));
+    }
+
+    @Test
+    void testToMapNullValue() {
+        Person person = new Person();  // name=null, age=0
+        Map<String, Object> map = eggg.reflect(person).toMap();
+
+        assertEquals(2, map.size());
+        assertTrue(map.containsKey("name"));
+        assertNull(map.get("name"));
+        assertEquals(0, map.get("age"));
+    }
+
+    @Test
+    void testToMapFinalAndComputed() {
+        Book book = eggg.reflect(Book.class).create("Java", "James").get();
+        Map<String, Object> map = eggg.reflect(book).toMap();
+
+        assertEquals(3, map.size());
+        assertEquals("Java", map.get("title"));
+        assertEquals("James", map.get("author"));
+        assertEquals("Java by James", map.get("info"));
+    }
+
+    @Test
+    void testToMapExcludesStatic() {
+        StaticHolder holder = new StaticHolder();
+        Map<String, Object> map = eggg.reflect(holder).toMap();
+
+        assertEquals(1, map.size());
+        assertEquals("dynamic", map.get("name"));
+        assertFalse(map.containsKey("STATIC_NAME"));
+    }
+
+    @Test
+    void testToMapSkipsWriteOnly() {
+        // 只有 setter 的属性不可读，应被跳过
+        WriteOnly wo = new WriteOnly();
+        Map<String, Object> map = eggg.reflect(wo).toMap();
+
+        assertTrue(map.isEmpty());
+    }
+
+    @Test
+    void testToMapOnNullObject() {
+        EgggReflectException ex = assertThrows(EgggReflectException.class, () ->
+                eggg.reflect(Person.class).toMap());
+        assertTrue(ex.getCause() instanceof NullPointerException);
+    }
+
+    @Test
+    void testToMapUseAlias() {
+        Eggg aliasEggg = new Eggg().withAliasHandler((cw, source, ref) -> "alias_" + ref);
+        Person person = new Person("Tom", 25);
+
+        Map<String, Object> map = aliasEggg.reflect(person).toMap(true);
+
+        assertEquals(2, map.size());
+        assertEquals("Tom", map.get("alias_name"));
+        assertEquals(25, map.get("alias_age"));
+    }
+
+    @Test
+    void testToMapUseNameDefault() {
+        // 配置了 AliasHandler 时，toMap() 默认仍使用属性名
+        Eggg aliasEggg = new Eggg().withAliasHandler((cw, source, ref) -> "alias_" + ref);
+        Person person = new Person("Tom", 25);
+
+        Map<String, Object> map = aliasEggg.reflect(person).toMap();
+
+        assertEquals(2, map.size());
+        assertEquals("Tom", map.get("name"));
+        assertEquals(25, map.get("age"));
     }
 }

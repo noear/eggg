@@ -1,4 +1,9 @@
 
+
+### 1.1.5
+
+* 添加 Eggg::reflect(typeEggg).toMap() 方法
+
 ### 1.1.4
 
 * 优化 MethodEggg.invoke 执行性能
