@@ -34,6 +34,10 @@ public class MethodEggg implements ExecutableEggg {
     private final ClassEggg ownerEggg;
 
     private final Method method;
+    // 实际用于反射/句柄调用的方法。当 method 的声明类不可访问（如 JDK 模块内的
+    // 非公有实现类 java.lang.ProcessHandleImpl）时，替换为公有父类型/接口上等价的可访问方法。
+    // 惰性解析；解析过程是幂等纯函数，无需加锁（并发下重复计算结果等价）。
+    private volatile Method invokeMethod;
     // 惰性适配后的调用句柄，统一签名：静态方法 (Object[])Object；实例方法 (Object,Object[])Object。
     // 首次 invoke 时解析一次，之后调用点用 invokeExact 走快路径。
     private volatile MethodHandle methodHandle;
@@ -219,6 +223,70 @@ public class MethodEggg implements ExecutableEggg {
 
 
     /**
+     * 惰性解析实际用于调用的方法。
+     *
+     * <p>当 {@link #method} 的声明类不可访问（典型如 JDK9+ 模块内的非公有实现类
+     * {@code java.lang.ProcessHandleImpl}）时，直接反射/建句柄会抛 {@link IllegalAccessException}。
+     * 此时改为在其公有父类型或接口上查找相同签名的等价方法，从而恢复可访问性。
+     * 若找不到等价的公有方法，则退回原方法（保持既有行为）。
+     */
+    private Method resolveInvokeMethod() {
+        Method im = invokeMethod;
+        if (im == null) {
+            im = findAccessibleMethod(method);
+            invokeMethod = im;
+        }
+        return im;
+    }
+
+    /**
+     * 若方法本身及其声明类均为 public，直接返回；否则在公有父类型/接口中查找同签名的等价方法。
+     */
+    private static Method findAccessibleMethod(Method method) {
+        if (Modifier.isPublic(method.getModifiers())
+                && Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+            return method;
+        }
+
+        String name = method.getName();
+        Class<?>[] paramTypes = method.getParameterTypes();
+
+        // 广度优先遍历所有父类型与接口，优先在公有类型上定位等价方法
+        Deque<Class<?>> queue = new ArrayDeque<>();
+        Set<Class<?>> visited = new HashSet<>();
+        queue.add(method.getDeclaringClass());
+
+        while (!queue.isEmpty()) {
+            Class<?> current = queue.poll();
+            if (current == null || !visited.add(current)) {
+                continue;
+            }
+
+            if (current != method.getDeclaringClass() && Modifier.isPublic(current.getModifiers())) {
+                try {
+                    Method candidate = current.getMethod(name, paramTypes);
+                    // current 是公有的，但 getMethod 可能返回其从非公有父类继承而来的方法，
+                    // 那样仍不可访问；此时不采用，由 BFS 继续向上寻找真正公有的声明类型。
+                    if (Modifier.isPublic(candidate.getDeclaringClass().getModifiers())) {
+                        return candidate;
+                    }
+                } catch (NoSuchMethodException ignore) {
+                    // 该类型上不存在同签名公有方法，继续向上查找
+                }
+            }
+
+            Class<?> superclass = current.getSuperclass();
+            if (superclass != null) {
+                queue.add(superclass);
+            }
+            Collections.addAll(queue, current.getInterfaces());
+        }
+
+        // 找不到等价的公有方法，保持原方法（由 setAccessible/反射尝试兜底）
+        return method;
+    }
+
+    /**
      * 惰性解析并适配调用句柄，只在首次调用时执行一次（双重检查 + 专用锁）。
      * 适配结果：静态方法 (Object[])Object；实例方法 (Object,Object[])Object，供调用点 invokeExact 使用。
      * 任何环节失败（如 JDK9+ 模块限制）都不抛出，句柄保持 null，由 invoke 回退反射。
@@ -235,16 +303,18 @@ public class MethodEggg implements ExecutableEggg {
             }
 
             try {
-                if (method.isAccessible() == false) {
+                Method target = resolveInvokeMethod();
+
+                if (target.isAccessible() == false) {
                     try {
-                        method.setAccessible(true);
+                        target.setAccessible(true);
                     } catch (SecurityException ignore) {
                         // 不提前返回：public 成员即便 setAccessible 失败，unreflect 通常仍能建句柄；
                         // 若确实建不出，会被下方 catch(Throwable) 兜住并回退反射。
                     }
                 }
 
-                MethodHandle mh = MethodHandles.lookup().unreflect(method);
+                MethodHandle mh = MethodHandles.lookup().unreflect(target);
                 // varargs 句柄归一为固定元数，否则会把传入的数组当成单个元素再收集一层
                 if (mh.isVarargsCollector()) {
                     mh = mh.asFixedArity();
@@ -285,7 +355,7 @@ public class MethodEggg implements ExecutableEggg {
         if (mh == null) {
             // 句柄解析失败时回退反射（setAccessible 已在 resolveHandle 中尝试过）。
             // 反射语义：参数类型不符抛 IllegalArgumentException，方法体异常包 InvocationTargetException。
-            return (T) method.invoke(target, a);
+            return (T) resolveInvokeMethod().invoke(target, a);
         }
 
         try {

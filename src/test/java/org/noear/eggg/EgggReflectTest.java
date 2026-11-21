@@ -16,6 +16,8 @@
 package org.noear.eggg;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 import java.util.*;
 
@@ -1339,5 +1341,24 @@ class EgggReflectTest {
         aliasEggg.reflect(person).fillMap(map);
 
         assertEquals("Tom", person.getName());
+    }
+
+    /**
+     * 链式反射调用 JDK9+ 的 ProcessHandle：
+     * 其运行时实现类 java.lang.ProcessHandleImpl 是模块内的非公有类，
+     * 用于覆盖「声明类不可访问时改用公有父类型等价方法」的场景。
+     *
+     * <p>用 Class.forName 而非 ProcessHandle.class，以保证在 JDK8 下仍可编译（运行时按 JRE 版本跳过）。
+     */
+    @Test
+    @EnabledForJreRange(min = JRE.JAVA_9)
+    void testProcessHandle() throws Exception {
+        Object val = new Eggg().reflect(Class.forName("java.lang.ProcessHandle"))
+                .call("current")
+                .call("parent")
+                .call("orElse", (Object) null)
+                .get();
+
+        assertNotNull(val);
     }
 }
